@@ -1,0 +1,20 @@
+[general]
+name=IdentifyPlus
+description=Extended identify tool
+category=Vector
+version=1.0.0
+qgisMinimumVersion=1.9.0
+
+author=NextGIS
+email=info@nextgis.org
+
+icon=icons/identifyplus.png
+
+tags=vector, identify, photo
+
+homepage=
+tracker=
+repository=
+
+experimental=True
+deprecated=False
