@@ -10,7 +10,7 @@ email=info@nextgis.org
 
 icon=icons/identifyplus.png
 
-tags=vector, identify, photo
+tags=feature, maptool, vector
 
 homepage=
 tracker=

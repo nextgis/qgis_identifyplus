@@ -49,6 +49,6 @@ def email():
 def icon():
   return "icons/identifyplus.png"
 
-def classFactory( iface ):
+def classFactory(iface):
   from identifyplus import IdentifyPlus
-  return IdentifyPlus( iface )
+  return IdentifyPlus(iface)
