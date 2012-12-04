@@ -43,6 +43,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     self.currentFeature = 0
     self.currentPhoto = 0
     self.features = []
+    self.photos = None
 
     self.tabWidget.setCurrentIndex(0)
 
@@ -111,6 +112,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
 
   def clear(self):
     self.features = []
+    self.photos = None
     self.currentFeature = 0
     self.currentPhoto = 0
     self.tblAttributes.clear()
