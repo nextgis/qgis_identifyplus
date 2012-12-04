@@ -113,8 +113,6 @@ class IdentifyPlusTool(QgsMapTool):
       myFilter = renderer.capabilities() and QgsFeatureRendererV2.Filter
 
     for f in featureList:
-      #fid = f.id()
-
       if myFilter and not renderer.willRenderFeature(f):
         continue
 

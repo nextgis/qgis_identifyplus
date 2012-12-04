@@ -44,6 +44,8 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     self.currentPhoto = 0
     self.features = []
 
+    self.tabWidget.setCurrentIndex(0)
+
     self.btnFirstRecord.clicked.connect(self.firstRecord)
     self.btnLastRecord.clicked.connect(self.lastRecord)
     self.btnNextRecord.clicked.connect(self.nextRecord)
@@ -77,10 +79,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     self.tblAttributes.resizeColumnsToContents()
     self.tblAttributes.horizontalHeader().setResizeMode(1, QHeaderView.Stretch)
 
-    #self.tblAttributes.resizeColumnToContents(0)
-    #self.tblAttributes.resizeColumnToContents(1)
-
-    # load photo
+    # TODO load photo
 
     # update info
     self.lblFeatures.setText(self.tr("Feature %1 from %2").arg(fid + 1).arg(len(self.features)))
@@ -111,6 +110,9 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     pass
 
   def clear(self):
+    self.features = []
+    self.currentFeature = 0
+    self.currentPhoto = 0
     self.tblAttributes.clear()
 
   def show(self, layer):
