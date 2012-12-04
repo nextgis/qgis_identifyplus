@@ -25,6 +25,10 @@
 #
 #******************************************************************************
 
+import sys
+import json
+import requests
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -33,17 +37,19 @@ from qgis.gui import *
 
 from ui_identifyplusresultsbase import Ui_IdentifyPlusResults
 
+API_SERVER = "http://gis-lab.info:8888"
+
 class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
   def __init__(self, canvas, parent):
     QDialog.__init__(self, parent)
     self.setupUi(self)
 
     self.canvas = canvas
-    #self.layer = self.canvas.currentLayer()
     self.currentFeature = 0
     self.currentPhoto = 0
     self.features = []
     self.photos = None
+    self.proxy = None
 
     self.tabWidget.setCurrentIndex(0)
 
@@ -51,6 +57,17 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     self.btnLastRecord.clicked.connect(self.lastRecord)
     self.btnNextRecord.clicked.connect(self.nextRecord)
     self.btnPrevRecord.clicked.connect(self.prevRecord)
+
+    self.btnFirstPhoto.clicked.connect(self.firstPhoto)
+    self.btnLastPhoto.clicked.connect(self.lastPhoto)
+    self.btnNextPhoto.clicked.connect(self.nextPhoto)
+    self.btnPrevPhoto.clicked.connect(self.prevPhoto)
+
+    self.btnLoadPhoto.clicked.connect(self.loadPhoto)
+    self.btnSavePhoto.clicked.connect(self.savePhoto)
+    self.btnDeletePhoto.clicked.connect(self.deletePhoto)
+
+    self.__setupProxy()
 
   def addFeature(self, feature):
     self.features.append(feature)
@@ -80,17 +97,19 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     self.tblAttributes.resizeColumnsToContents()
     self.tblAttributes.horizontalHeader().setResizeMode(1, QHeaderView.Stretch)
 
-    # TODO load photo
-
-    # update info
     self.lblFeatures.setText(self.tr("Feature %1 from %2").arg(fid + 1).arg(len(self.features)))
+
+    # load photo
+    self.getPhotos(fid)
 
   def firstRecord(self):
     self.currentFeature = 0
+    self.currentPhoto = 0
     self.loadAttributes(self.currentFeature)
 
   def lastRecord(self):
     self.currentFeature = len(self.features) - 1
+    self.currentPhoto = 0
     self.loadAttributes(self.currentFeature)
 
   def nextRecord(self):
@@ -98,6 +117,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     if self.currentFeature >= len(self.features):
       self.currentFeature = 0
 
+    self.currentPhoto = 0
     self.loadAttributes(self.currentFeature)
 
   def prevRecord(self):
@@ -105,10 +125,133 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     if self.currentFeature < 0:
       self.currentFeature = len(self.features) - 1
 
+    self.currentPhoto = 0
     self.loadAttributes(self.currentFeature)
 
-  def loadPhoto(self, fid, pid):
-    pass
+  def getPhotos(self, fid):
+    featureId = self.features[fid].id()
+    #layerName = self.__getLayerName()
+    layerName = "green_areas"
+
+    url = API_SERVER + "/api/%s/%s/images/" % (str(layerName), str(featureId))
+
+    try:
+      res = requests.get(url, proxies=self.proxy)
+    except:
+      print "requsts exception", sys.exc_info()[0]
+
+    self.photos = res.json["images"]
+    #print "PHOTOS", self.photos
+
+    self.currentPhoto = 0
+    self.lblImage.setText(self.tr("No photo"))
+    self.showPhoto(self.currentPhoto)
+
+  def showPhoto(self, pid):
+    if self.photos is None or len(self.photos) == 0:
+      self.lblPhotos.setText(self.tr("No photos found"))
+      self.lblImage.setText(self.tr("No photo"))
+      return
+
+    self.lblPhotos.setText(self.tr("Photo %1 from %2").arg(pid + 1).arg(len(self.photos)))
+
+    photoURL = self.photos[pid]["url"]
+    #print "PHOTO URL", photoURL
+
+    url = API_SERVER + photoURL
+    #print "FULL URL", url
+
+    try:
+      res = requests.get(url, proxies=self.proxy)
+    except:
+      print "requsts exception", sys.exc_info()[0]
+
+    if res.content is None or res.content == "":
+      self.lblImage.setText(self.tr("No photo"))
+      return
+
+    img = QPixmap()
+    img.loadFromData(QByteArray(res.content))
+    self.lblImage.setPixmap(img)
+
+  def firstPhoto(self):
+    self.currentPhoto = 0
+    self.showPhoto(self.currentPhoto)
+
+  def lastPhoto(self):
+    self.currentPhoto = len(self.photos) - 1
+    self.showPhoto(self.currentPhoto)
+
+  def nextPhoto(self):
+    self.currentPhoto += 1
+    if self.currentPhoto >= len(self.photos):
+      self.currentPhoto = 0
+
+    self.showPhoto(self.currentPhoto)
+
+  def prevPhoto(self):
+    self.currentPhoto = self.currentPhoto - 1
+    if self.currentPhoto < 0:
+      self.currentPhoto = len(self.photos) - 1
+
+    self.showPhoto(self.currentPhoto)
+
+  def loadPhoto(self):
+    formats = [ "*.%s" % unicode( format ).lower() for format in QImageReader.supportedImageFormats() ]
+    fName = QFileDialog.getOpenFileName(self,
+                                        self.tr("Open image"),
+                                        ".",
+                                        self.tr("Image files (%s)" % " ".join(formats))
+                                       )
+
+    if not fName.isEmpty():
+      featureId = self.features[self.currentFeature].id()
+      #layerName = self.__getLayerName()
+      layerName = "green_areas"
+
+      url = API_SERVER + "/api/%s/%s/images/" % (str(layerName), str(featureId))
+      print "URL", url
+      print fName
+      files = {"data" : open(unicode(QFileInfo(fName).absoluteFilePath()), "rb")}
+
+      try:
+        res = requests.post(url, proxies=self.proxy, files=files)
+      except:
+        print "requsts exception", sys.exc_info()[0]
+
+    self.getPhotos(self.currentFeature)
+
+  def savePhoto(self):
+    fName = QFileDialog.getSaveFileName(self,
+                                        self.tr("Save image"),
+                                        ".",
+                                        self.tr("PNG files (*.png)")
+                                       )
+    if fName.isEmpty():
+      return
+
+    if not fName.toLower().endsWith(".png"):
+      fName += ".png"
+
+    self.lblImage.pixmap().save(fName)
+
+  def deletePhoto(self):
+    if self.photos is None or len(self.photos) == 0:
+      self.lblPhotos.setText(self.tr("No photos found"))
+      return
+
+    photoID = self.photos[self.currentFeature]["id"]
+    #print "PHOTO URL", photoURL
+
+    url = API_SERVER + "/api/images/" + str(photoID)
+    #print "FULL URL", url
+
+    try:
+      res = requests.delete(url, proxies=self.proxies)
+    except:
+      print "requsts exception", sys.exc_info()[0]
+
+    self.getPhotos(self.currentFeature)
 
   def clear(self):
     self.features = []
@@ -122,3 +265,26 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     self.loadAttributes(self.currentFeature)
     QDialog.show(self)
     self.raise_()
+
+  def __setupProxy(self):
+    settings = QSettings()
+    if settings.value("/proxyEnabled", False).toBool():
+      proxyType = settings.value("/proxyType", "Default proxy").toString()
+      proxyHost = settings.value("/proxyHost", "").toString()
+      proxyPost = settings.value("/proxyPort", 0).toUInt()[0]
+      proxyUser = settings.value("/proxyUser", "").toString()
+      proxyPass = settings.value("/proxyPassword", "").toString()
+
+      # setup proxy
+      connectionString = "http://%s:%s@%s:%s" % (proxyUser, proxyPass, proxyHost, proxyPort)
+      self.proxy = {"http" : conectionString}
+
+  def __getLayerName(self):
+    if self.layer is None:
+      return ""
+
+    metadata = self.layer.source().split(" ")
+    pos = metadata.indexOf(QRegExp("^table=.*"))
+    tmp = metadata[pos]
+    pos = tmp.indexOf(".")
+    return tmp.mid(pos + 2, tmp.size() - pos - 3)
