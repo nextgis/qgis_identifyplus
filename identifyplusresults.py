@@ -26,7 +26,6 @@
 #******************************************************************************
 
 import sys
-import json
 import requests
 
 from PyQt4.QtCore import *
@@ -130,8 +129,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
 
   def getPhotos(self, fid):
     featureId = self.features[fid].id()
-    #layerName = self.__getLayerName()
-    layerName = "green_areas"
+    layerName = self.__getLayerName()
 
     url = API_SERVER + "/api/%s/%s/images/" % (str(layerName), str(featureId))
 
@@ -142,7 +140,6 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
 
     if res.json is not None:
       self.photos = res.json["images"]
-      #print "PHOTOS", self.photos
 
     self.currentPhoto = 0
     self.lblImage.setText(self.tr("No photo"))
@@ -157,10 +154,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     self.lblPhotos.setText(self.tr("Photo %1 from %2").arg(pid + 1).arg(len(self.photos)))
 
     photoURL = self.photos[pid]["url"]
-    #print "PHOTO URL", photoURL
-
     url = API_SERVER + photoURL + "?type=preview"
-    #print "FULL URL", url
 
     try:
       res = requests.get(url, proxies=self.proxy)
@@ -207,8 +201,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
 
     if not fName.isEmpty():
       featureId = self.features[self.currentFeature].id()
-      #layerName = self.__getLayerName()
-      layerName = "green_areas"
+      layerName = self.__getLayerName()
 
       url = API_SERVER + "/api/%s/%s/images/" % (str(layerName), str(featureId))
       print "URL", url
@@ -234,7 +227,28 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     if not fName.toLower().endsWith(".png"):
       fName += ".png"
 
-    self.lblImage.pixmap().save(fName)
+    # get fullsize image
+    if self.photos is None or len(self.photos) == 0:
+      return
+
+    photoURL = self.photos[self.currentPhoto]["url"]
+    url = API_SERVER + photoURL
+
+    try:
+      res = requests.get(url, proxies=self.proxy)
+    except:
+      print "requsts exception", sys.exc_info()[0]
+
+    if res.content is None or res.content == "":
+      QMessageBox.information(self,
+                              self.tr("No image"),
+                              self.tr("Corresponding image not found")
+                             )
+      return
+
+    img = QPixmap()
+    img.loadFromData(QByteArray(res.content))
+    img.save(fName)
 
   def deletePhoto(self):
     if self.photos is None or len(self.photos) == 0:
@@ -242,10 +256,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       return
 
     photoID = self.photos[self.currentFeature]["id"]
-    #print "PHOTO URL", photoURL
-
     url = API_SERVER + "/api/images/" + str(photoID)
-    #print "FULL URL", url
 
     try:
       res = requests.delete(url, proxies=self.proxies)
