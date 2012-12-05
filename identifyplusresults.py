@@ -140,8 +140,9 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     except:
       print "requsts exception", sys.exc_info()[0]
 
-    self.photos = res.json["images"]
-    #print "PHOTOS", self.photos
+    if res.json is not None:
+      self.photos = res.json["images"]
+      #print "PHOTOS", self.photos
 
     self.currentPhoto = 0
     self.lblImage.setText(self.tr("No photo"))
@@ -158,7 +159,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     photoURL = self.photos[pid]["url"]
     #print "PHOTO URL", photoURL
 
-    url = API_SERVER + photoURL
+    url = API_SERVER + photoURL + "?type=preview"
     #print "FULL URL", url
 
     try:

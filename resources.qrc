@@ -2,6 +2,7 @@
   <qresource>
     <file>icons/identifyplus.png</file>
     <file>icons/about.png</file>
+    <file>icons/cursor.png</file>
     <file>icons/resultset_first.png</file>
     <file>icons/resultset_last.png</file>
     <file>icons/resultset_next.png</file>

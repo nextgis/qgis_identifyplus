@@ -33,12 +33,20 @@ from qgis.gui import *
 
 import identifyplusresults
 
+import resources_rc
+
 class IdentifyPlusTool(QgsMapTool):
   def __init__(self, canvas):
     QgsMapTool.__init__(self, canvas)
 
     self.canvas = canvas
+
+    self.cursor = QCursor(QPixmap(":/icons/cursor.png"), 1, 1)
+
     self.results = identifyplusresults.IdentifyPlusResults(self.canvas, self.canvas.window())
+
+  def activate(self):
+    self.canvas.setCursor(self.cursor)
 
   def canvasReleaseEvent(self, event):
     self.results.clear()
