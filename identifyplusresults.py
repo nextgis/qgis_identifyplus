@@ -192,10 +192,13 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     self.showPhoto(self.currentPhoto)
 
   def loadPhoto(self):
+    settings = QSettings("Krasnogorsk", "identifyplus")
+    lastDir = settings.value( "/lastPhotoDir", "." ).toString()
+
     formats = [ "*.%s" % unicode( format ).lower() for format in QImageReader.supportedImageFormats() ]
     fName = QFileDialog.getOpenFileName(self,
                                         self.tr("Open image"),
-                                        ".",
+                                        lastDir,
                                         self.tr("Image files (%s)" % " ".join(formats))
                                        )
 
@@ -213,12 +216,21 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       except:
         print "requsts exception", sys.exc_info()[0]
 
+      settings.setValue("/lastPhotoDir", QVariant(QFileInfo(fName).absolutePath()))
+
     self.getPhotos(self.currentFeature)
 
   def savePhoto(self):
+    if self.photos is None or len(self.photos) == 0:
+      return
+
+    settings = QSettings("Krasnogorsk", "identifyplus")
+    lastDir = settings.value( "/lastPhotoDir", "." ).toString()
+
+
     fName = QFileDialog.getSaveFileName(self,
                                         self.tr("Save image"),
-                                        ".",
+                                        lastDir,
                                         self.tr("PNG files (*.png)")
                                        )
     if fName.isEmpty():
@@ -228,9 +240,6 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       fName += ".png"
 
     # get fullsize image
-    if self.photos is None or len(self.photos) == 0:
-      return
-
     photoURL = self.photos[self.currentPhoto]["url"]
     url = API_SERVER + photoURL
 
@@ -249,6 +258,8 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     img = QPixmap()
     img.loadFromData(QByteArray(res.content))
     img.save(fName)
+
+    settings.setValue("/lastPhotoDir", QVariant(QFileInfo(fName).absolutePath()))
 
   def deletePhoto(self):
     if self.photos is None or len(self.photos) == 0:
