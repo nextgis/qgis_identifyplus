@@ -136,7 +136,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     try:
       res = requests.get(url, proxies=self.proxy)
     except:
-      print "requsts exception", sys.exc_info()[0]
+      print "requsts exception", sys.exc_info()
 
     if res.json is not None:
       self.photos = res.json["images"]
@@ -159,7 +159,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     try:
       res = requests.get(url, proxies=self.proxy)
     except:
-      print "requsts exception", sys.exc_info()[0]
+      print "requsts exception", sys.exc_info()
 
     if res.content is None or res.content == "":
       self.lblImage.setText(self.tr("No photo"))
@@ -207,14 +207,12 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       layerName = self.__getLayerName()
 
       url = API_SERVER + "/api/%s/%s/images/" % (str(layerName), str(featureId))
-      print "URL", url
-      print fName
       files = {"data" : open(unicode(QFileInfo(fName).absoluteFilePath()), "rb")}
 
       try:
         res = requests.post(url, proxies=self.proxy, files=files)
       except:
-        print "requsts exception", sys.exc_info()[0]
+        print "requsts exception", sys.exc_info()
 
       settings.setValue("/lastPhotoDir", QVariant(QFileInfo(fName).absolutePath()))
 
@@ -246,7 +244,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     try:
       res = requests.get(url, proxies=self.proxy)
     except:
-      print "requsts exception", sys.exc_info()[0]
+      print "requsts exception", sys.exc_info()
 
     if res.content is None or res.content == "":
       QMessageBox.information(self,
@@ -270,9 +268,9 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     url = API_SERVER + "/api/images/" + str(photoID)
 
     try:
-      res = requests.delete(url, proxies=self.proxies)
+      res = requests.delete(url, proxies=self.proxy)
     except:
-      print "requsts exception", sys.exc_info()[0]
+      print "requsts exception", sys.exc_info()
 
     self.getPhotos(self.currentFeature)
 
