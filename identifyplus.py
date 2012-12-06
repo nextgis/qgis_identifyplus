@@ -95,6 +95,9 @@ class IdentifyPlus:
     self.mapTool = identifyplustool.IdentifyPlusTool(self.iface.mapCanvas())
     self.iface.mapCanvas().mapToolSet.connect(self.mapToolChanged)
 
+    # handle layer changes
+    self.iface.currentLayerChanged.connect(self.toggleTool)
+
   def unload(self):
     self.iface.removeVectorToolBarIcon(self.actionRun)
     self.iface.removePluginVectorMenu(QCoreApplication.translate("IdentifyPlus", "IdentifyPlus"), self.actionRun)
@@ -109,6 +112,17 @@ class IdentifyPlus:
   def run(self):
     self.iface.mapCanvas().setMapTool(self.mapTool)
     self.actionRun.setChecked(True)
+
+  def toggleTool(self, layer):
+    if layer is None:
+      return
+
+    if layer.type() != QgsMapLayer.VectorLayer:
+      self.actionRun.setEnabled(False)
+      if self.iface.mapCanvas().mapTool() == self.mapTool:
+        self.iface.mapCanvas().unsetMapTool(self.mapTool)
+    else:
+      self.actionRun.setEnabled(True)
 
   def about(self):
     pass

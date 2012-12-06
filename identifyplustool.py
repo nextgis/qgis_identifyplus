@@ -54,6 +54,9 @@ class IdentifyPlusTool(QgsMapTool):
 
     layer = self.canvas.currentLayer()
 
+    if layer.providerType() not in ["postgres"]:
+      self.results.togglePhotoTab(False)
+
     if layer is None:
       QMessageBox.warning(self.canvas,
                           self.tr("No active layer"),
