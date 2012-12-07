@@ -36,7 +36,6 @@ from qgis.gui import *
 
 from ui_identifyplusresultsbase import Ui_IdentifyPlusResults
 
-API_SERVER = "http://gis-lab.info:8888"
 API_PORT = ":8888"
 
 class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
@@ -135,7 +134,6 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     featureId = self.features[fid].id()
     layerName = self.__getLayerName()
 
-    #url = API_SERVER + "/api/%s/%s/images/" % (str(layerName), str(featureId))
     url = self.host + "/api/%s/%s/images/" % (str(layerName), str(featureId))
 
     try:
@@ -159,7 +157,6 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     self.lblPhotos.setText(self.tr("Photo %1 from %2").arg(pid + 1).arg(len(self.photos)))
 
     photoURL = self.photos[pid]["url"]
-    #url = API_SERVER + photoURL + "?type=preview"
     url = self.host + photoURL + "?type=preview"
 
     try:
@@ -212,7 +209,6 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       featureId = self.features[self.currentFeature].id()
       layerName = self.__getLayerName()
 
-      #url = API_SERVER + "/api/%s/%s/images/" % (str(layerName), str(featureId))
       url = self.host + "/api/%s/%s/images/" % (str(layerName), str(featureId))
       files = {"data" : open(unicode(QFileInfo(fName).absoluteFilePath()), "rb")}
 
@@ -246,7 +242,6 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
 
     # get fullsize image
     photoURL = self.photos[self.currentPhoto]["url"]
-    #url = API_SERVER + photoURL
     url = self.host + photoURL
 
     try:
@@ -273,8 +268,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       return
 
     photoID = self.photos[self.currentFeature]["id"]
-    #url = API_SERVER + ":8888/api/images/" + str(photoID)
-    url = self.host + ":8888/api/images/" + str(photoID)
+    url = self.host + "/api/images/" + str(photoID)
 
     try:
       res = requests.delete(url, proxies=self.proxy)
@@ -292,11 +286,19 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
 
   def show(self, layer):
     self.layer = layer
+
+    if self.layer.providerType() not in ["postgres"]:
+      self.results.togglePhotoTab(False)
+
     self.host = "http://" + unicode(self.__getDBHost()) + API_PORT
-    print "HOST", self.host
+
     self.loadAttributes(self.currentFeature)
     QDialog.show(self)
     self.raise_()
+
+  def togglePhotoTab(self, enable):
+    self.requestPhotos = enable
+    self.tabWidget.setTabEnabled(1, enable)
 
   def __setupProxy(self):
     settings = QSettings()
@@ -328,10 +330,5 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     metadata = self.layer.source().split(" ")
     pos = metadata.indexOf(QRegExp("^host=.*"))
     tmp = metadata[pos]
-    print "TMP", tmp
     pos = tmp.indexOf("=")
     return tmp.mid(pos + 1, tmp.size() - pos)
-
-  def togglePhotoTab(self, enable):
-    self.requestPhotos = enable
-    self.tabWidget.setTabEnabled(1, enable)
