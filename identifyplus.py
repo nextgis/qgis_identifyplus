@@ -103,6 +103,9 @@ class IdentifyPlus:
     self.iface.removePluginVectorMenu(QCoreApplication.translate("IdentifyPlus", "IdentifyPlus"), self.actionRun)
     self.iface.removePluginVectorMenu(QCoreApplication.translate("IdentifyPlus", "IdentifyPlus"), self.actionAbout)
 
+    if self.iface.mapCanvas().mapTool() == self.mapTool:
+      self.iface.mapCanvas().unsetMapTool(self.mapTool)
+
     del self.mapTool
 
   def mapToolChanged(self, tool):
