@@ -66,6 +66,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
 
     self.btnLoadPhoto.clicked.connect(self.loadPhoto)
     self.btnSavePhoto.clicked.connect(self.savePhoto)
+    self.btnSaveAllPhotos.clicked.connect(self.saveAllPhotos)
     self.btnDeletePhoto.clicked.connect(self.deletePhoto)
 
     self.__setupProxy()
@@ -261,6 +262,43 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     img.save(fName)
 
     settings.setValue("/lastPhotoDir", QVariant(QFileInfo(fName).absolutePath()))
+
+  def saveAllPhotos(self):
+    if self.photos is None or len(self.photos) == 0:
+      return
+
+    settings = QSettings("Krasnogorsk", "identifyplus")
+    lastDir = settings.value( "/lastPhotoDir", "." ).toString()
+
+
+    dirName = QFileDialog.getExistingDirectory(self,
+                                               self.tr("Select directory"),
+                                               lastDir,
+                                               QFileDialog.ShowDirsOnly
+                                              )
+    if dirName.isEmpty():
+      return
+
+    # iterate over photos
+    i = 0
+    img = QPixmap()
+    for p in self.photos:
+      photoURL = p["url"]
+      url = self.host + photoURL
+
+      try:
+        res = requests.get(url, proxies=self.proxy)
+      except:
+        print "requsts exception", sys.exc_info()
+
+      if res.content is None or res.content == "":
+        print "Corresponding image not found"
+        continue
+
+      img.loadFromData(QByteArray(res.content))
+      img.save(QString("%1/%2.png").arg(dirName).arg(fName))
+
+    settings.setValue("/lastPhotoDir", QVariant(QFileInfo(dirName).absolutePath()))
 
   def deletePhoto(self):
     if self.photos is None or len(self.photos) == 0:

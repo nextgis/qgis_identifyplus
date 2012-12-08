@@ -8,6 +8,7 @@
     <file>icons/resultset_next.png</file>
     <file>icons/resultset_previous.png</file>
     <file>icons/disk.png</file>
+    <file>icons/disk_multiple.png</file>
     <file>icons/folder_picture.png</file>
     <file>icons/image_delete.png</file>
   </qresource>
