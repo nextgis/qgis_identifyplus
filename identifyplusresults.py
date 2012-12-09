@@ -296,7 +296,8 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
         continue
 
       img.loadFromData(QByteArray(res.content))
-      img.save(QString("%1/%2.png").arg(dirName).arg(fName))
+      img.save(QString("%1/%2.png").arg(dirName).arg(i))
+      i += 1
 
     settings.setValue("/lastPhotoDir", QVariant(QFileInfo(dirName).absolutePath()))
 
