@@ -306,7 +306,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       self.lblPhotos.setText(self.tr("No photos found"))
       return
 
-    photoID = self.photos[self.currentFeature]["id"]
+    photoID = self.photos[self.currentPhoto]["id"]
     url = self.host + "/api/images/" + str(photoID)
 
     try:
