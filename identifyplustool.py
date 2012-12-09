@@ -75,6 +75,8 @@ class IdentifyPlusTool(QgsMapTool):
     if res:
       print "Identify OK"
       self.results.show(layer)
+    else:
+      self.results.hide()
 
   def identifyLayer(self, layer, x, y):
     if layer.hasScaleBasedVisibility() and (layer.minimumScale() > self.canvas.mapRenderer().scale() or layer.maximumScale() <= self.canvas.mapRenderer().scale()):
