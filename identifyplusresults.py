@@ -314,6 +314,13 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     except:
       print "requsts exception", sys.exc_info()
 
+    if res.status_code != 204:
+      QMessageBox.warning(self,
+                          self.tr("Delete error"),
+                          self.tr("Can't delete photo. Server responce code is: %1").arg(res.status_code)
+                         )
+      return
+
     self.getPhotos(self.currentFeature)
 
   def clear(self):
@@ -327,7 +334,14 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     self.layer = layer
 
     if self.layer.providerType() not in ["postgres"]:
-      self.results.togglePhotoTab(False)
+      self.togglePhotoTab(False)
+    else:
+      self.togglePhotoTab(True)
+
+    if not self.__canEditLayer():
+      self.toggleEditButtons(False)
+    else:
+      self.toggleEditButtons(True)
 
     self.host = "http://" + unicode(self.__getDBHost()) + API_PORT
 
@@ -338,6 +352,10 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
   def togglePhotoTab(self, enable):
     self.requestPhotos = enable
     self.tabWidget.setTabEnabled(1, enable)
+
+  def toggleEditButtons(self, enable):
+    self.btnLoadPhoto.setEnabled(enable)
+    self.btnDeletePhoto.setEnabled(enable)
 
   def __setupProxy(self):
     settings = QSettings()
@@ -371,3 +389,11 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     tmp = metadata[pos]
     pos = tmp.indexOf("=")
     return tmp.mid(pos + 1, tmp.size() - pos)
+
+  def __canEditLayer(self):
+    if self.layer is None:
+      return False
+
+    canChangeAttributes = self.layer.dataProvider().capabilities() & QgsVectorDataProvider.ChangeAttributeValues
+
+    return canChangeAttributes and not self.layer.isReadOnly()
