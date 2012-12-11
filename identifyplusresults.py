@@ -214,7 +214,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       files = {"data" : open(unicode(QFileInfo(fName).absoluteFilePath()), "rb")}
 
       try:
-        res = requests.post(url, proxies=self.proxy, files=files)
+        res = requests.post(url, proxies=self.proxy, files=files, headers=self.header)
       except:
         print "requsts exception", sys.exc_info()
 
@@ -310,7 +310,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     url = self.host + "/api/images/" + str(photoID)
 
     try:
-      res = requests.delete(url, proxies=self.proxy)
+      res = requests.delete(url, proxies=self.proxy, headers=self.header)
     except:
       print "requsts exception", sys.exc_info()
 
@@ -344,6 +344,13 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       self.toggleEditButtons(True)
 
     self.host = "http://" + unicode(self.__getDBHost()) + API_PORT
+
+    userName, password = self.__getCredentials()
+    if userName is not None and password is not None:
+      self.header = {"X-Role" : unicode(userName), "X-Password" : unicode(password)}
+    else:
+      self.header = None
+      self.toggleEditButtons(False)
 
     self.loadAttributes(self.currentFeature)
     QDialog.show(self)
@@ -389,6 +396,33 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     tmp = metadata[pos]
     pos = tmp.indexOf("=")
     return tmp.mid(pos + 1, tmp.size() - pos)
+
+  def __getCredentials(self):
+    if self.layer is None:
+      return (None, None)
+
+    metadata = self.layer.source().split(" ")
+    pos = metadata.indexOf(QRegExp("^user=.*"))
+    tmp = metadata[pos]
+    pos = tmp.indexOf("=")
+    userName = QString(tmp.mid(pos + 1, tmp.size() - pos))
+
+    pos = metadata.indexOf(QRegExp("^password=.*"))
+    tmp = metadata[pos]
+    pos = tmp.indexOf("=")
+    password = QString(tmp.mid(pos + 1, tmp.size() - pos))
+
+    if userName.isEmpty() or password.isEmpty():
+      realm = QString("%1 %2 %3 %4").arg(metadata[metadata.indexOf(QRegExp("^dbname=.*"))]).arg(metadata[metadata.indexOf(QRegExp("^host=.*"))]).arg(metadata[metadata.indexOf(QRegExp("^port=.*"))]).arg(metadata[metadata.indexOf(QRegExp("^sslmode=.*"))])
+
+      res, userName, password = QgsCredentials.instance().get(realm, userName, password)
+      if userName.isEmpty() or password.isEmpty():
+        print "Can't get user credentials"
+        return (None, None)
+
+      QgsCredentials.instance().put(realm, userName, password)
+
+    return (userName, password)
 
   def __canEditLayer(self):
     if self.layer is None:
