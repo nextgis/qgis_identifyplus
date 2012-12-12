@@ -38,6 +38,8 @@ from ui_identifyplusresultsbase import Ui_IdentifyPlusResults
 
 API_PORT = ":8888"
 
+DISABLED_FIELDS = ["FID", "ogc_fid", "gid", "osm_id"]
+
 class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
   def __init__(self, canvas, parent):
     QDialog.__init__(self, parent)
@@ -87,6 +89,10 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     fields = self.layer.pendingFields()
     for k, v in f.attributeMap().iteritems():
       fieldName = self.layer.attributeDisplayName(k)
+
+      if fieldName in DISABLED_FIELDS:
+        self.tblAttributes.removeRow(self.tblAttributes.rowCount() - 1)
+        continue
 
       item = QTableWidgetItem(fieldName)
       self.tblAttributes.setItem(row, 0, item )
