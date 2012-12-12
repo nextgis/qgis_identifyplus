@@ -142,6 +142,10 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     except:
       print "requsts exception", sys.exc_info()
 
+    if res.status_code != 200:
+      self.showMessage(res.text)
+      return
+
     if res.json is not None:
       self.photos = res.json["images"]
 
@@ -218,6 +222,10 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       except:
         print "requsts exception", sys.exc_info()
 
+      if res.status_code != 200:
+        self.showMessage(res.text)
+        return
+
       settings.setValue("/lastPhotoDir", QVariant(QFileInfo(fName).absolutePath()))
 
     self.getPhotos(self.currentFeature)
@@ -251,10 +259,12 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       print "requsts exception", sys.exc_info()
 
     if res.content is None or res.content == "":
-      QMessageBox.information(self,
-                              self.tr("No image"),
-                              self.tr("Corresponding image not found")
-                             )
+      msg = self.tr("<h1>Error: image not found</h1><p>Photo with ID %1 not found using URL %2</p>").arg(self.photos[self.currentPhoto]["id"]).arg(self.photos[self.currentPhoto]["url"])
+      self.showMessage(msg)
+      #~ QMessageBox.information(self,
+                              #~ self.tr("No image"),
+                              #~ self.tr("Corresponding image not found")
+                             #~ )
       return
 
     img = QPixmap()
@@ -315,10 +325,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       print "requsts exception", sys.exc_info()
 
     if res.status_code != 204:
-      QMessageBox.warning(self,
-                          self.tr("Delete error"),
-                          self.tr("Can't delete photo. Server responce code is: %1").arg(res.status_code)
-                         )
+      self.showMessage(res.text)
       return
 
     self.getPhotos(self.currentFeature)
@@ -364,6 +371,12 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     self.btnLoadPhoto.setEnabled(enable)
     self.btnDeletePhoto.setEnabled(enable)
 
+  def showMessage(self, message):
+    msgViewer = QgsMessageViewer(self)
+    msgViewer.setCheckBoxVisible(False)
+    msgViewer.setMessageAsHtml(message)
+    msgViewer.showMessage()
+
   def __setupProxy(self):
     settings = QSettings()
     if settings.value("/proxyEnabled", False).toBool():
@@ -405,12 +418,12 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     pos = metadata.indexOf(QRegExp("^user=.*"))
     tmp = metadata[pos]
     pos = tmp.indexOf("=")
-    userName = QString(tmp.mid(pos + 1, tmp.size() - pos))
+    userName = QString(tmp.mid(pos + 2, tmp.size() - pos - 3))
 
     pos = metadata.indexOf(QRegExp("^password=.*"))
     tmp = metadata[pos]
     pos = tmp.indexOf("=")
-    password = QString(tmp.mid(pos + 1, tmp.size() - pos))
+    password = QString(tmp.mid(pos + 2, tmp.size() - pos - 3))
 
     if userName.isEmpty() or password.isEmpty():
       realm = QString("%1 %2 %3 %4").arg(metadata[metadata.indexOf(QRegExp("^dbname=.*"))]).arg(metadata[metadata.indexOf(QRegExp("^host=.*"))]).arg(metadata[metadata.indexOf(QRegExp("^port=.*"))]).arg(metadata[metadata.indexOf(QRegExp("^sslmode=.*"))])
