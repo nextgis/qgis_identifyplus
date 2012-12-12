@@ -80,13 +80,22 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     f = self.features[fid]
     attrMap = f.attributeMap()
 
+    derived = self.getDerivedAttrs(f)
+
     self.tblAttributes.clear()
     self.tblAttributes.setHorizontalHeaderLabels([self.tr("Name"), self.tr("Value")])
-    self.tblAttributes.setRowCount(len(attrMap))
+    self.tblAttributes.setRowCount(len(attrMap) + len(derived))
     self.tblAttributes.setColumnCount(2)
 
     row = 0
-    fields = self.layer.pendingFields()
+    for k, v in derived.iteritems():
+      item = QTableWidgetItem(k)
+      self.tblAttributes.setItem(row, 0, item )
+
+      item = QTableWidgetItem(unicode(v))
+      self.tblAttributes.setItem(row, 1, item )
+      row += 1
+
     for k, v in f.attributeMap().iteritems():
       fieldName = self.layer.attributeDisplayName(k)
 
@@ -346,6 +355,8 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
   def show(self, layer):
     self.layer = layer
 
+    self.ellipsoid = QgsProject.instance().readEntry("Measure", "/Ellipsoid", GEO_NONE)[0]
+
     if self.layer.providerType() not in ["postgres"]:
       self.togglePhotoTab(False)
     else:
@@ -382,6 +393,55 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     msgViewer.setCheckBoxVisible(False)
     msgViewer.setMessageAsHtml(message)
     msgViewer.showMessage()
+
+  def getDerivedAttrs(self, feature):
+    if self.layer is None:
+      return None
+
+    calc = QgsDistanceArea()
+
+    calc.setEllipsoidalMode(self.canvas.hasCrsTransformEnabled())
+    calc.setEllipsoid(self.ellipsoid)
+    calc.setSourceCrs(self.layer.crs().srsid())
+
+    attrs = dict()
+
+    if self.layer.geometryType() == QGis.Line:
+      dist = calc.measure(feature.geometry())
+      dist, myDisplayUnits = self.__convertUnits(calc, dist, False)
+      res = calc.textUnit(dist, 3, myDisplayUnits, False)
+      attrs[self.tr("Length")] = res
+
+      if feature.geometry().wkbType() in [QGis.WKBLineString, QGis.WKBLineString25D]:
+        pnt = self.canvas.mapRenderer().layerToMapCoordinates(self.layer, feature.geometry().asPolyline().first())
+        res = QLocale.system().toString(pnt.x(), 'g', 10)
+        attrs[self.tr("firstX")] = res
+        res = QLocale.system().toString(pnt.y(), 'g', 10)
+        attrs[self.tr("firstY")] = res
+
+        pnt = self.canvas.mapRenderer().layerToMapCoordinates(self.layer, feature.geometry().asPolyline().last())
+        res = QLocale.system().toString(pnt.x(), 'g', 10)
+        attrs[self.tr("lastX")] = res
+        res = QLocale.system().toString(pnt.y(), 'g', 10)
+        attrs[self.tr("lastY")] = res
+    elif self.layer.geometryType() == QGis.Polygon:
+      area = calc.measure(feature.geometry())
+      perimeter = calc.measurePerimeter(feature.geometry())
+      area, myDisplayUnits = self.__convertUnits(calc, area, True)
+      res = calc.textUnit(area, 3, myDisplayUnits, True)
+      attrs[self.tr("Area")] = res
+
+      perimeter, myDisplayUnits = self.__convertUnits(calc, perimeter, False)
+      res = calc.textUnit(perimeter, 3, myDisplayUnits, False)
+      attrs[self.tr("Perimeter")] = res
+    elif self.layer.geometryType() == QGis.Point and feature.geometry().wkbType() in [QGis.WKBPoint, QGis.WKBPoint25D]:
+      pnt = self.canvas.mapRenderer().layerToMapCoordinates(self.layer, feature.geometry().asPoint())
+      res = QLocale.system().toString(pnt.x(), 'g', 10)
+      attrs[self.tr("X")] = res
+      res = QLocale.system().toString(pnt.y(), 'g', 10)
+      attrs[self.tr("Y")] = res
+
+    return attrs
 
   def __setupProxy(self):
     settings = QSettings()
@@ -450,3 +510,10 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     canChangeAttributes = self.layer.dataProvider().capabilities() & QgsVectorDataProvider.ChangeAttributeValues
 
     return canChangeAttributes and not self.layer.isReadOnly()
+
+  def __convertUnits(self, calc, measure, isArea):
+    myUnits = self.canvas.mapUnits()
+    settings = QSettings("QuantumGIS", "QGIS")
+    displayUnits = QGis.fromLiteral(settings.value("/qgis/measure/displayunits", QGis.toLiteral(QGis.Meters)).toString())
+    measure, myUnits = calc.convertMeasurement(measure, myUnits, displayUnits, isArea)
+    return (measure, myUnits)
