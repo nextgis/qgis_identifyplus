@@ -33,6 +33,7 @@ from qgis.core import *
 from __init__ import version
 
 import identifyplustool
+import aboutdialog
 
 import resources_rc
 
@@ -128,4 +129,5 @@ class IdentifyPlus:
       self.actionRun.setEnabled(True)
 
   def about(self):
-    pass
+    dlg = aboutdialog.AboutDialog()
+    dlg.exec_()
