@@ -107,9 +107,9 @@ class IdentifyPlusTool(QgsMapTool):
 
       r = self.toLayerCoordinates(layer, r)
 
-      layer.select(layer.pendingAllAttributesList(), r, True, True)
+      fit = layer.getFeatures(QgsFeatureRequest(r))
       f = QgsFeature()
-      while layer.nextFeature(f):
+      while fit.nextFeature(f):
         featureList.append(QgsFeature(f))
     except QgsCsException as cse:
       print "Caught CRS exception", cse.what()

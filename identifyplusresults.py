@@ -78,7 +78,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
 
   def loadAttributes(self, fid):
     f = self.features[fid]
-    attrMap = f.attributeMap()
+    attrs = f.attributes()
 
     derived = self.getDerivedAttrs(f)
 
@@ -96,8 +96,8 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       self.tblAttributes.setItem(row, 1, item )
       row += 1
 
-    for k, v in f.attributeMap().iteritems():
-      fieldName = self.layer.attributeDisplayName(k)
+    for i in xrange(len(attrs)):
+      fieldName = self.layer.attributeDisplayName(i)
 
       if fieldName in DISABLED_FIELDS:
         self.tblAttributes.removeRow(self.tblAttributes.rowCount() - 1)
@@ -106,7 +106,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       item = QTableWidgetItem(fieldName)
       self.tblAttributes.setItem(row, 0, item )
 
-      item = QTableWidgetItem(v.toString())
+      item = QTableWidgetItem(attrs[i].toString())
       self.tblAttributes.setItem(row, 1, item )
       row += 1
 
@@ -182,7 +182,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     try:
       res = requests.get(url, proxies=self.proxy)
     except:
-      print "requsts exception", sys.exc_info()
+      print "requests exception", sys.exc_info()
 
     if res.content is None or res.content == "":
       self.lblImage.setText(self.tr("No photo"))
@@ -235,7 +235,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       try:
         res = requests.post(url, proxies=self.proxy, files=files, headers=self.header)
       except:
-        print "requsts exception", sys.exc_info()
+        print "requests exception", sys.exc_info()
 
       if res.status_code != 200:
         self.showMessage(res.text)
@@ -271,15 +271,11 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     try:
       res = requests.get(url, proxies=self.proxy)
     except:
-      print "requsts exception", sys.exc_info()
+      print "requests exception", sys.exc_info()
 
     if res.content is None or res.content == "":
       msg = self.tr("<h1>Error: image not found</h1><p>Photo with ID %1 not found using URL %2</p>").arg(self.photos[self.currentPhoto]["id"]).arg(self.photos[self.currentPhoto]["url"])
       self.showMessage(msg)
-      #~ QMessageBox.information(self,
-                              #~ self.tr("No image"),
-                              #~ self.tr("Corresponding image not found")
-                             #~ )
       return
 
     img = QPixmap()
@@ -314,7 +310,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       try:
         res = requests.get(url, proxies=self.proxy)
       except:
-        print "requsts exception", sys.exc_info()
+        print "requests exception", sys.exc_info()
 
       if res.content is None or res.content == "":
         print "Corresponding image not found"
@@ -337,7 +333,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     try:
       res = requests.delete(url, proxies=self.proxy, headers=self.header)
     except:
-      print "requsts exception", sys.exc_info()
+      print "requests exception", sys.exc_info()
 
     if res.status_code != 204:
       self.showMessage(res.text)
