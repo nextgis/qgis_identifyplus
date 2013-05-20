@@ -84,7 +84,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
 
     self.tblAttributes.clear()
     self.tblAttributes.setHorizontalHeaderLabels([self.tr("Name"), self.tr("Value")])
-    self.tblAttributes.setRowCount(len(attrMap) + len(derived))
+    self.tblAttributes.setRowCount(len(attrs) + len(derived))
     self.tblAttributes.setColumnCount(2)
 
     row = 0
