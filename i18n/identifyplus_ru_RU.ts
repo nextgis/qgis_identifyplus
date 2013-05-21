@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<!DOCTYPE TS><TS version="2.0" language="ru_RU" sourcelanguage="">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -43,7 +42,7 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="aboutdialogbase.ui" line="103"/>
+        <location filename="aboutdialogbase.ui" line="67"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -151,7 +150,7 @@ Plugin will not be enabled.</source>
         <translation>Объект %1 из %2</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="331"/>
+        <location filename="identifyplusresults.py" line="327"/>
         <source>No photos found</source>
         <translation>Фотографии не найдены</translation>
     </message>
@@ -226,52 +225,52 @@ Plugin will not be enabled.</source>
         <translation>&lt;h1&gt;Ошибка: изображение не найдено&lt;/h1&gt;&lt;p&gt;Фотография с ID %1 на найдена по адресу %2&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="299"/>
+        <location filename="identifyplusresults.py" line="295"/>
         <source>Select directory</source>
         <translation>Выбрать каталог</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="413"/>
+        <location filename="identifyplusresults.py" line="409"/>
         <source>Length</source>
         <translation>Длина</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="418"/>
+        <location filename="identifyplusresults.py" line="414"/>
         <source>firstX</source>
         <translation>Начальный X</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="420"/>
+        <location filename="identifyplusresults.py" line="416"/>
         <source>firstY</source>
         <translation>Начальный Y</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="424"/>
+        <location filename="identifyplusresults.py" line="420"/>
         <source>lastX</source>
         <translation>Конечный X</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="426"/>
+        <location filename="identifyplusresults.py" line="422"/>
         <source>lastY</source>
         <translation>Конечный Y</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="432"/>
+        <location filename="identifyplusresults.py" line="428"/>
         <source>Area</source>
         <translation>Площадь</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="436"/>
+        <location filename="identifyplusresults.py" line="432"/>
         <source>Perimeter</source>
         <translation>Периметр</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="440"/>
+        <location filename="identifyplusresults.py" line="436"/>
         <source>X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="442"/>
+        <location filename="identifyplusresults.py" line="438"/>
         <source>Y</source>
         <translation></translation>
     </message>
