@@ -25,30 +25,6 @@
 #
 #******************************************************************************
 
-def name():
-  return "IdentifyPlus"
-
-def description():
-  return "Extended identify tool"
-
-def category():
-  return "Vector"
-
-def version():
-  return "1.1.0"
-
-def qgisMinimumVersion():
-  return "1.9.0"
-
-def author():
-  return "NextGIS"
-
-def email():
-  return "info@nextgis.org"
-
-def icon():
-  return "icons/identifyplus.png"
-
 def classFactory(iface):
   from identifyplus import IdentifyPlus
   return IdentifyPlus(iface)
