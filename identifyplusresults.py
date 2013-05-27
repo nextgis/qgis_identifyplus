@@ -78,7 +78,10 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
 
   def loadAttributes(self, fid):
     f = self.features[fid]
-    attrs = f.attributes()
+    if hasattr(f, "attributes"):
+      attrs = f.attributes()
+    else:
+      attrs = f.attributeMap()
 
     derived = self.getDerivedAttrs(f)
 
@@ -96,19 +99,34 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       self.tblAttributes.setItem(row, 1, item )
       row += 1
 
-    for i in xrange(len(attrs)):
-      fieldName = self.layer.attributeDisplayName(i)
+    if hasattr(f, "attributes"):
+      for i in xrange(len(attrs)):
+        fieldName = self.layer.attributeDisplayName(i)
 
-      if fieldName in DISABLED_FIELDS:
-        self.tblAttributes.removeRow(self.tblAttributes.rowCount() - 1)
-        continue
+        if fieldName in DISABLED_FIELDS:
+          self.tblAttributes.removeRow(self.tblAttributes.rowCount() - 1)
+          continue
 
-      item = QTableWidgetItem(fieldName)
-      self.tblAttributes.setItem(row, 0, item )
+        item = QTableWidgetItem(fieldName)
+        self.tblAttributes.setItem(row, 0, item )
 
-      item = QTableWidgetItem(attrs[i].toString())
-      self.tblAttributes.setItem(row, 1, item )
-      row += 1
+        item = QTableWidgetItem(attrs[i].toString())
+        self.tblAttributes.setItem(row, 1, item )
+        row += 1
+    else:
+      for k, v in attrs.iteritems():
+        fieldName = self.layer.attributeDisplayName(k)
+
+        if fieldName in DISABLED_FIELDS:
+          self.tblAttributes.removeRow(self.tblAttributes.rowCount() - 1)
+          continue
+
+        item = QTableWidgetItem(fieldName)
+        self.tblAttributes.setItem(row, 0, item )
+
+        item = QTableWidgetItem(v.toString())
+        self.tblAttributes.setItem(row, 1, item )
+        row += 1
 
     self.tblAttributes.resizeRowsToContents()
     self.tblAttributes.resizeColumnsToContents()
