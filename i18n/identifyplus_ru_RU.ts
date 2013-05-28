@@ -100,12 +100,12 @@ Plugin will not be enabled.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="86"/>
+        <location filename="identifyplusresults.py" line="89"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="86"/>
+        <location filename="identifyplusresults.py" line="89"/>
         <source>Value</source>
         <translation>Значение</translation>
     </message>
@@ -140,42 +140,42 @@ Plugin will not be enabled.</source>
         <translation>Изображения</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="188"/>
+        <location filename="identifyplusresults.py" line="206"/>
         <source>No photo</source>
         <translation>Фотография отсутствует</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="117"/>
+        <location filename="identifyplusresults.py" line="135"/>
         <source>Feature %1 from %2</source>
         <translation>Объект %1 из %2</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="327"/>
+        <location filename="identifyplusresults.py" line="345"/>
         <source>No photos found</source>
         <translation>Фотографии не найдены</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="177"/>
+        <location filename="identifyplusresults.py" line="195"/>
         <source>Photo %1 from %2</source>
         <translation>Фотография %1 из %2</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="222"/>
+        <location filename="identifyplusresults.py" line="240"/>
         <source>Open image</source>
         <translation>Открыть изображение</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="222"/>
+        <location filename="identifyplusresults.py" line="240"/>
         <source>Image files (%s) </source>
         <translation>Графические файлы (%s) </translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="256"/>
+        <location filename="identifyplusresults.py" line="274"/>
         <source>Save image</source>
         <translation>Сохранить изображение</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="256"/>
+        <location filename="identifyplusresults.py" line="274"/>
         <source>PNG files (*.png)</source>
         <translation>Файлы PNG (*.png)</translation>
     </message>
@@ -220,57 +220,57 @@ Plugin will not be enabled.</source>
         <translation>Удалить текущее изображение из базы данных</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="277"/>
+        <location filename="identifyplusresults.py" line="295"/>
         <source>&lt;h1&gt;Error: image not found&lt;/h1&gt;&lt;p&gt;Photo with ID %1 not found using URL %2&lt;/p&gt;</source>
         <translation>&lt;h1&gt;Ошибка: изображение не найдено&lt;/h1&gt;&lt;p&gt;Фотография с ID %1 на найдена по адресу %2&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="295"/>
+        <location filename="identifyplusresults.py" line="313"/>
         <source>Select directory</source>
         <translation>Выбрать каталог</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="409"/>
+        <location filename="identifyplusresults.py" line="427"/>
         <source>Length</source>
         <translation>Длина</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="414"/>
+        <location filename="identifyplusresults.py" line="432"/>
         <source>firstX</source>
         <translation>Начальный X</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="416"/>
+        <location filename="identifyplusresults.py" line="434"/>
         <source>firstY</source>
         <translation>Начальный Y</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="420"/>
+        <location filename="identifyplusresults.py" line="438"/>
         <source>lastX</source>
         <translation>Конечный X</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="422"/>
+        <location filename="identifyplusresults.py" line="440"/>
         <source>lastY</source>
         <translation>Конечный Y</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="428"/>
+        <location filename="identifyplusresults.py" line="446"/>
         <source>Area</source>
         <translation>Площадь</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="432"/>
+        <location filename="identifyplusresults.py" line="450"/>
         <source>Perimeter</source>
         <translation>Периметр</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="436"/>
+        <location filename="identifyplusresults.py" line="454"/>
         <source>X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="438"/>
+        <location filename="identifyplusresults.py" line="456"/>
         <source>Y</source>
         <translation></translation>
     </message>
