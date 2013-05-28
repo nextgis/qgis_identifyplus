@@ -30,8 +30,6 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 
-from __init__ import version
-
 import identifyplustool
 import aboutdialog
 
