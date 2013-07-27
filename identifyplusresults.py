@@ -6,7 +6,7 @@
 # ---------------------------------------------------------
 # Extended identify tool. Supports displaying and modifying photos
 #
-# Copyright (C) 2012 NextGIS (info@nextgis.org)
+# Copyright (C) 2012-2013 NextGIS (info@nextgis.org)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -78,10 +78,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
 
   def loadAttributes(self, fid):
     f = self.features[fid]
-    if hasattr(f, "attributes"):
-      attrs = f.attributes()
-    else:
-      attrs = f.attributeMap()
+    attrs = f.attributes()
 
     derived = self.getDerivedAttrs(f)
 
@@ -99,40 +96,25 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       self.tblAttributes.setItem(row, 1, item )
       row += 1
 
-    if hasattr(f, "attributes"):
-      for i in xrange(len(attrs)):
-        fieldName = self.layer.attributeDisplayName(i)
+    for i in xrange(len(attrs)):
+      fieldName = self.layer.attributeDisplayName(i)
 
-        if fieldName in DISABLED_FIELDS:
-          self.tblAttributes.removeRow(self.tblAttributes.rowCount() - 1)
-          continue
+      if fieldName in DISABLED_FIELDS:
+        self.tblAttributes.removeRow(self.tblAttributes.rowCount() - 1)
+        continue
 
-        item = QTableWidgetItem(fieldName)
-        self.tblAttributes.setItem(row, 0, item )
+      item = QTableWidgetItem(fieldName)
+      self.tblAttributes.setItem(row, 0, item )
 
-        item = QTableWidgetItem(attrs[i].toString())
-        self.tblAttributes.setItem(row, 1, item )
-        row += 1
-    else:
-      for k, v in attrs.iteritems():
-        fieldName = self.layer.attributeDisplayName(k)
-
-        if fieldName in DISABLED_FIELDS:
-          self.tblAttributes.removeRow(self.tblAttributes.rowCount() - 1)
-          continue
-
-        item = QTableWidgetItem(fieldName)
-        self.tblAttributes.setItem(row, 0, item )
-
-        item = QTableWidgetItem(v.toString())
-        self.tblAttributes.setItem(row, 1, item )
-        row += 1
+      item = QTableWidgetItem(attrs[i].toString())
+      self.tblAttributes.setItem(row, 1, item )
+      row += 1
 
     self.tblAttributes.resizeRowsToContents()
     self.tblAttributes.resizeColumnsToContents()
     self.tblAttributes.horizontalHeader().setResizeMode(1, QHeaderView.Stretch)
 
-    self.lblFeatures.setText(self.tr("Feature %1 from %2").arg(fid + 1).arg(len(self.features)))
+    self.lblFeatures.setText(self.tr("Feature %s from %s") % (fid + 1, len(self.features)))
 
     # load photo
     if self.requestPhotos:
@@ -192,7 +174,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       self.lblImage.setText(self.tr("No photo"))
       return
 
-    self.lblPhotos.setText(self.tr("Photo %1 from %2").arg(pid + 1).arg(len(self.photos)))
+    self.lblPhotos.setText(self.tr("Photo %s from %s") % (pid + 1, len(self.photos)))
 
     photoURL = self.photos[pid]["url"]
     url = self.host + photoURL + "?type=preview"
@@ -234,16 +216,16 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
 
   def loadPhoto(self):
     settings = QSettings("Krasnogorsk", "identifyplus")
-    lastDir = settings.value( "/lastPhotoDir", "." ).toString()
+    lastDir = settings.value( "/lastPhotoDir", "." )
 
-    formats = [ "*.%s" % unicode( format ).lower() for format in QImageReader.supportedImageFormats() ]
+    formats = ["*.%s" % unicode( format ).lower() for format in QImageReader.supportedImageFormats()]
     fName = QFileDialog.getOpenFileName(self,
                                         self.tr("Open image"),
                                         lastDir,
                                         self.tr("Image files (%s)" % " ".join(formats))
                                        )
 
-    if not fName.isEmpty():
+    if not fName == "":
       featureId = self.features[self.currentFeature].id()
       layerName = self.__getLayerName()
 
@@ -259,7 +241,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
         self.showMessage(res.text)
         return
 
-      settings.setValue("/lastPhotoDir", QVariant(QFileInfo(fName).absolutePath()))
+      settings.setValue("/lastPhotoDir", QFileInfo(fName).absolutePath())
 
     self.getPhotos(self.currentFeature)
 
@@ -268,7 +250,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       return
 
     settings = QSettings("Krasnogorsk", "identifyplus")
-    lastDir = settings.value( "/lastPhotoDir", "." ).toString()
+    lastDir = settings.value( "/lastPhotoDir", "." )
 
 
     fName = QFileDialog.getSaveFileName(self,
@@ -276,10 +258,10 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
                                         lastDir,
                                         self.tr("PNG files (*.png)")
                                        )
-    if fName.isEmpty():
+    if fName == "":
       return
 
-    if not fName.toLower().endsWith(".png"):
+    if not fName.lower().endswith(".png"):
       fName += ".png"
 
     # get fullsize image
@@ -292,7 +274,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       print "requests exception", sys.exc_info()
 
     if res.content is None or res.content == "":
-      msg = self.tr("<h1>Error: image not found</h1><p>Photo with ID %1 not found using URL %2</p>").arg(self.photos[self.currentPhoto]["id"]).arg(self.photos[self.currentPhoto]["url"])
+      msg = self.tr("<h1>Error: image not found</h1><p>Photo with ID %s not found using URL %s</p>") % (self.photos[self.currentPhoto]["id"], self.photos[self.currentPhoto]["url"])
       self.showMessage(msg)
       return
 
@@ -300,14 +282,14 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     img.loadFromData(QByteArray(res.content))
     img.save(fName)
 
-    settings.setValue("/lastPhotoDir", QVariant(QFileInfo(fName).absolutePath()))
+    settings.setValue("/lastPhotoDir", QFileInfo(fName).absolutePath())
 
   def saveAllPhotos(self):
     if self.photos is None or len(self.photos) == 0:
       return
 
     settings = QSettings("Krasnogorsk", "identifyplus")
-    lastDir = settings.value( "/lastPhotoDir", "." ).toString()
+    lastDir = settings.value( "/lastPhotoDir", "." )
 
 
     dirName = QFileDialog.getExistingDirectory(self,
@@ -315,7 +297,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
                                                lastDir,
                                                QFileDialog.ShowDirsOnly
                                               )
-    if dirName.isEmpty():
+    if dirName == "":
       return
 
     # iterate over photos
@@ -335,10 +317,10 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
         continue
 
       img.loadFromData(QByteArray(res.content))
-      img.save(QString("%1/%2.png").arg(dirName).arg(i))
+      img.save("%s/%s.png" % (dirName, i))
       i += 1
 
-    settings.setValue("/lastPhotoDir", QVariant(QFileInfo(dirName).absolutePath()))
+    settings.setValue("/lastPhotoDir", QFileInfo(dirName).absolutePath())
 
   def deletePhoto(self):
     if self.photos is None or len(self.photos) == 0:
@@ -427,13 +409,13 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       attrs[self.tr("Length")] = res
 
       if feature.geometry().wkbType() in [QGis.WKBLineString, QGis.WKBLineString25D]:
-        pnt = self.canvas.mapRenderer().layerToMapCoordinates(self.layer, feature.geometry().asPolyline().first())
+        pnt = self.canvas.mapRenderer().layerToMapCoordinates(self.layer, feature.geometry().asPolyline()[0])
         res = QLocale.system().toString(pnt.x(), 'g', 10)
         attrs[self.tr("firstX")] = res
         res = QLocale.system().toString(pnt.y(), 'g', 10)
         attrs[self.tr("firstY")] = res
 
-        pnt = self.canvas.mapRenderer().layerToMapCoordinates(self.layer, feature.geometry().asPolyline().last())
+        pnt = self.canvas.mapRenderer().layerToMapCoordinates(self.layer, feature.geometry().asPolyline()[len(feature.geometry().asPolyline())])
         res = QLocale.system().toString(pnt.x(), 'g', 10)
         attrs[self.tr("lastX")] = res
         res = QLocale.system().toString(pnt.y(), 'g', 10)
@@ -459,12 +441,12 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
 
   def __setupProxy(self):
     settings = QSettings()
-    if settings.value("/proxyEnabled", False).toBool():
-      proxyType = settings.value("/proxyType", "Default proxy").toString()
-      proxyHost = settings.value("/proxyHost", "").toString()
-      proxyPost = settings.value("/proxyPort", 0).toUInt()[0]
-      proxyUser = settings.value("/proxyUser", "").toString()
-      proxyPass = settings.value("/proxyPassword", "").toString()
+    if bool(settings.value("/proxyEnabled", False)):
+      proxyType = settings.value("/proxyType", "Default proxy")
+      proxyHost = settings.value("/proxyHost", "")
+      proxyPost = int(settings.value("/proxyPort", 0))
+      proxyUser = settings.value("/proxyUser", "")
+      proxyPass = settings.value("/proxyPassword", "")
 
       # setup proxy
       connectionString = "http://%s:%s@%s:%s" % (proxyUser, proxyPass, proxyHost, proxyPort)
@@ -475,41 +457,61 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       return ""
 
     metadata = self.layer.source().split(" ")
-    pos = metadata.indexOf(QRegExp("^table=.*"))
+    regex = re.compile("^table=.*")
+    pos = metadata.index([m.group(0) for l in metadata for m in [regex.search(l)] if m][0])
     tmp = metadata[pos]
     pos = tmp.indexOf(".")
-    return tmp.mid(pos + 2, tmp.size() - pos - 3)
+    return tmp[pos + 2:-1)
 
   def __getDBHost(self):
     if self.layer is None:
       return ""
 
     metadata = self.layer.source().split(" ")
-    pos = metadata.indexOf(QRegExp("^host=.*"))
+    regex = re.compile("^host=.*")
+    pos = metadata.index([m.group(0) for l in metadata for m in [regex.search(l)] if m][0])
     tmp = metadata[pos]
-    pos = tmp.indexOf("=")
-    return tmp.mid(pos + 1, tmp.size() - pos)
+    pos = tmp.find("=")
+    return tmp[pos + 1:]
 
   def __getCredentials(self):
     if self.layer is None:
       return (None, None)
 
     metadata = self.layer.source().split(" ")
-    pos = metadata.indexOf(QRegExp("^user=.*"))
+    regex = re.compile("^user=.*")
+    pos = metadata.index([m.group(0) for l in metadata for m in [regex.search(l)] if m][0])
     tmp = metadata[pos]
     pos = tmp.indexOf("=")
-    userName = QString(tmp.mid(pos + 2, tmp.size() - pos - 3))
+    userName = tmp[pos + 2:-1]
 
-    pos = metadata.indexOf(QRegExp("^password=.*"))
+    regex = re.compile("^password=.*")
+    pos = metadata.index([m.group(0) for l in metadata for m in [regex.search(l)] if m][0])
     tmp = metadata[pos]
     pos = tmp.indexOf("=")
-    password = QString(tmp.mid(pos + 2, tmp.size() - pos - 3))
+    password = tmp[pos + 2:-1]
 
-    if userName.isEmpty() or password.isEmpty():
-      realm = QString("%1 %2 %3 %4").arg(metadata[metadata.indexOf(QRegExp("^dbname=.*"))]).arg(metadata[metadata.indexOf(QRegExp("^host=.*"))]).arg(metadata[metadata.indexOf(QRegExp("^port=.*"))]).arg(metadata[metadata.indexOf(QRegExp("^sslmode=.*"))])
+    if userName == "" or password == "":
+      regex = re.compile("^dbname=.*")
+      pos = metadata.index([m.group(0) for l in metadata for m in [regex.search(l)] if m][0])
+      dbname = metadata[pos]
+
+      regex = re.compile("^host=.*")
+      pos = metadata.index([m.group(0) for l in metadata for m in [regex.search(l)] if m][0])
+      host = metadata[pos]
+
+      regex = re.compile("^port=.*")
+      pos = metadata.index([m.group(0) for l in metadata for m in [regex.search(l)] if m][0])
+      port = metadata[pos]
+
+      regex = re.compile("^sslmode=.*")
+      pos = metadata.index([m.group(0) for l in metadata for m in [regex.search(l)] if m][0])
+      ssl = metadata[pos]
+
+      realm = "%s %s %s %s" % (dbname, host, port, sslmode)
 
       res, userName, password = QgsCredentials.instance().get(realm, userName, password)
-      if userName.isEmpty() or password.isEmpty():
+      if userName == "" or password == "":
         print "Can't get user credentials"
         return (None, None)
 
@@ -527,7 +529,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
 
   def __convertUnits(self, calc, measure, isArea):
     myUnits = self.canvas.mapUnits()
-    settings = QSettings("QuantumGIS", "QGIS")
-    displayUnits = QGis.fromLiteral(settings.value("/qgis/measure/displayunits", QGis.toLiteral(QGis.Meters)).toString())
+    settings = QSettings("QGIS", "QGIS")
+    displayUnits = QGis.fromLiteral(settings.value("/qgis/measure/displayunits", QGis.toLiteral(QGis.Meters)))
     measure, myUnits = calc.convertMeasurement(measure, myUnits, displayUnits, isArea)
     return (measure, myUnits)

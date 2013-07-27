@@ -6,7 +6,7 @@
 # ---------------------------------------------------------
 # Extended identify tool. Supports displaying and modifying photos
 #
-# Copyright (C) 2012 NextGIS (info@nextgis.org)
+# Copyright (C) 2012-2013 NextGIS (info@nextgis.org)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -39,20 +39,17 @@ class IdentifyPlus:
   def __init__(self, iface):
     self.iface = iface
 
-    try:
-      self.QgisVersion = unicode(QGis.QGIS_VERSION_INT)
-    except:
-      self.QgisVersion = unicode(QGis.qgisVersion)[ 0 ]
+    self.qgsVersion = unicode(QGis.QGIS_VERSION_INT)
 
     # For i18n support
     userPluginPath = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/identifyplus"
     systemPluginPath = QgsApplication.prefixPath() + "/python/plugins/identifyplus"
 
-    overrideLocale = QSettings().value("locale/overrideFlag", QVariant(False)).toBool()
+    overrideLocale = bool(QSettings().value("locale/overrideFlag", False))
     if not overrideLocale:
       localeFullName = QLocale.system().name()
     else:
-      localeFullName = QSettings().value("locale/userLocale", QVariant("")).toString()
+      localeFullName = QSettings().value("locale/userLocale", "")
 
     if QFileInfo(userPluginPath).exists():
       translationPath = userPluginPath + "/i18n/identifyplus_" + localeFullName + ".qm"
@@ -66,12 +63,12 @@ class IdentifyPlus:
       QCoreApplication.installTranslator(self.translator)
 
   def initGui(self):
-    if int(self.QgisVersion) < 10900:
-      qgisVersion = str(self.QgisVersion[ 0 ]) + "." + str(self.QgisVersion[ 2 ]) + "." + str(self.QgisVersion[ 3 ])
+    if int(self.qgsVersion) < 10900:
+      qgisVersion = self.qgsVersion[0] + "." + self.qgsVersion[2] + "." + self.qgsVersion[3]
       QMessageBox.warning(self.iface.mainWindow(),
                            QCoreApplication.translate("IdentifyPlus", "Error"),
-                           QCoreApplication.translate("IdentifyPlus", "Quantum GIS %1 detected.\n").arg(qgisVersion) +
-                           QCoreApplication.translate("IdentifyPlus", "This version of IdentifyPlus requires at least QGIS version 1.9.0\nPlugin will not be enabled."))
+                           QCoreApplication.translate("IdentifyPlus", "QGIS %s detected.\n") % (qgisVersion) +
+                           QCoreApplication.translate("IdentifyPlus", "This version of IdentifyPlus requires at least QGIS version 2.0.\nPlugin will not be enabled."))
       return None
 
     self.actionRun = QAction(QCoreApplication.translate("IdentifyPlus", "IdentifyPlus"), self.iface.mainWindow())

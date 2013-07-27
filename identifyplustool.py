@@ -6,7 +6,7 @@
 # ---------------------------------------------------------
 # Extended identify tool. Supports displaying and modifying photos
 #
-# Copyright (C) 2012 NextGIS (info@nextgis.org)
+# Copyright (C) 2012-2013 NextGIS (info@nextgis.org)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -88,8 +88,8 @@ class IdentifyPlusTool(QgsMapTool):
 
     # load identify radius from settings
     settings = QSettings()
-    identifyValue = settings.value("/Map/identifyRadius", QGis.DEFAULT_IDENTIFY_RADIUS).toDouble()[0]
-    ellipsoid = settings.value("/qgis/measure/ellipsoid", GEO_NONE).toString()
+    identifyValue = float(settings.value("/Map/identifyRadius", QGis.DEFAULT_IDENTIFY_RADIUS))
+    ellipsoid = settings.value("/qgis/measure/ellipsoid", GEO_NONE)
 
     if identifyValue <= 0.0:
       identifyValue = QGis.DEFAULT_IDENTIFY_RADIUS
@@ -107,15 +107,8 @@ class IdentifyPlusTool(QgsMapTool):
 
       r = self.toLayerCoordinates(layer, r)
 
-      f = QgsFeature()
-      if hasattr(layer, "getFeatures"):
-        fit = layer.getFeatures(QgsFeatureRequest(r))
-        while fit.nextFeature(f):
-          featureList.append(QgsFeature(f))
-      else:
-        layer.select(layer.pendingAllAttributesList(), r, True, True)
-        while layer.nextFeature(f):
-          featureList.append(QgsFeature(f))
+      for f in layer.getFeatures():
+        featureList.append(QgsFeature(f))
     except QgsCsException as cse:
       print "Caught CRS exception", cse.what()
 

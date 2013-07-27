@@ -6,7 +6,7 @@
 # ---------------------------------------------------------
 # Extended identify tool. Supports displaying and modifying photos
 #
-# Copyright (C) 2012 NextGIS (info@nextgis.org)
+# Copyright (C) 2012-2013 NextGIS (info@nextgis.org)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -47,7 +47,7 @@ class AboutDialog(QDialog, Ui_Dialog):
     version = cfg.get("general", "version")
 
     self.lblLogo.setPixmap(QPixmap(":/icons/identifyplus.png"))
-    self.lblVersion.setText(self.tr("Version: %1").arg(version))
+    self.lblVersion.setText(self.tr("Version: %s") % (version))
     doc = QTextDocument()
     doc.setHtml(self.getAboutText())
     self.textBrowser.setDocument(doc)
@@ -65,8 +65,8 @@ class AboutDialog(QDialog, Ui_Dialog):
     #~ else:
       #~ localeFullName = QSettings().value("locale/userLocale", QVariant("")).toString()
 #~
-    #~ localeShortName = localeFullName[ 0:2 ]
-    #~ if localeShortName in [ "ru", "uk" ]:
+    #~ localeShortName = localeFullName[0:2]
+    #~ if localeShortName in ["ru", "uk"]:
       #~ QDesktopServices.openUrl(QUrl("http://hub.qgis.org/projects/geotagphotos/wiki"))
     #~ else:
       #~ QDesktopServices.openUrl(QUrl("http://hub.qgis.org/projects/geotagphotos/wiki"))
