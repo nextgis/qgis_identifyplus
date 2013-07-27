@@ -7,4 +7,4 @@ SOURCES = __init__.py \
 FORMS = identifyplusresultsbase.ui \
         aboutdialogbase.ui
 
-TRANSLATIONS = i18n/identifyplus_ru_RU.ts
+TRANSLATIONS = i18n/identifyplus_ru.ts
