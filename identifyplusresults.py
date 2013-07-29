@@ -462,7 +462,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     pos = metadata.index([m.group(0) for l in metadata for m in [regex.search(l)] if m][0])
     tmp = metadata[pos]
     pos = tmp.indexOf(".")
-    return tmp[pos + 2:-1)
+    return tmp[pos + 2:-1]
 
   def __getDBHost(self):
     if self.layer is None:
