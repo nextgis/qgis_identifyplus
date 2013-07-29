@@ -26,6 +26,7 @@
 #******************************************************************************
 
 import sys
+import re
 import requests
 
 from PyQt4.QtCore import *
