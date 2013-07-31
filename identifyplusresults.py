@@ -107,7 +107,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       item = QTableWidgetItem(fieldName)
       self.tblAttributes.setItem(row, 0, item )
 
-      item = QTableWidgetItem(attrs[i].toString())
+      item = QTableWidgetItem(attrs[i])
       self.tblAttributes.setItem(row, 1, item )
       row += 1
 
@@ -462,7 +462,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     regex = re.compile("^table=.*")
     pos = metadata.index([m.group(0) for l in metadata for m in [regex.search(l)] if m][0])
     tmp = metadata[pos]
-    pos = tmp.indexOf(".")
+    pos = tmp.find(".")
     return tmp[pos + 2:-1]
 
   def __getDBHost(self):
@@ -484,13 +484,13 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     regex = re.compile("^user=.*")
     pos = metadata.index([m.group(0) for l in metadata for m in [regex.search(l)] if m][0])
     tmp = metadata[pos]
-    pos = tmp.indexOf("=")
+    pos = tmp.find("=")
     userName = tmp[pos + 2:-1]
 
     regex = re.compile("^password=.*")
     pos = metadata.index([m.group(0) for l in metadata for m in [regex.search(l)] if m][0])
     tmp = metadata[pos]
-    pos = tmp.indexOf("=")
+    pos = tmp.find("=")
     password = tmp[pos + 2:-1]
 
     if userName == "" or password == "":
