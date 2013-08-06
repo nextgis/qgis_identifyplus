@@ -155,7 +155,8 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     try:
       res = requests.get(url, proxies=self.proxy)
     except:
-      print "requsts exception", sys.exc_info()
+      print "requests exception", sys.exc_info()
+      return
 
     if res.status_code != 200:
       self.showMessage(res.text)
