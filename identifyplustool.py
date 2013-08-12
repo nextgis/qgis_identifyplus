@@ -107,7 +107,10 @@ class IdentifyPlusTool(QgsMapTool):
 
       r = self.toLayerCoordinates(layer, r)
 
-      for f in layer.getFeatures():
+      rq = QgsFeatureRequest()
+      rq.setFilterRect(r)
+      rq.setFlags(QgsFeatureRequest.ExactIntersect)
+      for f in layer.getFeatures(rq):
         featureList.append(QgsFeature(f))
     except QgsCsException as cse:
       print "Caught CRS exception", cse.what()
