@@ -107,7 +107,11 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       item = QTableWidgetItem(fieldName)
       self.tblAttributes.setItem(row, 0, item )
 
-      item = QTableWidgetItem(attrs[i])
+      if not isinstance(attrs[i], QPyNullVariant):
+        item = QTableWidgetItem(attrs[i])
+      else:
+        item = QTableWidgetItem("")
+      
       self.tblAttributes.setItem(row, 1, item )
       row += 1
 
