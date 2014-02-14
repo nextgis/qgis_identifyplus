@@ -40,9 +40,7 @@ class IdentifyPlusTool(QgsMapTool):
     QgsMapTool.__init__(self, canvas)
 
     self.canvas = canvas
-
     self.cursor = QCursor(QPixmap(":/icons/cursor.png"), 1, 1)
-
     self.results = identifyplusresults.IdentifyPlusResults(self.canvas, self.canvas.window())
 
   def activate(self):
@@ -67,38 +65,50 @@ class IdentifyPlusTool(QgsMapTool):
                           self.tr("This tool works only for vector layers. Please select another layer in legend and try again")
                          )
       return
+  
+    if layer.providerType() != u"postgres":
+      QMessageBox.warning(self.canvas,
+                          self.tr("Wrong layer provider"),
+                          self.tr("This tool works only for postgres layers. Please select another layer in legend and try again")
+                         )
+      return
 
     QApplication.setOverrideCursor(Qt.WaitCursor)
     res = self.identifyLayer(layer, event.x(), event.y())
     QApplication.restoreOverrideCursor()
 
     if res:
-      print "Identify OK"
       self.results.show(layer)
     else:
       self.results.hide()
+      QMessageBox.information(self.canvas,
+                              self.tr("There is no appropriate objects"),
+                              self.tr("To identify features, you must choose any object in an active layer"))
 
   def identifyLayer(self, layer, x, y):
+    
+    #
+    # Странно все- равно не видно, чего пользователь будет тыкать?
+    #
     if layer.hasScaleBasedVisibility() and (layer.minimumScale() > self.canvas.mapRenderer().scale() or layer.maximumScale() <= self.canvas.mapRenderer().scale()):
       print "Out of scale"
       return False
 
     point = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
-    print "clicked coordinate", point.toString()
 
     # load identify radius from settings
     settings = QSettings()
-    identifyValue = float(settings.value("/Map/identifyRadius", QGis.DEFAULT_IDENTIFY_RADIUS))
-    ellipsoid = settings.value("/qgis/measure/ellipsoid", GEO_NONE)
+    identifyValue = float(settings.value("/Map/identifyRadius", QGis.DEFAULT_IDENTIFY_RADIUS)) # в чем измеряется?
+    ellipsoid = settings.value("/qgis/measure/ellipsoid", GEO_NONE) # неиспользуемая переменная
 
-    if identifyValue <= 0.0:
+    if identifyValue <= 0.0: # а нужно ли если есть выше settings.value("/Map/identifyRadius", QGis.DEFAULT_IDENTIFY_RADIUS)
       identifyValue = QGis.DEFAULT_IDENTIFY_RADIUS
 
     featureCount = 0
     featureList = []
 
     try:
-      searchRadius = self.canvas.extent().width() * (identifyValue / 100.0)
+      searchRadius = self.canvas.extent().width() * (identifyValue / 100.0) # почему деление на 100?
       r = QgsRectangle()
       r.setXMinimum(point.x() - searchRadius)
       r.setXMaximum(point.x() + searchRadius)
@@ -117,14 +127,14 @@ class IdentifyPlusTool(QgsMapTool):
 
     myFilter = False
 
-    renderer = layer.rendererV2()
+    renderer = layer.rendererV2() # неизвестность
 
     if renderer is not None and (renderer.capabilities() | QgsFeatureRendererV2.ScaleDependent):
       renderer.startRender( self.canvas.mapRenderer().rendererContext(), layer)
       myFilter = renderer.capabilities() and QgsFeatureRendererV2.Filter
 
     for f in featureList:
-      if myFilter and not renderer.willRenderFeature(f):
+      if myFilter and not renderer.willRenderFeature(f): # какие-то фичи отсеивают
         continue
 
       featureCount += 1
@@ -133,7 +143,5 @@ class IdentifyPlusTool(QgsMapTool):
 
     if renderer is not None and (renderer.capabilities() | QgsFeatureRendererV2.ScaleDependent):
       renderer.stopRender(self.canvas.mapRenderer().rendererContext())
-
-    print "Feature count on identify:", featureCount
 
     return featureCount > 0

@@ -28,18 +28,138 @@
 import sys
 import re
 import requests
+import abc
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
+from PyQt4 import QtCore, QtGui, Qt, QtDeclarative
 
 from qgis.core import *
 from qgis.gui import *
 
 from ui_identifyplusresultsbase import Ui_IdentifyPlusResults
+from image_gallery import ImageGallery
+
 
 API_PORT = ":8888"
 
 DISABLED_FIELDS = ["FID", "ogc_fid", "gid", "osm_id"]
+
+class KrasnogorskImageAPIError(ImageGallery.ImageGalleryError):
+  def __init__(self, msg):
+    self.msg = msg
+
+class KrasnogorskImageAPI(object):
+  def __init__(self, host, proxy = None, header = None):
+    self.host = host
+    self.proxy = proxy
+    self.header = header
+    
+  def getImages(self, **args):
+    """
+      layer_name
+      feature_id
+    """
+    layer_name = args.get("layer_name")
+    feature_id = args.get("feature_id")
+    
+    if (layer_name == None or feature_id == None):
+      KrasnogorskImageAPIError("Not set layer_name or feature_id parameter")
+
+    request_url = self.host + "/api/%s/%s/images/" % (str(layer_name), str(feature_id))
+    
+    
+    try:
+      response = requests.get(request_url, proxies=self.proxy)
+    except requests.exceptions.RequestException as err:
+      raise KrasnogorskImageAPIError( "RequestException: %s"%(err.message) )
+    except:
+      raise KrasnogorskImageAPIError( "Common Exception: %s"%( str(sys.exc_info())) )
+    
+    if response.status_code != 200:
+      raise KrasnogorskImageAPIError( "RequestException: %s"%(res.text) )
+
+    if response.json is None:
+      raise KrasnogorskImageAPIError( "RequestException: %s"%("Response is empty") )
+    
+    images = []
+    for image_info in response.json["images"]:
+      image_url = image_info["url"]
+      url = self.host + image_url
+      url_preview = url + "?type=preview"
+      images.append(ImageGallery.Image(image_info["id"], url, url_preview)) 
+    
+    return images
+
+  def addImage(self, **args):
+    """
+      image_path
+      layer_name
+      feature_id
+    """
+    layer_name = args.get("layer_name")
+    feature_id = args.get("feature_id")
+    image_path = args.get("image_path")
+    
+    if (layer_name == None or feature_id == None or image_path == None):
+      KrasnogorskImageAPIError("Not set layer_name or feature_id or image_path parameter")
+      
+    request_url = self.host + "/api/%s/%s/images/" % (str(layer_name), str(feature_id))
+    file = {"data" : open(image_path, "rb")}
+
+    try:
+      response = requests.post(request_url, proxies=self.proxy, files=file, headers=self.header)
+    except requests.exceptions.RequestException as err:
+      raise KrasnogorskImageAPIError( "RequestException: %s"%(err.message) )
+    except:
+      raise KrasnogorskImageAPIError( "Common Exception: %s"%( str(sys.exc_info())) )
+    
+    if response.status_code != 200:
+      raise KrasnogorskImageAPIError( "RequestException: %s"%(res.text) )
+    
+    added_image_info = response.json
+    if added_image_info == None:
+      raise KrasnogorskImageAPIError( "RequestException: %s"%("Response is empty") )
+    
+    # check addition
+    images = self.getImages(**args)
+    
+    for image in images:
+      if (image.url == self.host + added_image_info["url"]):
+        return image
+      
+    raise KrasnogorskImageAPIError( "Image has not be added: %s"%(res.text) )
+  
+  def deleteImage(self, image):
+    request_url = self.host + "/api/images/" + str(image.id)
+    try:
+      response = requests.delete(request_url, proxies=self.proxy, headers=self.header)
+    except requests.exceptions.RequestException as err:
+      raise KrasnogorskImageAPIError( "RequestException: %s"%(err.message) )
+    except:
+      raise KrasnogorskImageAPIError( "Common Exception: %s"%( str(sys.exc_info())) )
+
+    if response.status_code != 204:
+      raise KrasnogorskImageAPIError( "RequestException: %s"%(res.text) )
+      return
+    
+
+def getImageByURL(url, proxy):
+    try:
+      response = requests.get(url, proxies=proxy)
+    except requests.exceptions.RequestException as err:
+      raise KrasnogorskImageAPIError( "RequestException: %s"%(err.message) )
+    except:
+      raise KrasnogorskImageAPIError( "Common Exception: %s"%( str(sys.exc_info())) )
+
+    if response.content is None or response.content == "":
+      raise KrasnogorskImageAPIError( "<h1>Error: image not found</h1><p>Photo with ID %s not found using URL %s</p>" % (image.id, image.url) )
+    
+    img = QPixmap()
+    img.loadFromData(QByteArray(response.content))
+    
+    return img
 
 class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
   def __init__(self, canvas, parent):
@@ -47,12 +167,11 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     self.setupUi(self)
 
     self.canvas = canvas
-    self.currentFeature = 0
-    self.currentPhoto = 0
-    self.features = []
-    self.photos = None
     self.proxy = None
-    self.host = None
+    
+    self.features = []
+    self.currentFeature = 0
+    
     self.requestPhotos = True
 
     self.tabWidget.setCurrentIndex(0)
@@ -62,15 +181,21 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     self.btnNextRecord.clicked.connect(self.nextRecord)
     self.btnPrevRecord.clicked.connect(self.prevRecord)
 
-    self.btnFirstPhoto.clicked.connect(self.firstPhoto)
-    self.btnLastPhoto.clicked.connect(self.lastPhoto)
-    self.btnNextPhoto.clicked.connect(self.nextPhoto)
-    self.btnPrevPhoto.clicked.connect(self.prevPhoto)
+    self.btnLoadPhoto.clicked.connect(self.addPhotos)
+    self.btnSaveAllPhotos.clicked.connect(self.downloadPhotos)
 
-    self.btnLoadPhoto.clicked.connect(self.loadPhoto)
-    self.btnSavePhoto.clicked.connect(self.savePhoto)
-    self.btnSaveAllPhotos.clicked.connect(self.saveAllPhotos)
-    self.btnDeletePhoto.clicked.connect(self.deletePhoto)
+    #
+    #  Add image Gallery
+    #
+    self.ig = ImageGallery.ImageGallery(QtCore.QUrl('qrc:/image_gallery/ImageGallery.qml'), self.tr("No photos") )
+    
+    self.ig.onDownloadImage.connect(self.downloadPhoto)
+    
+    self.ig.setResizeMode(QtDeclarative.QDeclarativeView.SizeRootObjectToView)
+    self.ig.setGeometry(100, 100, 400, 240)
+    self.galleryLayout = QtGui.QHBoxLayout()
+    self.galleryLayout.addWidget(self.ig)
+    self.galleryWidget.setLayout(self.galleryLayout)
 
     self.__setupProxy()
 
@@ -96,7 +221,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       item = QTableWidgetItem(unicode(v))
       self.tblAttributes.setItem(row, 1, item )
       row += 1
-
+    
     for i in xrange(len(attrs)):
       fieldName = self.layer.attributeDisplayName(i)
 
@@ -121,10 +246,41 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
 
     self.lblFeatures.setText(self.tr("Feature %s from %s") % (fid + 1, len(self.features)))
 
-    # load photo
+    # load photos
     if self.requestPhotos:
       self.getPhotos(fid)
 
+  def getPhotos(self, fid):
+    featureId = self.features[fid].id()
+    layerName = self.__getLayerName()
+    
+    try:
+      self.ig.loadImages(layer_name = layerName, feature_id = featureId)
+    except ImageGallery.ImageGalleryError as err:
+      self.showMessage(self.tr("Load photos error.<br>") + err.msg)
+  
+  def addPhotos(self):
+    settings = QSettings("Krasnogorsk", "identifyplus")
+    lastDir = settings.value( "/lastPhotoDir", "." )
+
+    formats = ["*.%s" % unicode( format ).lower() for format in QImageReader.supportedImageFormats()]
+    fNames = QFileDialog.getOpenFileNames(self,
+                                        self.tr("Open image"),
+                                        lastDir,
+                                        self.tr("Image files (%s)" % " ".join(formats))
+                                       )
+    
+    featureId = self.features[self.currentFeature].id()
+    layerName = self.__getLayerName()
+    
+    try:
+      for fName in fNames:
+        self.ig.addImage(image_path = unicode(QFileInfo(fName).absoluteFilePath()), layer_name = layerName, feature_id = featureId)
+    except ImageGallery.ImageGalleryError as err:
+      self.showMessage(self.tr("Add photo error.<br>") + err.msg)
+      
+    settings.setValue("/lastPhotoDir", QFileInfo(fName).absolutePath())
+    
   def firstRecord(self):
     self.currentFeature = 0
     self.currentPhoto = 0
@@ -150,114 +306,11 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
 
     self.currentPhoto = 0
     self.loadAttributes(self.currentFeature)
-
-  def getPhotos(self, fid):
-    featureId = self.features[fid].id()
-    layerName = self.__getLayerName()
-
-    url = self.host + "/api/%s/%s/images/" % (str(layerName), str(featureId))
-
-    try:
-      res = requests.get(url, proxies=self.proxy)
-    except:
-      print "requests exception", sys.exc_info()
-      return
-
-    if res.status_code != 200:
-      self.showMessage(res.text)
-      return
-
-    if res.json is not None:
-      self.photos = res.json["images"]
-
-    self.currentPhoto = 0
-    self.lblImage.setText(self.tr("No photo"))
-    self.showPhoto(self.currentPhoto)
-
-  def showPhoto(self, pid):
-    if self.photos is None or len(self.photos) == 0:
-      self.lblPhotos.setText(self.tr("No photos found"))
-      self.lblImage.setText(self.tr("No photo"))
-      return
-
-    self.lblPhotos.setText(self.tr("Photo %s from %s") % (pid + 1, len(self.photos)))
-
-    photoURL = self.photos[pid]["url"]
-    url = self.host + photoURL + "?type=preview"
-
-    try:
-      res = requests.get(url, proxies=self.proxy)
-    except:
-      print "requests exception", sys.exc_info()
-
-    if res.content is None or res.content == "":
-      self.lblImage.setText(self.tr("No photo"))
-      return
-
-    img = QPixmap()
-    img.loadFromData(QByteArray(res.content))
-    self.lblImage.setPixmap(img)
-
-  def firstPhoto(self):
-    self.currentPhoto = 0
-    self.showPhoto(self.currentPhoto)
-
-  def lastPhoto(self):
-    self.currentPhoto = len(self.photos) - 1
-    self.showPhoto(self.currentPhoto)
-
-  def nextPhoto(self):
-    self.currentPhoto += 1
-    if self.currentPhoto >= len(self.photos):
-      self.currentPhoto = 0
-
-    self.showPhoto(self.currentPhoto)
-
-  def prevPhoto(self):
-    self.currentPhoto = self.currentPhoto - 1
-    if self.currentPhoto < 0:
-      self.currentPhoto = len(self.photos) - 1
-
-    self.showPhoto(self.currentPhoto)
-
-  def loadPhoto(self):
+  
+  @QtCore.pyqtSlot(QtCore.QObject)
+  def downloadPhoto(self, image):
     settings = QSettings("Krasnogorsk", "identifyplus")
     lastDir = settings.value( "/lastPhotoDir", "." )
-
-    formats = ["*.%s" % unicode( format ).lower() for format in QImageReader.supportedImageFormats()]
-    fName = QFileDialog.getOpenFileName(self,
-                                        self.tr("Open image"),
-                                        lastDir,
-                                        self.tr("Image files (%s)" % " ".join(formats))
-                                       )
-
-    if not fName == "":
-      featureId = self.features[self.currentFeature].id()
-      layerName = self.__getLayerName()
-
-      url = self.host + "/api/%s/%s/images/" % (str(layerName), str(featureId))
-      files = {"data" : open(unicode(QFileInfo(fName).absoluteFilePath()), "rb")}
-
-      try:
-        res = requests.post(url, proxies=self.proxy, files=files, headers=self.header)
-      except:
-        print "requests exception", sys.exc_info()
-
-      if res.status_code != 200:
-        self.showMessage(res.text)
-        return
-
-      settings.setValue("/lastPhotoDir", QFileInfo(fName).absolutePath())
-
-    self.getPhotos(self.currentFeature)
-
-  def savePhoto(self):
-    if self.photos is None or len(self.photos) == 0:
-      return
-
-    settings = QSettings("Krasnogorsk", "identifyplus")
-    lastDir = settings.value( "/lastPhotoDir", "." )
-
 
     fName = QFileDialog.getSaveFileName(self,
                                         self.tr("Save image"),
@@ -269,34 +322,18 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
 
     if not fName.lower().endswith(".png"):
       fName += ".png"
-
-    # get fullsize image
-    photoURL = self.photos[self.currentPhoto]["url"]
-    url = self.host + photoURL
-
+    
     try:
-      res = requests.get(url, proxies=self.proxy)
-    except:
-      print "requests exception", sys.exc_info()
-
-    if res.content is None or res.content == "":
-      msg = self.tr("<h1>Error: image not found</h1><p>Photo with ID %s not found using URL %s</p>") % (self.photos[self.currentPhoto]["id"], self.photos[self.currentPhoto]["url"])
-      self.showMessage(msg)
-      return
-
-    img = QPixmap()
-    img.loadFromData(QByteArray(res.content))
-    img.save(fName)
+      img = getImageByURL(image.url, self.proxy)
+      img.save(fName)
+    except ImageGallery.ImageGalleryError as err:
+      self.showMessage(self.tr("Download photo error.<br>") + err.msg)
 
     settings.setValue("/lastPhotoDir", QFileInfo(fName).absolutePath())
 
-  def saveAllPhotos(self):
-    if self.photos is None or len(self.photos) == 0:
-      return
-
+  def downloadPhotos(self):
     settings = QSettings("Krasnogorsk", "identifyplus")
     lastDir = settings.value( "/lastPhotoDir", "." )
-
 
     dirName = QFileDialog.getExistingDirectory(self,
                                                self.tr("Select directory"),
@@ -306,47 +343,19 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     if dirName == "":
       return
 
-    # iterate over photos
-    i = 0
-    img = QPixmap()
-    for p in self.photos:
-      photoURL = p["url"]
-      url = self.host + photoURL
-
-      try:
-        res = requests.get(url, proxies=self.proxy)
-      except:
-        print "requests exception", sys.exc_info()
-
-      if res.content is None or res.content == "":
-        print "Corresponding image not found"
-        continue
-
-      img.loadFromData(QByteArray(res.content))
-      img.save("%s/%s.png" % (dirName, i))
-      i += 1
-
-    settings.setValue("/lastPhotoDir", QFileInfo(dirName).absolutePath())
-
-  def deletePhoto(self):
-    if self.photos is None or len(self.photos) == 0:
-      self.lblPhotos.setText(self.tr("No photos found"))
-      return
-
-    photoID = self.photos[self.currentPhoto]["id"]
-    url = self.host + "/api/images/" + str(photoID)
-
+    #
+    #  TODO более детальная информация о сохроняемых изображениях
+    #
     try:
-      res = requests.delete(url, proxies=self.proxy, headers=self.header)
-    except:
-      print "requests exception", sys.exc_info()
-
-    if res.status_code != 204:
-      self.showMessage(res.text)
-      return
-
-    self.getPhotos(self.currentFeature)
-
+      for image_info in self.ig.getAllImagesInfo():
+        img = getImageByURL(image_info["url"], self.proxy)
+        img.save("%s/%s.png" % (dirName, image_info["id"]))
+      
+    except ImageGallery.ImageGalleryError as err:
+      self.showMessage(self.tr("Download photo error.<br>") + err.msg)
+      
+    settings.setValue("/lastPhotoDir", QFileInfo(dirName).absolutePath())
+    
   def clear(self):
     self.features = []
     self.photos = None
@@ -355,6 +364,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     self.tblAttributes.clear()
 
   def show(self, layer):
+    
     self.layer = layer
 
     self.ellipsoid = QgsProject.instance().readEntry("Measure", "/Ellipsoid", GEO_NONE)[0]
@@ -369,16 +379,23 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     else:
       self.toggleEditButtons(True)
 
-    self.host = "http://" + unicode(self.__getDBHost()) + API_PORT
-
+    host = "http://" + unicode(self.__getDBHost()) + API_PORT
+    
+    header = None
     userName, password = self.__getCredentials()
     if userName is not None and password is not None:
-      self.header = {"X-Role" : unicode(userName), "X-Password" : unicode(password)}
+      header = {"X-Role" : unicode(userName), "X-Password" : unicode(password)}
     else:
-      self.header = None
       self.toggleEditButtons(False)
+      
+    """
+      Add data provider to Image Gallery
+    """    
+    self.ig.setDataProvider(KrasnogorskImageAPI(host, self.proxy, header))
+    
 
     self.loadAttributes(self.currentFeature)
+    
     QDialog.show(self)
     self.raise_()
 
@@ -388,10 +405,10 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
 
   def toggleEditButtons(self, enable):
     self.btnLoadPhoto.setEnabled(enable)
-    self.btnDeletePhoto.setEnabled(enable)
 
   def showMessage(self, message):
     msgViewer = QgsMessageViewer(self)
+    msgViewer.setTitle(self.tr("IdentifyPlus message") )
     msgViewer.setCheckBoxVisible(False)
     msgViewer.setMessageAsHtml(message)
     msgViewer.showMessage()
@@ -457,7 +474,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       # setup proxy
       connectionString = "http://%s:%s@%s:%s" % (proxyUser, proxyPass, proxyHost, proxyPort)
       self.proxy = {"http" : conectionString}
-
+  
   def __getLayerName(self):
     if self.layer is None:
       return ""
@@ -539,3 +556,18 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     displayUnits = QGis.fromLiteral(settings.value("/qgis/measure/displayunits", QGis.toLiteral(QGis.Meters)))
     measure, myUnits = calc.convertMeasurement(measure, myUnits, displayUnits, isArea)
     return (measure, myUnits)
+
+
+def main():
+  app = QtGui.QApplication(sys.argv)
+  
+  ig = ImageGallery.ImageGallery("image_gallery/ImageGallery.qml", KrasnogorskImageAPI("http://gis-lab.info:8888"))
+  ig.show()
+  
+  ig.loadImages(layer_name = 'poi_polygon', feature_id = 362)
+  
+  
+  sys.exit(app.exec_()) 
+
+if __name__=="__main__":
+  main()

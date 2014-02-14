@@ -6,32 +6,118 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>305</width>
-    <height>306</height>
+    <width>569</width>
+    <height>529</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Identify results</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <property name="margin">
-    <number>0</number>
-   </property>
+  <layout class="QVBoxLayout" name="verticalLayout_5">
    <property name="spacing">
     <number>2</number>
    </property>
-   <item row="2" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+   <property name="margin">
+    <number>10</number>
+   </property>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_4">
+     <property name="margin">
+      <number>10</number>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close</set>
-     </property>
-    </widget>
+     <item>
+      <widget class="QLabel" name="lblFeatures">
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <item>
+        <widget class="QToolButton" name="btnFirstRecord">
+         <property name="toolTip">
+          <string>First feature</string>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/first.png</normaloff>:/icons/first.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="btnPrevRecord">
+         <property name="toolTip">
+          <string>Previous feature</string>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/previous.png</normaloff>:/icons/previous.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="btnNextRecord">
+         <property name="toolTip">
+          <string>Next feature</string>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/next.png</normaloff>:/icons/next.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="btnLastRecord">
+         <property name="toolTip">
+          <string>Last feature</string>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="icon">
+          <iconset resource="resources.qrc">
+           <normaloff>:/icons/last.png</normaloff>:/icons/last.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+    </layout>
    </item>
-   <item row="1" column="0">
+   <item>
     <widget class="QTabWidget" name="tabWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -46,13 +132,6 @@
        <property name="margin">
         <number>0</number>
        </property>
-       <item>
-        <widget class="QLabel" name="lblFeatures">
-         <property name="text">
-          <string>TextLabel</string>
-         </property>
-        </widget>
-       </item>
        <item>
         <widget class="QTableWidget" name="tblAttributes">
          <property name="editTriggers">
@@ -82,69 +161,6 @@
          </column>
         </widget>
        </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <property name="spacing">
-          <number>2</number>
-         </property>
-         <item>
-          <widget class="QToolButton" name="btnFirstRecord">
-           <property name="toolTip">
-            <string>First feature</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/icons/resultset_first.png</normaloff>:/icons/resultset_first.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="btnPrevRecord">
-           <property name="toolTip">
-            <string>Previous feature</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/icons/resultset_previous.png</normaloff>:/icons/resultset_previous.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="btnNextRecord">
-           <property name="toolTip">
-            <string>Next feature</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/icons/resultset_next.png</normaloff>:/icons/resultset_next.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="btnLastRecord">
-           <property name="toolTip">
-            <string>Last feature</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/icons/resultset_last.png</normaloff>:/icons/resultset_last.png</iconset>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tab_2">
@@ -153,108 +169,26 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="spacing">
-        <number>2</number>
-       </property>
-       <property name="margin">
         <number>0</number>
        </property>
+       <property name="margin">
+        <number>5</number>
+       </property>
        <item>
-        <widget class="QLabel" name="lblPhotos">
-         <property name="text">
-          <string>TextLabel</string>
+        <widget class="QWidget" name="galleryWidget" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QScrollArea" name="scrollArea">
-         <property name="widgetResizable">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="scrollAreaWidgetContents">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>297</width>
-            <height>207</height>
-           </rect>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <item>
-            <widget class="QLabel" name="lblImage">
-             <property name="text">
-              <string>No photo</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
          <property name="spacing">
-          <number>2</number>
+          <number>6</number>
          </property>
-         <item>
-          <widget class="QToolButton" name="btnFirstPhoto">
-           <property name="toolTip">
-            <string>First photo</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/icons/resultset_first.png</normaloff>:/icons/resultset_first.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="btnPrevPhoto">
-           <property name="toolTip">
-            <string>Previous photo</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/icons/resultset_previous.png</normaloff>:/icons/resultset_previous.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="btnNextPhoto">
-           <property name="toolTip">
-            <string>Next photo</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/icons/resultset_next.png</normaloff>:/icons/resultset_next.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="btnLastPhoto">
-           <property name="toolTip">
-            <string>Last photo</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/icons/resultset_last.png</normaloff>:/icons/resultset_last.png</iconset>
-           </property>
-          </widget>
-         </item>
          <item>
           <spacer name="horizontalSpacer">
            <property name="orientation">
@@ -278,21 +212,13 @@
            </property>
            <property name="icon">
             <iconset resource="resources.qrc">
-             <normaloff>:/icons/folder_picture.png</normaloff>:/icons/folder_picture.png</iconset>
+             <normaloff>:/icons/add.png</normaloff>:/icons/add.png</iconset>
            </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="btnSavePhoto">
-           <property name="toolTip">
-            <string>Save current photo to disk</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/icons/disk.png</normaloff>:/icons/disk.png</iconset>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -306,21 +232,13 @@
            </property>
            <property name="icon">
             <iconset resource="resources.qrc">
-             <normaloff>:/icons/disk_multiple.png</normaloff>:/icons/disk_multiple.png</iconset>
+             <normaloff>:/icons/download.png</normaloff>:/icons/download.png</iconset>
            </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="btnDeletePhoto">
-           <property name="toolTip">
-            <string>Remove current photo from database</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset resource="resources.qrc">
-             <normaloff>:/icons/image_delete.png</normaloff>:/icons/image_delete.png</iconset>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -335,38 +253,5 @@
  <resources>
   <include location="resources.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>IdentifyPlusResults</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>IdentifyPlusResults</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
