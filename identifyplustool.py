@@ -129,8 +129,16 @@ class IdentifyPlusTool(QgsMapTool):
 
     renderer = layer.rendererV2() # неизвестность
 
+    qgsVersion = int(unicode(QGis.QGIS_VERSION_INT))
+    
     if renderer is not None and (renderer.capabilities() | QgsFeatureRendererV2.ScaleDependent):
-      renderer.startRender( self.canvas.mapRenderer().rendererContext(), layer)
+      if qgsVersion < 20200 and qgsVersion > 10900:
+        renderer.startRender( self.canvas.mapRenderer().rendererContext(), layer)
+      elif qgsVersion >= 20200:
+        renderer.startRender( self.canvas.mapRenderer().rendererContext(), layer.pendingFields())
+      else:
+        renderer.startRender( self.canvas.mapRenderer().rendererContext(), layer)
+        
       myFilter = renderer.capabilities() and QgsFeatureRendererV2.Filter
 
     for f in featureList:

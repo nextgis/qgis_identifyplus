@@ -71,7 +71,7 @@ class KrasnogorskImageAPI(object):
     
     
     try:
-      response = requests.get(request_url, proxies=self.proxy)
+      response = requests.get(request_url, proxies=self.proxy, timeout=1.0)
     except requests.exceptions.RequestException as err:
       raise KrasnogorskImageAPIError( "RequestException: %s"%(err.message) )
     except:
