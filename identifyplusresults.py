@@ -141,7 +141,7 @@ class KrasnogorskImageAPI(object):
       raise KrasnogorskImageAPIError( "Common Exception: %s"%( str(sys.exc_info())) )
 
     if response.status_code != 204:
-      raise KrasnogorskImageAPIError( "RequestException: %s"%(res.text) )
+      raise KrasnogorskImageAPIError( "RequestException: %s"%(response.text) )
       return
     
 
@@ -190,6 +190,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     self.ig = ImageGallery.ImageGallery(QtCore.QUrl('qrc:/image_gallery/ImageGallery.qml'), self.tr("No photos") )
     
     self.ig.onDownloadImage.connect(self.downloadPhoto)
+    self.ig.onDeleteImage.connect(self.deletePhoto)
     
     self.ig.setResizeMode(QtDeclarative.QDeclarativeView.SizeRootObjectToView)
     self.ig.setGeometry(100, 100, 400, 240)
@@ -276,10 +277,13 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     try:
       for fName in fNames:
         self.ig.addImage(image_path = unicode(QFileInfo(fName).absoluteFilePath()), layer_name = layerName, feature_id = featureId)
+      
+      if fNames != []:
+        settings.setValue("/lastPhotoDir", QFileInfo(fNames[0]).absolutePath())
+        
     except ImageGallery.ImageGalleryError as err:
       self.showMessage(self.tr("Add photo error.<br>") + err.msg)
       
-    settings.setValue("/lastPhotoDir", QFileInfo(fName).absolutePath())
     
   def firstRecord(self):
     self.currentFeature = 0
@@ -307,6 +311,19 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     self.currentPhoto = 0
     self.loadAttributes(self.currentFeature)
   
+  @QtCore.pyqtSlot(QtCore.QObject)
+  def deletePhoto(self, image):
+    msgBox = QtGui.QMessageBox()
+    msgBox.setWindowTitle(self.tr("Delete confirmation"))
+    msgBox.setText(self.tr("Are you sure you want to delete this photo?"))
+    msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No);
+    msgBox.setDefaultButton(QMessageBox.Yes);
+  
+    status = msgBox.exec_()
+    
+    if status == QMessageBox.Yes:
+      self.ig.deleteImage(image)
+    
   @QtCore.pyqtSlot(QtCore.QObject)
   def downloadPhoto(self, image):
     settings = QSettings("Krasnogorsk", "identifyplus")
@@ -557,14 +574,52 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     measure, myUnits = calc.convertMeasurement(measure, myUnits, displayUnits, isArea)
     return (measure, myUnits)
 
+def downloadPhoto():
+  pass
 
+
+class TestImageAPI(object):
+  def __init__(self):
+    pass
+    
+  def getImages(self, **args):
+    
+    images = []
+    
+    for i in range(0,10):
+      images.append(ImageGallery.Image(i, "file:///C:/Users/Alexander/Desktop/krasnogorsk/16-21.jpg", "file:///C:/Users/Alexander/Desktop/krasnogorsk/16-21.jpg")) 
+    
+    
+    return images
+
+  def addImage(self, **args):
+    pass
+  
+  def deleteImage(self, image):
+    pass
+
+def getImageByURL(url, proxy):
+    pass
+  
 def main():
   app = QtGui.QApplication(sys.argv)
   
-  ig = ImageGallery.ImageGallery("image_gallery/ImageGallery.qml", KrasnogorskImageAPI("http://gis-lab.info:8888"))
+  #ig = ImageGallery.ImageGallery("image_gallery/ImageGallery.qml", KrasnogorskImageAPI("http://gis-lab.info:8888"))
+  #ig = ImageGallery.ImageGallery(QtCore.QUrl('qrc:/image_gallery/ImageGallery.qml'), u'No photos' )
+  ig = ImageGallery.ImageGallery(QtCore.QUrl('./image_gallery/ImageGallery.qml'), u'No photos' )
+   
+  ig.onDownloadImage.connect(downloadPhoto)
+  ig.setResizeMode(QtDeclarative.QDeclarativeView.SizeRootObjectToView)
+  ig.setGeometry(100, 100, 400, 240)
+  
+  ig.setDataProvider(TestImageAPI())
+  
   ig.show()
   
-  ig.loadImages(layer_name = 'poi_polygon', feature_id = 362)
+  try:
+    ig.loadImages(layer_name = 'poi_polygon', feature_id = 362)
+  except ImageGallery.ImageGalleryError as err:
+    print "Load photos error.<br>" + err.msg
   
   
   sys.exit(app.exec_()) 

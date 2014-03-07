@@ -93,6 +93,7 @@ class IamgeGalleryModel(QtCore.QAbstractListModel):
 class ImageGallery(QtDeclarative.QDeclarativeView):
   
   onDownloadImage = QtCore.pyqtSignal(QtCore.QObject)
+  onDeleteImage = QtCore.pyqtSignal(QtCore.QObject)
   
   def __init__(self, qml, no_images_message, parent=None):
     QtDeclarative.QDeclarativeView.__init__(self, parent)
@@ -116,14 +117,18 @@ class ImageGallery(QtDeclarative.QDeclarativeView):
     self.data_model.addImage(**args)
   
   @QtCore.pyqtSlot(QtCore.QObject)
+  def deleteImageSlot(self, image):
+    print "deleteImageSlot"
+    self.onDeleteImage.emit(image)
+  
   def deleteImage(self, image):
     self.data_model.deleteImage(image)
-  
+    
   def getAllImagesInfo(self):
     return self.data_model.getAllImagesInfo()
     
   @QtCore.pyqtSlot(QtCore.QObject)
-  def downloadImage(self, image):
+  def downloadImageSlot(self, image):
     self.onDownloadImage.emit(image)
   
   

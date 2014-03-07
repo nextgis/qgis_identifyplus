@@ -85,7 +85,7 @@ Rectangle {
 	                        
 	                        onClicked:
 	                        {
-	                            controller.deleteImage(model.image)
+	                            controller.deleteImageSlot(model.image)
 	                        }
 	                        onPressed:
 	                        {
@@ -135,7 +135,7 @@ Rectangle {
 	                        
 	                        onClicked:
 	                        {
-	                            controller.downloadImage(model.image)
+	                            controller.downloadImageSlot(model.image)
 	                        }
 	                        
 	                        onPressed:

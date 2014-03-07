@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<!DOCTYPE TS><TS version="2.0" language="ru_RU" sourcelanguage="">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -119,12 +118,12 @@ Plugin will not be enabled.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="212"/>
+        <location filename="identifyplusresults.py" line="213"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="212"/>
+        <location filename="identifyplusresults.py" line="213"/>
         <source>Value</source>
         <translation>Значение</translation>
     </message>
@@ -179,22 +178,22 @@ Plugin will not be enabled.</source>
         <translation type="obsolete">Фотография %1 из %2</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="267"/>
+        <location filename="identifyplusresults.py" line="268"/>
         <source>Open image</source>
         <translation>Открыть изображение</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="267"/>
+        <location filename="identifyplusresults.py" line="268"/>
         <source>Image files (%s) </source>
         <translation>Графические файлы (%s) </translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="315"/>
+        <location filename="identifyplusresults.py" line="332"/>
         <source>Save image</source>
         <translation>Сохранить изображение</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="315"/>
+        <location filename="identifyplusresults.py" line="332"/>
         <source>PNG files (*.png)</source>
         <translation>Файлы PNG (*.png)</translation>
     </message>
@@ -244,57 +243,57 @@ Plugin will not be enabled.</source>
         <translation type="obsolete">&lt;h1&gt;Ошибка: изображение не найдено&lt;/h1&gt;&lt;p&gt;Фотография с ID %1 на найдена по адресу %2&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="338"/>
+        <location filename="identifyplusresults.py" line="355"/>
         <source>Select directory</source>
         <translation>Выбрать каталог</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="432"/>
+        <location filename="identifyplusresults.py" line="448"/>
         <source>Length</source>
         <translation>Длина</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="437"/>
+        <location filename="identifyplusresults.py" line="453"/>
         <source>firstX</source>
         <translation>Начальный X</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="439"/>
+        <location filename="identifyplusresults.py" line="455"/>
         <source>firstY</source>
         <translation>Начальный Y</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="443"/>
+        <location filename="identifyplusresults.py" line="459"/>
         <source>lastX</source>
         <translation>Конечный X</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="445"/>
+        <location filename="identifyplusresults.py" line="461"/>
         <source>lastY</source>
         <translation>Конечный Y</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="451"/>
+        <location filename="identifyplusresults.py" line="467"/>
         <source>Area</source>
         <translation>Площадь</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="455"/>
+        <location filename="identifyplusresults.py" line="471"/>
         <source>Perimeter</source>
         <translation>Периметр</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="459"/>
+        <location filename="identifyplusresults.py" line="475"/>
         <source>X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="461"/>
+        <location filename="identifyplusresults.py" line="477"/>
         <source>Y</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="247"/>
+        <location filename="identifyplusresults.py" line="248"/>
         <source>Feature %s from %s</source>
         <translation>Объект %s из %s</translation>
     </message>
@@ -304,24 +303,34 @@ Plugin will not be enabled.</source>
         <translation>Фотографий нет</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="260"/>
+        <location filename="identifyplusresults.py" line="261"/>
         <source>Load photos error.&lt;br&gt;</source>
         <translation>Ошибка загрузки фотографий. &lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="280"/>
+        <location filename="identifyplusresults.py" line="285"/>
         <source>Add photo error.&lt;br&gt;</source>
         <translation>Ошибка добавления фотографии. &lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="355"/>
+        <location filename="identifyplusresults.py" line="371"/>
         <source>Download photo error.&lt;br&gt;</source>
         <translation>Ошибка скачивания фотографии. &lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="411"/>
+        <location filename="identifyplusresults.py" line="427"/>
         <source>IdentifyPlus message</source>
         <translation>Сообщение IdentifyPlus</translation>
+    </message>
+    <message>
+        <location filename="identifyplusresults.py" line="317"/>
+        <source>Delete confirmation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="identifyplusresults.py" line="318"/>
+        <source>Are you sure you want to delete this photo?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
