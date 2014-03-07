@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="ru_RU" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.0" language="ru_RU">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -325,12 +326,12 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="identifyplusresults.py" line="317"/>
         <source>Delete confirmation</source>
-        <translation type="unfinished"></translation>
+        <translation>Подтверждение удаления</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="318"/>
         <source>Are you sure you want to delete this photo?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы уверены, что хотите удалить эту фотографию?</translation>
     </message>
 </context>
 <context>
