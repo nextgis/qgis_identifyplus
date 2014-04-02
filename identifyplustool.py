@@ -134,7 +134,7 @@ class IdentifyPlusTool(QgsMapTool):
     if renderer is not None and (renderer.capabilities() | QgsFeatureRendererV2.ScaleDependent):
       if qgsVersion < 20200 and qgsVersion > 10900:
         renderer.startRender( self.canvas.mapRenderer().rendererContext(), layer)
-      elif qgsVersion >= 20200:
+      elif qgsVersion >= 20300:
         renderer.startRender( self.canvas.mapRenderer().rendererContext(), layer.pendingFields())
       else:
         renderer.startRender( self.canvas.mapRenderer().rendererContext(), layer)
