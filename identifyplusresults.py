@@ -361,7 +361,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       return
 
     #
-    #  TODO более детальная информация о сохроняемых изображениях
+    #  TODO Р±РѕР»РµРµ РґРµС‚Р°Р»СЊРЅР°СЏ РёРЅС„РѕСЂРјР°С†РёСЏ Рѕ СЃРѕС…СЂРѕРЅСЏРµРјС‹С… РёР·РѕР±СЂР°Р¶РµРЅРёСЏС…
     #
     try:
       for image_info in self.ig.getAllImagesInfo():
@@ -598,8 +598,8 @@ class TestImageAPI(object):
   def deleteImage(self, image):
     pass
 
-def getImageByURL(url, proxy):
-    pass
+  def getImageByURL(url, proxy):
+      pass
   
 def main():
   app = QtGui.QApplication(sys.argv)
