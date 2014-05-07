@@ -65,14 +65,14 @@ class IdentifyPlusTool(QgsMapTool):
                           self.tr("This tool works only for vector layers. Please select another layer in legend and try again")
                          )
       return
-  
+    '''
     if layer.providerType() != u"postgres":
       QMessageBox.warning(self.canvas,
                           self.tr("Wrong layer provider"),
                           self.tr("This tool works only for postgres layers. Please select another layer in legend and try again")
                          )
       return
-
+    '''
     QApplication.setOverrideCursor(Qt.WaitCursor)
     res = self.identifyLayer(layer, event.x(), event.y())
     QApplication.restoreOverrideCursor()
@@ -86,10 +86,6 @@ class IdentifyPlusTool(QgsMapTool):
                               self.tr("To identify features, you must choose any object in an active layer"))
 
   def identifyLayer(self, layer, x, y):
-    
-    #
-    # Странно все- равно не видно, чего пользователь будет тыкать?
-    #
     if layer.hasScaleBasedVisibility() and (layer.minimumScale() > self.canvas.mapRenderer().scale() or layer.maximumScale() <= self.canvas.mapRenderer().scale()):
       print "Out of scale"
       return False

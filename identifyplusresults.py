@@ -259,6 +259,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       self.ig.loadImages(layer_name = layerName, feature_id = featureId)
     except ImageGallery.ImageGalleryError as err:
       self.showMessage(self.tr("Load photos error.<br>") + err.msg)
+      self.togglePhotoTab(False)
   
   def addPhotos(self):
     settings = QSettings("Krasnogorsk", "identifyplus")
@@ -396,19 +397,20 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
     else:
       self.toggleEditButtons(True)
 
-    host = "http://" + unicode(self.__getDBHost()) + API_PORT
-    
-    header = None
-    userName, password = self.__getCredentials()
-    if userName is not None and password is not None:
-      header = {"X-Role" : unicode(userName), "X-Password" : unicode(password)}
-    else:
-      self.toggleEditButtons(False)
+    if self.layer.providerType() in ["postgres"]:
+      host = "http://" + unicode(self.__getDBHost()) + API_PORT
       
-    """
-      Add data provider to Image Gallery
-    """    
-    self.ig.setDataProvider(KrasnogorskImageAPI(host, self.proxy, header))
+      header = None
+      userName, password = self.__getCredentials()
+      if userName is not None and password is not None:
+        header = {"X-Role" : unicode(userName), "X-Password" : unicode(password)}
+      else:
+        self.toggleEditButtons(False)
+        
+      """
+        Add data provider to Image Gallery
+      """    
+      self.ig.setDataProvider(KrasnogorskImageAPI(host, self.proxy, header))
     
 
     self.loadAttributes(self.currentFeature)
@@ -455,11 +457,12 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
         res = QLocale.system().toString(pnt.y(), 'g', 10)
         attrs[self.tr("firstY")] = res
 
-        pnt = self.canvas.mapRenderer().layerToMapCoordinates(self.layer, feature.geometry().asPolyline()[len(feature.geometry().asPolyline())])
+        pnt = self.canvas.mapRenderer().layerToMapCoordinates(self.layer, feature.geometry().asPolyline()[len(feature.geometry().asPolyline()) - 1])
         res = QLocale.system().toString(pnt.x(), 'g', 10)
         attrs[self.tr("lastX")] = res
         res = QLocale.system().toString(pnt.y(), 'g', 10)
         attrs[self.tr("lastY")] = res
+    
     elif self.layer.geometryType() == QGis.Polygon:
       area = calc.measure(feature.geometry())
       perimeter = calc.measurePerimeter(feature.geometry())
@@ -470,6 +473,7 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
       perimeter, myDisplayUnits = self.__convertUnits(calc, perimeter, False)
       res = calc.textUnit(perimeter, 3, myDisplayUnits, False)
       attrs[self.tr("Perimeter")] = res
+    
     elif self.layer.geometryType() == QGis.Point and feature.geometry().wkbType() in [QGis.WKBPoint, QGis.WKBPoint25D]:
       pnt = self.canvas.mapRenderer().layerToMapCoordinates(self.layer, feature.geometry().asPoint())
       res = QLocale.system().toString(pnt.x(), 'g', 10)
