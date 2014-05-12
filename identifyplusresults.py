@@ -29,6 +29,7 @@ import sys
 import re
 import requests
 import abc
+import numbers
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -232,11 +233,18 @@ class IdentifyPlusResults(QDialog, Ui_IdentifyPlusResults):
 
       item = QTableWidgetItem(fieldName)
       self.tblAttributes.setItem(row, 0, item )
-
-      if not isinstance(attrs[i], QPyNullVariant):
-        item = QTableWidgetItem(attrs[i])
+      
+      if isinstance(attrs[i], QPyNullVariant):
+          item = QTableWidgetItem("NULL")
+          
+      elif isinstance(attrs[i], QVariant):
+          item = QTableWidgetItem(attrs[i].toString ())
+          
       else:
-        item = QTableWidgetItem("")
+        if isinstance(attrs[i], numbers.Number):
+          item = QTableWidgetItem(str(attrs[i]))
+        else:
+          item = QTableWidgetItem(attrs[i])
       
       self.tblAttributes.setItem(row, 1, item )
       row += 1
