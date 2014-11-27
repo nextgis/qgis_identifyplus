@@ -25,24 +25,18 @@
 #
 #******************************************************************************
 
-import sys
-import re
-import requests
-import abc
 import numbers
-import os
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from PyQt4 import QtCore, QtGui, Qt, QtDeclarative
+from PyQt4 import QtDeclarative
 
 from qgis.core import *
 from qgis.gui import *
 
 from GdalTools.tools import GdalTools_utils
 
-from ui_identifyplusresultsbase import Ui_IdentifyPlusResults
 from ui_attributestable import Ui_AttributesTable
 from ui_attributestablewithimages import Ui_AttributesTableWithImages
 from ui_identifyplusresultsbase_new import Ui_IdentifyPlusResultsNew
@@ -61,7 +55,6 @@ class ExtendedFeature(QObject):
         self._feature = qgsFeature
         
         self._attrs = dict()
-        
         
         attrs = qgsFeature.attributes()
         fields = qgsFeature.fields().toList()
@@ -198,14 +191,14 @@ class Obj2Widget(QWidget, Ui_AttributesTableWithImages):
         #
         #  Add image Gallery
         #
-        self.ig = ImageGallery.ImageGallery(QtCore.QUrl('qrc:/image_gallery/ImageGallery.qml'), self.tr("No photos") )
+        self.ig = ImageGallery.ImageGallery(QUrl('qrc:/image_gallery/ImageGallery.qml'), self.tr("No photos") )
         
         self.ig.onDownloadImage.connect(self.downloadPhoto)
         self.ig.onDeleteImage.connect(self.deletePhoto)
         
         self.ig.setResizeMode(QtDeclarative.QDeclarativeView.SizeRootObjectToView)
         self.ig.setGeometry(100, 100, 400, 240)
-        self.galleryLayout = QtGui.QHBoxLayout()
+        self.galleryLayout = QHBoxLayout()
         self.galleryLayout.addWidget(self.ig)
         self.galleryWidget.setLayout(self.galleryLayout)
         
@@ -230,7 +223,7 @@ class Obj2Widget(QWidget, Ui_AttributesTableWithImages):
             self.tabWidget.setTabEnabled(1, False)
             return
 
-    @QtCore.pyqtSlot(QtCore.QObject)
+    @pyqtSlot(QObject)
     def downloadPhoto(self, image):
         settings = QSettings("Photos", "identifyplus")
         lastDir = settings.value( "/lastPhotoDir", "." )
@@ -305,7 +298,9 @@ class IdentifyPlusResultsNew(QDialog, Ui_IdentifyPlusResultsNew):
         self.btnLastRecord.clicked.connect(self.lastRecord)
         self.btnNextRecord.clicked.connect(self.nextRecord)
         self.btnPrevRecord.clicked.connect(self.prevRecord)
-    
+        
+        self.lastIdentifyErrorMsg = None;
+        
     def firstRecord(self):
         self.currentObjectIndex = 0
         self._loadFeatureAttributes()
@@ -335,6 +330,7 @@ class IdentifyPlusResultsNew(QDialog, Ui_IdentifyPlusResultsNew):
     def identify(self, qgsMapLayer, x, y):
         self.objects = []
         self.currentObjectIndex = 0;
+        self.lastIdentifyErrorMsg = None;
         
         if self.objectView is not None:
             self.loObjectContainer.removeWidget(self.objectView)
@@ -345,15 +341,9 @@ class IdentifyPlusResultsNew(QDialog, Ui_IdentifyPlusResultsNew):
             self._initRasterLayer(qgsMapLayer, x, y)
             
         elif qgsMapLayer.type() == QgsMapLayer.VectorLayer:
-             #if qgsMapLayer.providerType() in ["postgres"]:
-                 #if not self.__canEditLayer():
-                 #    self.toggleEditButtons(False)
-                 #else:
-                 #    self.toggleEditButtons(True)
-                 #self.objectView  = Obj2Widget(self)
-                 #self._initVectorLayer(qgsMapLayer, x, y)
             auth = (u'administrator', u'admin')
             (ngwResource, addAttrs) = ngwapi.getNGWResourceFromQGSLayerSource(qgsMapLayer.source(), auth)
+            
             if ngwResource is not None:
                 self.objectView  = Obj2Widget(self)
             else:
@@ -375,7 +365,6 @@ class IdentifyPlusResultsNew(QDialog, Ui_IdentifyPlusResultsNew):
     
     def _initRasterLayer(self, qgsMapLayer, x, y):
         point = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
-        print "1 x, y:", point.x() ,", ", point.y()
         
         #Use gdalocationinfo utility
         process = QProcess()
@@ -386,10 +375,14 @@ class IdentifyPlusResultsNew(QDialog, Ui_IdentifyPlusResultsNew):
         
         if(process.exitCode() != 0):
             err_msg = str(process.readAllStandardError())
-            if err_msg != '':
-                print "err_msg: ", err_msg
-            else:
-                print "err_msg: ", str(process.readAllStandardOutput())
+            if err_msg == '':
+                err_msg = str(process.readAllStandardOutput())
+            
+            #QMessageBox.warning(self,
+            #              self.tr("Location info request fail"),
+            #              self.tr("gdallocationinfo return error status<br/>"+err_msg)
+            #             )
+            self.lastIdentifyErrorMsg = self.tr("gdallocationinfo return error status<br/>" + err_msg)
 
         else:
             data = str(process.readAllStandardOutput());
@@ -397,16 +390,17 @@ class IdentifyPlusResultsNew(QDialog, Ui_IdentifyPlusResultsNew):
             res = gdallocationinfoXMLOutputProcessing(data)
             
             if res[0] != None:
-                print "Parsing gdallocationinfo xml output error!"
-                print res[1]
-                print data
+               # QMessageBox.warning(self,
+               #           self.tr("Location info request fail"),
+               #           self.tr("Parsing gdallocationinfo request error<br/>" + res[1])
+               #          )
+               self.lastIdentifyErrorMsg = self.tr("Parsing gdallocationinfo request error<br/>" + res[1])
             else:
                 for f in res[1]:
                     self.objects.append(f)
         
     def _initVectorLayer(self, qgsMapLayer, x, y):
         point = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
-        print "2 x, y:", point.x() ,", ", point.y()
         # load identify radius from settings
         settings = QSettings()
         identifyValue = float(settings.value("/Map/identifyRadius", QGis.DEFAULT_IDENTIFY_RADIUS)) # в чем измеряется?

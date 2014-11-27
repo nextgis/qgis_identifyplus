@@ -9,6 +9,5 @@ FORMS = ui\identifyplusresultsbase.ui \
         ui\aboutdialogbase.ui \
         ui\attributestable.ui \
         ui\attributestablewithimages.ui \
-        ui\identifyplusresultsbase_new.ui
 
 TRANSLATIONS = i18n/identifyplus_ru.ts

@@ -42,8 +42,6 @@ class IdentifyPlusTool(QgsMapTool):
     self.canvas = canvas
     self.cursor = QCursor(QPixmap(":/icons/cursor.png"), 1, 1)
     
-    self.qgsVersion = int(unicode(QGis.QGIS_VERSION_INT))
-    
     self.results = identifyplusresults.IdentifyPlusResultsNew(self, self.canvas, self.canvas.window())
   
   def activate(self):
@@ -52,7 +50,6 @@ class IdentifyPlusTool(QgsMapTool):
   def canvasReleaseEvent(self, event):
     layer = self.canvas.currentLayer()
     if layer is None:
-    #if self.model.currentLayer is None:
       QMessageBox.warning(self.canvas,
                           self.tr("No active layer"),
                           self.tr("To identify features, you must choose an active layer by clicking on its name in the legend")
@@ -69,11 +66,17 @@ class IdentifyPlusTool(QgsMapTool):
       self.results.show()
     else:
       self.results.hide()
-      QMessageBox.information(self.canvas,
+      if self.results.lastIdentifyErrorMsg is None:
+          QMessageBox.information(self.canvas,
                               self.tr("There is no appropriate objects"),
-                              self.tr("Unable to locate objects on the specified coordinates"))
+                              self.tr("Unable to locate objects on the specified coordinates")
+                              )
+      else:
+          QMessageBox.information(self.canvas,
+                              self.tr("There is no appropriate objects"),
+                              self.tr("Unable to locate objects on the specified coordinates")
+                                + "<br/>" + self.tr("By reason of:") + "<br/>" + self.results.lastIdentifyErrorMsg
+                              )
 
   def isAvalable(self, qgsMapLayer):
-      if qgsMapLayer is None:
-          return False
-      return True
+      return qgsMapLayer is not None
