@@ -73,8 +73,6 @@ class AboutDialog(QDialog, Ui_Dialog):
 
   def getAboutText(self):
     return self.tr("""<p>Alternate identify tool with additional capabilities.</p>
-<p>Plugin developed by <a href="http://nextgis.org">NextGIS</a> as part of the Krasnogorsk
-municipal GIS</p>
 <p>NOTE: Plugin needs access to special web-service in order to be able display
 photos associated with features. If you need more info please <a href="mailto:info@nextgis.org">contact us</a></p>
 """)

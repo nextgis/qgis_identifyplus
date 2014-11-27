@@ -2,15 +2,15 @@
 name=IdentifyPlus
 description=Extended identify tool
 category=Vector
-version=2.1.2
-qgisMinimumVersion=2.0
+version=3.0.1
+qgisMinimumVersion=2.6
 
 author=NextGIS
 email=info@nextgis.org
 
 icon=icons/identifyplus.png
 
-tags=feature,maptool,vector
+tags=feature,maptool,identification
 
 homepage=
 tracker=

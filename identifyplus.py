@@ -56,8 +56,6 @@ class IdentifyPlus:
     else:
       translationPath = systemPluginPath + "/i18n/identifyplus_" + localeFullName + ".qm"
     
-    print "translationPath: ", translationPath
-    
     self.localePath = translationPath
     if QFileInfo(self.localePath).exists():
       self.translator = QTranslator()
@@ -82,9 +80,9 @@ class IdentifyPlus:
     self.actionAbout.setIcon(QIcon(":/icons/about.png"))
     self.actionAbout.setWhatsThis("About IdentifyPlus")
 
-    self.iface.addPluginToVectorMenu(QCoreApplication.translate("IdentifyPlus", "IdentifyPlus"), self.actionRun)
-    self.iface.addPluginToVectorMenu(QCoreApplication.translate("IdentifyPlus", "IdentifyPlus"), self.actionAbout)
-    self.iface.addVectorToolBarIcon(self.actionRun)
+    self.iface.addPluginToMenu(QCoreApplication.translate("IdentifyPlus", "IdentifyPlus"), self.actionRun)
+    self.iface.addPluginToMenu(QCoreApplication.translate("IdentifyPlus", "IdentifyPlus"), self.actionAbout)
+    self.iface.attributesToolBar().addAction(self.actionRun)
 
     self.actionRun.triggered.connect(self.run)
     self.actionAbout.triggered.connect(self.about)
@@ -92,14 +90,15 @@ class IdentifyPlus:
     # prepare map tool
     self.mapTool = identifyplustool.IdentifyPlusTool(self.iface.mapCanvas())
     self.iface.mapCanvas().mapToolSet.connect(self.mapToolChanged)
+    self.toggleTool(self.iface.mapCanvas().currentLayer())
 
     # handle layer changes
     self.iface.currentLayerChanged.connect(self.toggleTool)
 
   def unload(self):
-    self.iface.removeVectorToolBarIcon(self.actionRun)
-    self.iface.removePluginVectorMenu(QCoreApplication.translate("IdentifyPlus", "IdentifyPlus"), self.actionRun)
-    self.iface.removePluginVectorMenu(QCoreApplication.translate("IdentifyPlus", "IdentifyPlus"), self.actionAbout)
+    self.iface.attributesToolBar().removeAction(self.actionRun)
+    self.iface.removePluginMenu(QCoreApplication.translate("IdentifyPlus", "IdentifyPlus"), self.actionRun)
+    self.iface.removePluginMenu(QCoreApplication.translate("IdentifyPlus", "IdentifyPlus"), self.actionAbout)
 
     if self.iface.mapCanvas().mapTool() == self.mapTool:
       self.iface.mapCanvas().unsetMapTool(self.mapTool)
@@ -115,10 +114,7 @@ class IdentifyPlus:
     self.actionRun.setChecked(True)
 
   def toggleTool(self, layer):
-    if layer is None:
-      return
-
-    if layer.type() != QgsMapLayer.VectorLayer:
+    if not self.mapTool.isAvalable(layer):
       self.actionRun.setEnabled(False)
       if self.iface.mapCanvas().mapTool() == self.mapTool:
         self.iface.mapCanvas().unsetMapTool(self.mapTool)

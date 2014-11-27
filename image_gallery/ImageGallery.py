@@ -8,7 +8,7 @@ class ImageGalleryError(Exception):
     self.msg = msg
   def __str__(self):
     return repr(self.value)
-  
+
 class Image(object):
     def __init__(self, id, url, url_preview = None):
         self.id = id
@@ -17,7 +17,7 @@ class Image(object):
           self.url_preview = url
         else:
           self.url_preview = url_preview
-        
+
 class ImageWrapper(QtCore.QObject):
     def __init__(self, image):
         QtCore.QObject.__init__(self)
@@ -37,7 +37,6 @@ class ImageWrapper(QtCore.QObject):
     url_preview = QtCore.pyqtProperty(unicode, _url_preview, notify=changed)
     url = QtCore.pyqtProperty(unicode, _url, notify=changed)
     id = QtCore.pyqtProperty(unicode, _id, notify=changed)
-    
 
 class IamgeGalleryModel(QtCore.QAbstractListModel):
   COLUMNS = ('image',)
@@ -130,11 +129,3 @@ class ImageGallery(QtDeclarative.QDeclarativeView):
   @QtCore.pyqtSlot(QtCore.QObject)
   def downloadImageSlot(self, image):
     self.onDownloadImage.emit(image)
-  
-  
-    
-def main():
-  pass
-
-if __name__=="__main__":
-  main()

@@ -41,111 +41,39 @@ class IdentifyPlusTool(QgsMapTool):
 
     self.canvas = canvas
     self.cursor = QCursor(QPixmap(":/icons/cursor.png"), 1, 1)
-    self.results = identifyplusresults.IdentifyPlusResults(self.canvas, self.canvas.window())
-
+    
+    self.qgsVersion = int(unicode(QGis.QGIS_VERSION_INT))
+    
+    self.results = identifyplusresults.IdentifyPlusResultsNew(self, self.canvas, self.canvas.window())
+  
   def activate(self):
     self.canvas.setCursor(self.cursor)
 
   def canvasReleaseEvent(self, event):
-    self.results.clear()
-    res = False
-
     layer = self.canvas.currentLayer()
-
     if layer is None:
+    #if self.model.currentLayer is None:
       QMessageBox.warning(self.canvas,
                           self.tr("No active layer"),
                           self.tr("To identify features, you must choose an active layer by clicking on its name in the legend")
                          )
       return
-
-    if layer.type() != QgsMapLayer.VectorLayer:
-      QMessageBox.warning(self.canvas,
-                          self.tr("Wrong layer type"),
-                          self.tr("This tool works only for vector layers. Please select another layer in legend and try again")
-                         )
-      return
-    '''
-    if layer.providerType() != u"postgres":
-      QMessageBox.warning(self.canvas,
-                          self.tr("Wrong layer provider"),
-                          self.tr("This tool works only for postgres layers. Please select another layer in legend and try again")
-                         )
-      return
-    '''
+    
     QApplication.setOverrideCursor(Qt.WaitCursor)
-    res = self.identifyLayer(layer, event.x(), event.y())
+    
+    res = self.results.identify(layer, event.x(), event.y())
+    
     QApplication.restoreOverrideCursor()
-
+    
     if res:
-      self.results.show(layer)
+      self.results.show()
     else:
       self.results.hide()
       QMessageBox.information(self.canvas,
                               self.tr("There is no appropriate objects"),
-                              self.tr("To identify features, you must choose any object in an active layer"))
+                              self.tr("Unable to locate objects on the specified coordinates"))
 
-  def identifyLayer(self, layer, x, y):
-    if layer.hasScaleBasedVisibility() and (layer.minimumScale() > self.canvas.mapRenderer().scale() or layer.maximumScale() <= self.canvas.mapRenderer().scale()):
-      print "Out of scale"
-      return False
-
-    point = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
-
-    # load identify radius from settings
-    settings = QSettings()
-    identifyValue = float(settings.value("/Map/identifyRadius", QGis.DEFAULT_IDENTIFY_RADIUS)) # в чем измеряется?
-    ellipsoid = settings.value("/qgis/measure/ellipsoid", GEO_NONE) # неиспользуемая переменная
-
-    if identifyValue <= 0.0: # а нужно ли если есть выше settings.value("/Map/identifyRadius", QGis.DEFAULT_IDENTIFY_RADIUS)
-      identifyValue = QGis.DEFAULT_IDENTIFY_RADIUS
-
-    featureCount = 0
-    featureList = []
-
-    try:
-      searchRadius = self.canvas.extent().width() * (identifyValue / 100.0) # почему деление на 100?
-      r = QgsRectangle()
-      r.setXMinimum(point.x() - searchRadius)
-      r.setXMaximum(point.x() + searchRadius)
-      r.setYMinimum(point.y() - searchRadius)
-      r.setYMaximum(point.y() + searchRadius)
-
-      r = self.toLayerCoordinates(layer, r)
-
-      rq = QgsFeatureRequest()
-      rq.setFilterRect(r)
-      rq.setFlags(QgsFeatureRequest.ExactIntersect)
-      for f in layer.getFeatures(rq):
-        featureList.append(QgsFeature(f))
-    except QgsCsException as cse:
-      print "Caught CRS exception", cse.what()
-
-    myFilter = False
-
-    renderer = layer.rendererV2() # неизвестность
-
-    qgsVersion = int(unicode(QGis.QGIS_VERSION_INT))
-    
-    if renderer is not None and (renderer.capabilities() | QgsFeatureRendererV2.ScaleDependent):
-      if qgsVersion < 20200 and qgsVersion > 10900:
-        renderer.startRender( self.canvas.mapRenderer().rendererContext(), layer)
-      elif qgsVersion >= 20300:
-        renderer.startRender( self.canvas.mapRenderer().rendererContext(), layer.pendingFields())
-      else:
-        renderer.startRender( self.canvas.mapRenderer().rendererContext(), layer)
-        
-      myFilter = renderer.capabilities() and QgsFeatureRendererV2.Filter
-
-    for f in featureList:
-      if myFilter and not renderer.willRenderFeature(f): # какие-то фичи отсеивают
-        continue
-
-      featureCount += 1
-
-      self.results.addFeature(f)
-
-    if renderer is not None and (renderer.capabilities() | QgsFeatureRendererV2.ScaleDependent):
-      renderer.stopRender(self.canvas.mapRenderer().rendererContext())
-
-    return featureCount > 0
+  def isAvalable(self, qgsMapLayer):
+      if qgsMapLayer is None:
+          return False
+      return True

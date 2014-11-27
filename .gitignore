@@ -3,3 +3,8 @@
 *~
 *.diff
 *.log*
+.project
+.pydevproject
+.settings
+*.qm
+ui_*.py
