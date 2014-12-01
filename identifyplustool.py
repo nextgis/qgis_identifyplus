@@ -66,16 +66,9 @@ class IdentifyPlusTool(QgsMapTool):
       self.results.show()
     else:
       self.results.hide()
-      if self.results.lastIdentifyErrorMsg is None:
-          QMessageBox.information(self.canvas,
+      QMessageBox.information(self.canvas,
                               self.tr("There is no appropriate objects"),
                               self.tr("Unable to locate objects on the specified coordinates")
-                              )
-      else:
-          QMessageBox.information(self.canvas,
-                              self.tr("There is no appropriate objects"),
-                              self.tr("Unable to locate objects on the specified coordinates")
-                                + "<br/>" + self.tr("By reason of:") + "<br/>" + self.results.lastIdentifyErrorMsg
                               )
 
   def isAvalable(self, qgsMapLayer):

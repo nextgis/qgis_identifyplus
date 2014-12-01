@@ -62,7 +62,8 @@ class ExtendedFeature(QObject):
             self._attrs[fields[i].name()] = attrs[i]
             
         self._attrs.update(self._getDerivedAttrs())
-    
+        
+        
     @property
     def layerSource(self):
         return self._layer.source()
@@ -299,8 +300,6 @@ class IdentifyPlusResultsNew(QDialog, Ui_IdentifyPlusResultsNew):
         self.btnNextRecord.clicked.connect(self.nextRecord)
         self.btnPrevRecord.clicked.connect(self.prevRecord)
         
-        self.lastIdentifyErrorMsg = None;
-        
     def firstRecord(self):
         self.currentObjectIndex = 0
         self._loadFeatureAttributes()
@@ -330,7 +329,6 @@ class IdentifyPlusResultsNew(QDialog, Ui_IdentifyPlusResultsNew):
     def identify(self, qgsMapLayer, x, y):
         self.objects = []
         self.currentObjectIndex = 0;
-        self.lastIdentifyErrorMsg = None;
         
         if self.objectView is not None:
             self.loObjectContainer.removeWidget(self.objectView)
@@ -341,14 +339,13 @@ class IdentifyPlusResultsNew(QDialog, Ui_IdentifyPlusResultsNew):
             self._initRasterLayer(qgsMapLayer, x, y)
             
         elif qgsMapLayer.type() == QgsMapLayer.VectorLayer:
-            auth = (u'administrator', u'admin')
-            (ngwResource, addAttrs) = ngwapi.getNGWResourceFromQGSLayerSource(qgsMapLayer.source(), auth)
-            
-            if ngwResource is not None:
-                self.objectView  = Obj2Widget(self)
-            else:
-                self.objectView  = Obj1Widget(self)
-                
+            #auth = (u'administrator', u'admin')
+            #(ngwResource, addAttrs) = ngwapi.getNGWResourceFromQGSLayerSource(qgsMapLayer.source(), auth)
+            #if ngwResource is not None:
+            #    self.objectView  = Obj2Widget(self)
+            #else:
+            #    self.objectView  = Obj1Widget(self)
+            self.objectView  = Obj1Widget(self)
             self._initVectorLayer(qgsMapLayer, x, y)
         else:
             pass
@@ -371,7 +368,12 @@ class IdentifyPlusResultsNew(QDialog, Ui_IdentifyPlusResultsNew):
         GdalTools_utils.setProcessEnvironment(process)
     
         process.start("gdallocationinfo", ["-xml","-b", "1" ,"-geoloc", qgsMapLayer.source(), str(point.x()), str(point.y())], QIODevice.ReadOnly)
-        process.waitForFinished()
+        
+        finishWaitSuccess = process.waitForFinished(5000) # wait 5 sec
+        
+        if not finishWaitSuccess:
+            QgsMessageLog.logMessage(self.tr("Wait for gdallocationinfo more then 5 sec <br/>"), u'IdentifyPlus', QgsMessageLog.CRITICAL)
+            return
         
         if(process.exitCode() != 0):
             err_msg = str(process.readAllStandardError())
@@ -382,8 +384,8 @@ class IdentifyPlusResultsNew(QDialog, Ui_IdentifyPlusResultsNew):
             #              self.tr("Location info request fail"),
             #              self.tr("gdallocationinfo return error status<br/>"+err_msg)
             #             )
-            self.lastIdentifyErrorMsg = self.tr("gdallocationinfo return error status<br/>" + err_msg)
-
+            #self.lastIdentifyErrorMsg = self.tr("gdallocationinfo return error status<br/>" + err_msg)
+            QgsMessageLog.logMessage(self.tr("gdallocationinfo return error status<br/>") + ":\n" + err_msg, u'IdentifyPlus', QgsMessageLog.CRITICAL)
         else:
             data = str(process.readAllStandardOutput());
             
@@ -394,7 +396,8 @@ class IdentifyPlusResultsNew(QDialog, Ui_IdentifyPlusResultsNew):
                #           self.tr("Location info request fail"),
                #           self.tr("Parsing gdallocationinfo request error<br/>" + res[1])
                #          )
-               self.lastIdentifyErrorMsg = self.tr("Parsing gdallocationinfo request error<br/>" + res[1])
+               #self.lastIdentifyErrorMsg = self.tr("Parsing gdallocationinfo request error<br/>" + res[1])
+               QgsMessageLog.logMessage(self.tr("Parsing gdallocationinfo request error<br/>") + ":\n" + res[1] + "\n" + data, u'IdentifyPlus', QgsMessageLog.CRITICAL)
             else:
                 for f in res[1]:
                     self.objects.append(f)

@@ -45,9 +45,9 @@ class IdentifyPlus:
     userPluginPath = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/identifyplus"
     systemPluginPath = QgsApplication.prefixPath() + "/python/plugins/identifyplus"
 
-    overrideLocale = bool(QSettings().value("locale/overrideFlag", False))
+    overrideLocale = bool(QSettings().value("locale/overrideFlag", False, bool))
     if not overrideLocale:
-      localeFullName = QLocale.system().name()
+      localeFullName = QLocale.system().name()[:2]
     else:
       localeFullName = QSettings().value("locale/userLocale", "")
 

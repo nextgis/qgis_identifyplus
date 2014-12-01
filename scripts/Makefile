@@ -1,6 +1,6 @@
 UI_PATH=ui
 UI_SOURCES=$(wildcard $(UI_PATH)/*.ui)
-UI_FILES=$(patsubst $(UI_PATH)/%.ui, $(UI_PATH)/ui_%.py, $(UI_SOURCES))
+UI_FILES=$(patsubst $(UI_PATH)/%.ui, ./ui_%.py, $(UI_SOURCES))
 
 LANG_PATH=i18n
 LANG_SOURCES=$(wildcard $(LANG_PATH)/*.ts)
@@ -26,7 +26,7 @@ lang: $(LANG_FILES)
 
 res: $(RES_FILES)
 
-$(UI_FILES): $(UI_PATH)/ui_%.py: $(UI_PATH)/%.ui
+$(UI_FILES): ui_%.py: $(UI_PATH)/%.ui
 	pyuic4 -o $@ $<
 
 $(LANG_FILES): $(LANG_PATH)/%.qm: $(LANG_PATH)/%.ts

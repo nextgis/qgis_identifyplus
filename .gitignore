@@ -8,3 +8,4 @@
 .settings
 *.qm
 ui_*.py
+*_rc.py

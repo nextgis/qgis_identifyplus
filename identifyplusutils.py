@@ -39,7 +39,7 @@ def gdallocationinfoXMLOutputProcessing(outputXMLString):
     try:
         rootNode = ET.fromstring(outputXMLString)
     except ET.ParseError as err:
-        return [1,"Input data error: " + err.msg]
+        return [1,"Input data error: " + str(err.msg)]
         
     alert_node = rootNode.find('Alert')
     if (alert_node != None):
