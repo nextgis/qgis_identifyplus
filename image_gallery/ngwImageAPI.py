@@ -45,7 +45,13 @@ from identifyplus.ngwapi import ngwapi
 class KrasnogorskImageAPIError(ImageGallery.ImageGalleryError):
   def __init__(self, msg):
     self.msg = msg
-
+  def __str__(self):
+      return self.msg
+      
+class NGWImageAPIError(ImageGallery.ImageGalleryError):
+    def __init__(self, msg):
+        self.msg= msg
+        
 class KrasnogorskImageAPI(object):
   def __init__(self, host, proxy = None, header = None):
     self.host = host
@@ -147,24 +153,29 @@ class NGWImageAPI(object):
     def getImages(self, **args):
         ngwResource = args.get("ngw_resource")
         featureId = args.get("feature_id")
-    
+        auth = args.get("auth")
         if (ngwResource == None or featureId == None):
             KrasnogorskImageAPIError("Not set ngwResource or feature_id parameter")
         
-        imagesIds = ngwapi.ngwIdentification(ngwResource, featureId).imagesIds
-        if imagesIds is None:
+        try:
+          imagesIds = ngwapi.ngwIdentification(ngwResource, featureId, auth).imagesIds
+          
+          if imagesIds is None:
             return []
-        
-        images = []
-        for imageId in imagesIds:
-          url = ngwResource.getURLForGetFeatureImage(featureId, imageId)
-          url4preview = url + "?size=150x150"
+            
+          images = []
+          for imageId in imagesIds:
+            url = ngwResource.getURLForGetFeatureImage(featureId, imageId)
+            url4preview = url + "?size=150x150"
+            
+            images.append(ImageGallery.Image(imageId, url, url4preview)) 
           
-          print "url4preview: ", url4preview
+          return images
           
-          images.append(ImageGallery.Image(imageId, url, url4preview)) 
-        
-        return images
+        except NGWAPIError as err:
+          print "raise NGWImageAPIError(str(err))"
+          raise NGWImageAPIError(str(err))
+          
 
     def addImage(self, **args):
         pass

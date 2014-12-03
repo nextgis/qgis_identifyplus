@@ -7,7 +7,7 @@ class ImageGalleryError(Exception):
   def __init__(self, msg):
     self.msg = msg
   def __str__(self):
-    return repr(self.value)
+    return self.msg
 
 class Image(object):
     def __init__(self, id, url, url_preview = None):

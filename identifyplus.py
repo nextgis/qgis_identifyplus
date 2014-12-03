@@ -31,6 +31,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 import identifyplustool
+import identifyplusresults
 import aboutdialog
 
 import resources_rc
@@ -94,7 +95,15 @@ class IdentifyPlus:
 
     # handle layer changes
     self.iface.currentLayerChanged.connect(self.toggleTool)
-
+    self.dockWidget = identifyplusresults.IdentifyPlusResultsDock(self.mapTool, self.iface.mapCanvas(), self)
+    
+    settings = QSettings();
+    self.iface.addDockWidget( settings.value("identifyplus/dockWidgetArea", Qt.RightDockWidgetArea,  type=int), self.dockWidget)
+    self.dockWidget.setFloating( settings.value("identifyplus/dockIsFloating", False, type=bool))
+    self.dockWidget.resize( settings.value("identifyplus/dockWidgetSize", QSize(150, 300), type=QSize) )
+    self.dockWidget.move( settings.value("identifyplus/dockWidgetPos", QPoint(500, 500), type=QPoint) )
+    self.dockWidget.setVisible( settings.value("identifyplus/dockWidgetIsVisible", True, type=bool))
+    
   def unload(self):
     self.iface.attributesToolBar().removeAction(self.actionRun)
     self.iface.removePluginMenu(QCoreApplication.translate("IdentifyPlus", "IdentifyPlus"), self.actionRun)
@@ -103,7 +112,16 @@ class IdentifyPlus:
     if self.iface.mapCanvas().mapTool() == self.mapTool:
       self.iface.mapCanvas().unsetMapTool(self.mapTool)
 
+    settings = QSettings();
+    settings.setValue("identifyplus/dockIsFloating", self.dockWidget.isFloating())
+    mw = self.iface.mainWindow()
+    settings.setValue("identifyplus/dockWidgetArea", mw.dockWidgetArea(self.dockWidget))
+    settings.setValue("identifyplus/dockWidgetSize", self.dockWidget.size())
+    settings.setValue("identifyplus/dockWidgetPos", self.dockWidget.pos())
+    settings.setValue("identifyplus/dockWidgetIsVisible", self.dockWidget.isVisible())
+      
     del self.mapTool
+    del self.dockWidget
 
   def mapToolChanged(self, tool):
     if tool != self.mapTool:

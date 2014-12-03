@@ -36,13 +36,14 @@ import identifyplusresults
 import resources_rc
 
 class IdentifyPlusTool(QgsMapTool):
+  used = pyqtSignal(QgsMapTool, int, int)
   def __init__(self, canvas):
     QgsMapTool.__init__(self, canvas)
 
     self.canvas = canvas
     self.cursor = QCursor(QPixmap(":/icons/cursor.png"), 1, 1)
     
-    self.results = identifyplusresults.IdentifyPlusResultsNew(self, self.canvas, self.canvas.window())
+    self.results = identifyplusresults.IdentifyPlusResultsDialog(self, self.canvas, self.canvas.window())
   
   def activate(self):
     self.canvas.setCursor(self.cursor)
@@ -58,18 +59,19 @@ class IdentifyPlusTool(QgsMapTool):
     
     QApplication.setOverrideCursor(Qt.WaitCursor)
     
-    res = self.results.identify(layer, event.x(), event.y())
+    self.used.emit(layer, event.x(), event.y())
+    #res = self.results.identify(layer, event.x(), event.y())
     
     QApplication.restoreOverrideCursor()
     
-    if res:
-      self.results.show()
-    else:
-      self.results.hide()
-      QMessageBox.information(self.canvas,
-                              self.tr("There is no appropriate objects"),
-                              self.tr("Unable to locate objects on the specified coordinates")
-                              )
+    #if res:
+    #  self.results.show()
+    #else:
+    #  self.results.hide()
+    #  QMessageBox.information(self.canvas,
+    #                          self.tr("There is no appropriate objects"),
+    #                          self.tr("Unable to locate objects on the specified coordinates")
+    #                          )
 
   def isAvalable(self, qgsMapLayer):
       return qgsMapLayer is not None

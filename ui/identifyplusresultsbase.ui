@@ -46,7 +46,7 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset resource="../resources.qrc">
            <normaloff>:/icons/first.png</normaloff>:/icons/first.png</iconset>
          </property>
         </widget>
@@ -60,7 +60,7 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset resource="../resources.qrc">
            <normaloff>:/icons/previous.png</normaloff>:/icons/previous.png</iconset>
          </property>
         </widget>
@@ -74,7 +74,7 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset resource="../resources.qrc">
            <normaloff>:/icons/next.png</normaloff>:/icons/next.png</iconset>
          </property>
         </widget>
@@ -88,7 +88,7 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset resource="resources.qrc">
+          <iconset resource="../resources.qrc">
            <normaloff>:/icons/last.png</normaloff>:/icons/last.png</iconset>
          </property>
         </widget>
@@ -211,7 +211,7 @@
             <string>...</string>
            </property>
            <property name="icon">
-            <iconset resource="resources.qrc">
+            <iconset resource="../resources.qrc">
              <normaloff>:/icons/add.png</normaloff>:/icons/add.png</iconset>
            </property>
            <property name="iconSize">
@@ -231,7 +231,7 @@
             <string>...</string>
            </property>
            <property name="icon">
-            <iconset resource="resources.qrc">
+            <iconset resource="../resources.qrc">
              <normaloff>:/icons/download.png</normaloff>:/icons/download.png</iconset>
            </property>
            <property name="iconSize">
@@ -251,7 +251,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="../resources.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -13,5 +13,7 @@
     <file>image_gallery/ScrollBar.qml</file>
     <file>image_gallery/icons/disk.png</file>
     <file>image_gallery/icons/image_delete.png</file>
+    <file>icons/identification.gif</file>
+    
   </qresource>
 </RCC>

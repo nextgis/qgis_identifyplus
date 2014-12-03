@@ -25,8 +25,14 @@
 #
 #******************************************************************************
 import re, requests, json
-from urlparse import urlparse, parse_qs, urljoin
+import identifyplus.requests as requests
 
+class NGWAPIError(Exception):
+    def __init__(self, msg):
+        self._msg= msg
+    def __str__(self):
+        return self._msg
+        
 class NGWResource(object):
     def __init__(self, ngwBaseURL, jsonDescription):
         self._ngwBaseURL = ngwBaseURL
@@ -81,42 +87,17 @@ def _createNGWResource(ngwBaseURL, jsonDescription):
 
 def getNGWResource(ngwBaseURL, resourceId, (userName, userPassword)):
     jsonRequestURL = u'%s/api/resource/%d' %(ngwBaseURL, resourceId) 
+    print " jsonRequestURL: ", jsonRequestURL
     try:
-        r = requests.get(jsonRequestURL, auth=(userName, userPassword))
-        if r.status_code != 200:
-            return None
-
-        return _createNGWResource( ngwBaseURL, r.json())
+        response = requests.get(jsonRequestURL, auth=(userName, userPassword))
+        
+        if response.status_code != 200:
+            raise NGWAPIError("RequestException. Response: %s" %(response.text))
+        
+        return _createNGWResource( ngwBaseURL, response.json)
 
     except requests.exceptions.RequestException as err:
-        print err.msg()
-        return None
-
-def getNGWResourceFromQGSLayerSource(qgsLayerSource, (userName, userPassword)):
-    baseURL = ""
-    resourceID = 0
-    
-    if not isinstance(qgsLayerSource,unicode):
-        return (None,None)
-    
-    o = urlparse(qgsLayerSource)
-    m = re.search('^/\w+/resource/\d+/',o.path)
-    if m is None:
-        return (None,None)
-    
-    # o.path is '/<ngw service name>/resource/<resource id>/.......'
-    # m.group() is '/<ngw service name>/resource/<resource id>/'
-    basePathStructure = m.group().strip('/').split('/')
-    baseURL = o.scheme + '://' + o.netloc + '/' + basePathStructure[0]
-    resourceID = int(basePathStructure[2])
-    
-    additionAttrs = {}
-    requestAttrs = parse_qs(o.query)
-    if requestAttrs.get(u'TYPENAME') is not None:
-        additionAttrs.update({u'LayerName': requestAttrs[u'TYPENAME'][0]})
-    
-    return (getNGWResource(baseURL, resourceID, (userName, userPassword)), additionAttrs)
-
+        raise NGWAPIError("RequestException: %s" % str(err))
 
 class NGWIdentificationInfo(object):
     def __init__(self, jsonDescription):
@@ -127,31 +108,28 @@ class NGWIdentificationInfo(object):
         if self._model["ext"]["feature_photo"] is None:
             return []
         return self._model["ext"]["feature_photo"]
-    
-def ngwIdentification(ngwResourceVectorLayer, fid):
+
+def ngwIdentification(ngwResourceVectorLayer, fid, (userName, userPassword)):
+    print "ngwIdentification"
     if not isinstance(ngwResourceVectorLayer, NGWResourceVectorLayer):
         return None
     
     request_url = ngwResourceVectorLayer.getURLForIdentification(fid)
-    print "request_url: ", request_url
+
     try:
-        response = requests.get(request_url, proxies=None, timeout=1.0, headers={"X-Feature-Ext":"*", "X-Requested-With":"XMLHttpRequest"})
+        response = requests.get(request_url, auth= (userName, userPassword), proxies=None, timeout=1.0, headers={"X-Feature-Ext":"*", "X-Requested-With":"XMLHttpRequest"})
         
         if response.status_code != 200:
-            print "RequestException: %s" %(response.text)
-            return None
+            raise NGWAPIError("RequestException. Response: %s" %(response.text))
         
-        if response.json() is None:
-            print "RequestException: %s"%("Response is empty")
-            return None
+        if response.json is None:
+            raise NGWAPIError("RequestException. Response does not contain json")
         
-        return NGWIdentificationInfo(response.json())
+        return NGWIdentificationInfo(response.json)
     
     except requests.exceptions.RequestException as err:
-      print err.message
+        raise NGWAPIError("RequestException: %s" % str(err))
     
-    return None
-
 
 def main():
     wfsLayer = QgsVectorLayer(u'http://demo.nextgis.ru/ngw/resource/1311/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=rukluobninsk4wfs&SRSNAME=EPSG:3857')

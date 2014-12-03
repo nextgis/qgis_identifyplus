@@ -27,6 +27,8 @@
 
 import numbers
 
+from urlparse import urlparse, parse_qs
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -47,6 +49,49 @@ from identifyplusutils import getImageByURL, gdallocationinfoXMLOutputProcessing
 
 from ngwapi import ngwapi
 
+def _parseQgsLayerSource(qgsLayer):
+        """
+            wfs:        http://demo.nextgis.ru/ngw/resource/1311/wfs?SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=rukluobninsk4wfs&SRSNAME=EPSG:3857&username=administrator&password=admin
+            geojson:    http://administrator:admin@demo.nextgis.ru/ngw/resource/1316/geojson/
+        """
+        baseURL = ""
+        ngw_username = ""
+        ngw_password = ""
+        resourceID = 0
+            
+        o = urlparse(qgsLayer.source())
+        m = re.search('^/\w+/resource/\d+/',o.path)
+        if m is None:
+            return None
+        
+        # o.path is '/<ngw service name>/resource/<resource id>/.......'
+        # m.group() is '/<ngw service name>/resource/<resource id>/'
+        basePathStructure = m.group().strip('/').split('/')
+        baseURL = o.scheme + '://' + o.netloc + '/' + basePathStructure[0]
+        resourceID = int(basePathStructure[2])
+
+        requestAttrs = parse_qs(o.query)
+        if qgsLayer.providerType() == u'WFS':
+            if requestAttrs.has_key(u'username'):
+                ngw_username = requestAttrs.get(u'username')[0]
+            if requestAttrs.has_key(u'password'):
+                ngw_password = requestAttrs.get(u'password')[0]
+        elif qgsLayer.providerType() == u'ogr':
+            if o.netloc.find('@') != -1:
+                auth_data = o.netloc.split('@')[0]
+                ngw_username = auth_data.split(':')[0]
+                ngw_password = auth_data.split(':')[1]
+        else:
+            return None
+        
+        additionAttrs = {}
+        if requestAttrs.get(u'TYPENAME') is not None:
+            additionAttrs.update({u'LayerName': requestAttrs[u'TYPENAME'][0]})
+            
+        additionAttrs.update({u'auth':(ngw_username, ngw_password)})
+        
+        return (ngwapi.getNGWResource(baseURL, resourceID, (ngw_username, ngw_password)), additionAttrs)
+        
 class ExtendedFeature(QObject):
     def __init__(self, qgsMapCanvas, qgsMapLayer, qgsFeature):
         QObject.__init__(self)
@@ -55,7 +100,7 @@ class ExtendedFeature(QObject):
         self._feature = qgsFeature
         
         self._attrs = dict()
-        
+
         attrs = qgsFeature.attributes()
         fields = qgsFeature.fields().toList()
         for i in xrange(len(attrs)):
@@ -65,8 +110,8 @@ class ExtendedFeature(QObject):
         
         
     @property
-    def layerSource(self):
-        return self._layer.source()
+    def layer(self):
+        return self._layer
     
     @property
     def id(self):
@@ -138,7 +183,10 @@ class Obj1Widget(QWidget, Ui_AttributesTable):
     def __init__(self, parent):
         QWidget.__init__(self, parent)
         self.setupUi(self)
-    
+        
+        self.tblAttributes.verticalHeader().setResizeMode(QHeaderView.ResizeToContents);
+        #self.tblAttributes.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents);
+        #self.tblAttributes.horizontalHeader().setResizeMode(1, QHeaderView.Interactive)
     def takeControl(self, extendedFeature):
         attrs = {}
         if isinstance(extendedFeature, ExtendedFeature):
@@ -150,17 +198,16 @@ class Obj1Widget(QWidget, Ui_AttributesTable):
         self.tblAttributes.setHorizontalHeaderLabels([self.tr("Name"), self.tr("Value")])
         self.tblAttributes.setRowCount(len(attrs))
         self.tblAttributes.setColumnCount(2)
-    
+        
         row = 0
         for fieldName, fieldValue in attrs.items():
             item = QTableWidgetItem(fieldName)
             self.tblAttributes.setItem(row, 0, item )
             
-            if isinstance(fieldValue, QPyNullVariant): #QPyNullVariant
+            if isinstance(fieldValue, QPyNullVariant):
                 item = QTableWidgetItem("NULL")
                 
             elif isinstance(fieldValue, QVariant):
-            #if isinstance(fieldValue, QVariant):
                 item = QTableWidgetItem(attrs[i].toString())
                 
             else:
@@ -171,10 +218,9 @@ class Obj1Widget(QWidget, Ui_AttributesTable):
             
             self.tblAttributes.setItem(row, 1, item )
             row += 1
-    
-        self.tblAttributes.resizeRowsToContents()
-        self.tblAttributes.resizeColumnsToContents()
-        self.tblAttributes.horizontalHeader().setResizeMode(1, QHeaderView.Stretch)
+            
+        #self.tblAttributes.resizeRowsToContents()
+        #self.tblAttributes.resizeColumnsToContents()
         
 class Obj2Widget(QWidget, Ui_AttributesTableWithImages):
     def __init__(self, parent):
@@ -199,30 +245,30 @@ class Obj2Widget(QWidget, Ui_AttributesTableWithImages):
         
         self.ig.setResizeMode(QtDeclarative.QDeclarativeView.SizeRootObjectToView)
         self.ig.setGeometry(100, 100, 400, 240)
-        self.galleryLayout = QHBoxLayout()
-        self.galleryLayout.addWidget(self.ig)
-        self.galleryWidget.setLayout(self.galleryLayout)
+        self.vlImageGaleryContainer.addWidget(self.ig)
         
         self.ig.setDataProvider(self.imgAPI)
         
     def takeControl(self, qgsFeature):
         self.attributesView.takeControl(qgsFeature)
         
-        auth = (u'administrator', u'admin')
-        
-        (ngwResource, addAttrs) = ngwapi.getNGWResourceFromQGSLayerSource(unicode(qgsFeature.layerSource), auth)
-        
-        if isinstance(ngwResource, ngwapi.NGWResourceWFS):
-            resourceId4identify = ngwResource.getLayerResourceIDByKeyname(addAttrs[u'LayerName'])
-            ngwResource4identify = ngwapi.getNGWResource(ngwResource.baseURL, resourceId4identify, auth)
-            self.ig.loadImages(ngw_resource = ngwResource4identify, feature_id = qgsFeature.id+1)
+        try:
+            (ngwResource, addAttrs) = _parseQgsLayerSource(qgsFeature.layer)
             
-        elif isinstance(ngwResource, ngwapi.NGWResourceVectorLayer):
-            self.ig.loadImages(ngw_resource = ngwResource, feature_id = qgsFeature.id)
-            
-        else:
-            self.tabWidget.setTabEnabled(1, False)
-            return
+            if isinstance(ngwResource, ngwapi.NGWResourceWFS):
+                resourceId4identify = ngwResource.getLayerResourceIDByKeyname(addAttrs[u'LayerName'])
+                ngwResource4identify = ngwapi.getNGWResource(ngwResource.baseURL, resourceId4identify, addAttrs[u'auth'])
+                self.ig.loadImages(ngw_resource = ngwResource4identify, feature_id = qgsFeature.id+1, auth = addAttrs[u'auth'])
+                
+            elif isinstance(ngwResource, ngwapi.NGWResourceVectorLayer):
+                self.ig.loadImages(ngw_resource = ngwResource, feature_id = qgsFeature.id, auth = addAttrs[u'auth'])
+            else:
+                self.tabWidget.setTabEnabled(1, False)
+                return
+        except ImageGallery.ImageGalleryError as err:
+            QgsMessageLog.logMessage(self.tr("Load images error") + ":\n" + str(err), u'IdentifyPlus', QgsMessageLog.CRITICAL)
+        except ngwapi.NGWAPIError as err:
+            QgsMessageLog.logMessage(self.tr("Get NGWw resource error") + ":\n" + str(err), u'IdentifyPlus', QgsMessageLog.CRITICAL)
 
     @pyqtSlot(QObject)
     def downloadPhoto(self, image):
@@ -283,9 +329,9 @@ class Obj2Widget(QWidget, Ui_AttributesTableWithImages):
         msgViewer.setMessageAsHtml(message)
         msgViewer.showMessage()
     
-class IdentifyPlusResultsNew(QDialog, Ui_IdentifyPlusResultsNew):
+class IdentifyPlusResultsNew(QWidget, Ui_IdentifyPlusResultsNew):
     def __init__(self, tool, canvas, parent):
-        QDialog.__init__(self, parent)
+        QWidget.__init__(self, parent)
         self.setupUi(self)
         
         self.canvas = canvas
@@ -299,6 +345,13 @@ class IdentifyPlusResultsNew(QDialog, Ui_IdentifyPlusResultsNew):
         self.btnLastRecord.clicked.connect(self.lastRecord)
         self.btnNextRecord.clicked.connect(self.nextRecord)
         self.btnPrevRecord.clicked.connect(self.prevRecord)
+        
+        self.lblFeatures.setText(self.tr("No features"))
+        
+        self.btnFirstRecord.setEnabled(False)
+        self.btnLastRecord.setEnabled(False)
+        self.btnNextRecord.setEnabled(False)
+        self.btnPrevRecord.setEnabled(False)
         
     def firstRecord(self):
         self.currentObjectIndex = 0
@@ -332,31 +385,38 @@ class IdentifyPlusResultsNew(QDialog, Ui_IdentifyPlusResultsNew):
         
         if self.objectView is not None:
             self.loObjectContainer.removeWidget(self.objectView)
-            self.objectView.hide()
+            self.objectView.close()
         
         if qgsMapLayer.type() == QgsMapLayer.RasterLayer:
             self.objectView = Obj1Widget(self)
             self._initRasterLayer(qgsMapLayer, x, y)
             
         elif qgsMapLayer.type() == QgsMapLayer.VectorLayer:
-            #auth = (u'administrator', u'admin')
-            #(ngwResource, addAttrs) = ngwapi.getNGWResourceFromQGSLayerSource(qgsMapLayer.source(), auth)
-            #if ngwResource is not None:
-            #    self.objectView  = Obj2Widget(self)
-            #else:
-            #    self.objectView  = Obj1Widget(self)
-            self.objectView  = Obj1Widget(self)
+            try:
+                ngwResource = _parseQgsLayerSource(qgsMapLayer)
+                self.objectView  = Obj2Widget(self)
+
+            except ngwapi.NGWAPIError as err:
+                QgsMessageLog.logMessage(self.tr("Get NGWw resource error") + ":\n" + str(err), u'IdentifyPlus', QgsMessageLog.CRITICAL)
+                self.objectView  = Obj1Widget(self)
+            
             self._initVectorLayer(qgsMapLayer, x, y)
         else:
             pass
-        
+            
         if len(self.objects) != 0:
             self._loadFeatureAttributes()
             self.loObjectContainer.addWidget(self.objectView)
+            self.btnFirstRecord.setEnabled(True)
+            self.btnLastRecord.setEnabled(True)
+            self.btnNextRecord.setEnabled(True)
+            self.btnPrevRecord.setEnabled(True)
         else:
             self.lblFeatures.setText(self.tr("No features"))
-            #self.loObjectContainer.removeWidget(self.objectView)
-            #self.objectView.hide()
+            self.btnFirstRecord.setEnabled(False)
+            self.btnLastRecord.setEnabled(False)
+            self.btnNextRecord.setEnabled(False)
+            self.btnPrevRecord.setEnabled(False)
         
         return len(self.objects) > 0
     
@@ -403,6 +463,7 @@ class IdentifyPlusResultsNew(QDialog, Ui_IdentifyPlusResultsNew):
                     self.objects.append(f)
         
     def _initVectorLayer(self, qgsMapLayer, x, y):
+        print "_initVectorLayer"
         point = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
         # load identify radius from settings
         settings = QSettings()
@@ -437,25 +498,83 @@ class IdentifyPlusResultsNew(QDialog, Ui_IdentifyPlusResultsNew):
         
         myFilter = False
     
-        renderer = qgsMapLayer.rendererV2() # неизвестность
+        #renderer = qgsMapLayer.rendererV2() # неизвестность
     
         qgsVersion = int(unicode(QGis.QGIS_VERSION_INT))
         
-        if renderer is not None and (renderer.capabilities() | QgsFeatureRendererV2.ScaleDependent):
-          if qgsVersion < 20200 and qgsVersion > 10900:
-            renderer.startRender( self.canvas.mapRenderer().rendererContext(), qgsMapLayer)
-          elif qgsVersion >= 20300:
-            renderer.startRender( self.canvas.mapRenderer().rendererContext(), qgsMapLayer.pendingFields())
-          else:
-            renderer.startRender( self.canvas.mapRenderer().rendererContext(), qgsMapLayer)
+        
+        #if renderer is not None and (renderer.capabilities() | QgsFeatureRendererV2.ScaleDependent):
+        #  if qgsVersion < 20200 and qgsVersion > 10900:
+        #    renderer.startRender( self.canvas.mapRenderer().rendererContext(), qgsMapLayer)
+        #  elif qgsVersion >= 20300:
+        #    renderer.startRender( self.canvas.mapRenderer().rendererContext(), qgsMapLayer.pendingFields())
+        #  else:
+        #    renderer.startRender( self.canvas.mapRenderer().rendererContext(), qgsMapLayer)
             
-          myFilter = renderer.capabilities() and QgsFeatureRendererV2.Filter
+        #  myFilter = renderer.capabilities() and QgsFeatureRendererV2.Filter
     
         for f in featureList:
-            if myFilter and not renderer.willRenderFeature(f): # какие-то фичи отсеивают
-                continue
+        #    if myFilter and not renderer.willRenderFeature(f): # какие-то фичи отсеивают
+        #        continue
             featureCount += 1
             self.objects.append(ExtendedFeature(self.canvas, qgsMapLayer, f))
             
-        if renderer is not None and (renderer.capabilities() | QgsFeatureRendererV2.ScaleDependent):
-          renderer.stopRender(self.canvas.mapRenderer().rendererContext())
+        #if renderer is not None and (renderer.capabilities() | QgsFeatureRendererV2.ScaleDependent):
+        #  renderer.stopRender(self.canvas.mapRenderer().rendererContext())
+
+class IdentifyPlusResultsDialog(QDialog):
+    def __init__(self, tool, canvas, plugin):
+        QDialog.__init__(self, None)
+        self.hbloResultContainer = QHBoxLayout()
+        self.setLayout(self.hbloResultContainer)
+        self.setWindowTitle(self.tr("IdentifyPlus"))
+        
+        self.wResults = IdentifyPlusResultsNew(tool, canvas, self)
+        
+        
+        self.hbloResultContainer.addWidget(self.wResults)
+        
+    def identify(self, qgsMapLayer, x, y):
+        return self.wResults.identify(qgsMapLayer, x, y)
+
+
+class IdentifyPlusResultsDock(QDockWidget):
+    def __init__(self, tool, canvas, plugin):
+        QDockWidget.__init__(self, None)
+        self.setWindowTitle(self.tr("IdentifyPlus"))
+        
+        self.wResults = IdentifyPlusResultsNew(tool, canvas, self)
+        self.setWidget(self.wResults)
+        """
+        self.movie = QMovie(":/icons/identification.gif");
+        self.processLabel = QLabel(self);
+        self.processLabel.setMovie(self.movie);
+        self.movie.start();
+        self.setWidget(self.processLabel)
+        
+
+        self.stackW = QStackedWidget()
+        self.stackW.addWidget(self.processLabel)
+        self.stackW.addWidget(self.wResults)
+        
+        self.stackW.setCurrentIndex(1)
+        
+        self.setWidget(self.stackW)
+        """
+        self.setWidget(self.wResults)
+        
+        self.tool = tool
+        self.tool.used.connect(self.mapToolProcess)
+        
+    def mapToolProcess(self, qgsMapLayer, x, y):
+        self.setEnabled(False)
+        
+        if not self.isVisible():
+            self.setVisible(True)
+        
+        #self.stackW.setCurrentIndex(0)
+        self.wResults.identify(qgsMapLayer, x, y)
+        #self.stackW.setCurrentIndex(1)
+        
+        self.setEnabled(True)
+        
