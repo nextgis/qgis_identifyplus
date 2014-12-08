@@ -249,11 +249,23 @@ class Obj2Widget(QWidget, Ui_AttributesTableWithImages):
         
         self.ig.setDataProvider(self.imgAPI)
         
+        settings = QSettings();
+        self.tabWidget.setCurrentIndex( settings.value("identifyplus/atrrsWithImages/currentTabIndex", 1, type=int) )
+        self.tabWidget.currentChanged.connect(self.saveTabState)
+    
+    def saveTabState(self, tabIndex):
+        settings = QSettings();
+        settings.setValue("identifyplus/atrrsWithImages/currentTabIndex", tabIndex)
+        
     def takeControl(self, qgsFeature):
         self.attributesView.takeControl(qgsFeature)
         
         try:
-            (ngwResource, addAttrs) = _parseQgsLayerSource(qgsFeature.layer)
+            res = _parseQgsLayerSource(qgsFeature.layer)
+            
+            ngwResource = None
+            if res is not None:
+                (ngwResource, addAttrs) = res
             
             if isinstance(ngwResource, ngwapi.NGWResourceWFS):
                 resourceId4identify = ngwResource.getLayerResourceIDByKeyname(addAttrs[u'LayerName'])
@@ -393,16 +405,18 @@ class IdentifyPlusResultsNew(QWidget, Ui_IdentifyPlusResultsNew):
             
         elif qgsMapLayer.type() == QgsMapLayer.VectorLayer:
             try:
-                ngwResource = _parseQgsLayerSource(qgsMapLayer)
-                self.objectView  = Obj2Widget(self)
-
+                res = _parseQgsLayerSource(qgsMapLayer)
+                if res is not None:
+                    self.objectView  = Obj2Widget(self)
+                else:
+                    self.objectView  = Obj1Widget(self)
             except ngwapi.NGWAPIError as err:
                 QgsMessageLog.logMessage(self.tr("Get NGWw resource error") + ":\n" + str(err), u'IdentifyPlus', QgsMessageLog.CRITICAL)
                 self.objectView  = Obj1Widget(self)
             
             self._initVectorLayer(qgsMapLayer, x, y)
         else:
-            pass
+            QgsMessageLog.logMessage(self.tr("Unknown layer type"), u'IdentifyPlus', QgsMessageLog.WARNING)
             
         if len(self.objects) != 0:
             self._loadFeatureAttributes()
@@ -418,6 +432,9 @@ class IdentifyPlusResultsNew(QWidget, Ui_IdentifyPlusResultsNew):
             self.btnNextRecord.setEnabled(False)
             self.btnPrevRecord.setEnabled(False)
         
+        if len(self.objects) == 0:
+            QgsMessageLog.logMessage(self.tr("Objects not found"), u'IdentifyPlus', QgsMessageLog.WARNING)
+            
         return len(self.objects) > 0
     
     def _initRasterLayer(self, qgsMapLayer, x, y):
@@ -463,26 +480,30 @@ class IdentifyPlusResultsNew(QWidget, Ui_IdentifyPlusResultsNew):
                     self.objects.append(f)
         
     def _initVectorLayer(self, qgsMapLayer, x, y):
-        print "_initVectorLayer"
-        point = self.canvas.getCoordinateTransform().toMapCoordinates(x, y)
         # load identify radius from settings
         settings = QSettings()
-        identifyValue = float(settings.value("/Map/identifyRadius", QGis.DEFAULT_IDENTIFY_RADIUS)) # в чем измеряется?
-        ellipsoid = settings.value("/qgis/measure/ellipsoid", GEO_NONE) # неиспользуемая переменная
+        identifyValue = float(settings.value("/Map/searchRadiusMM", QGis.DEFAULT_IDENTIFY_RADIUS))
     
-        if identifyValue <= 0.0: # а нужно ли если есть выше settings.value("/Map/identifyRadius", QGis.DEFAULT_IDENTIFY_RADIUS)
+        if identifyValue <= 0.0:
           identifyValue = QGis.DEFAULT_IDENTIFY_RADIUS
-    
+
+        pointFrom = self.canvas.getCoordinateTransform().toMapCoordinates(
+            x - identifyValue * self.canvas.PdmWidthMM, 
+            y + identifyValue * self.canvas.PdmHeightMM)
+            
+        pointTo = self.canvas.getCoordinateTransform().toMapCoordinates(
+            x + identifyValue * self.canvas.PdmWidthMM, 
+            y - identifyValue * self.canvas.PdmHeightMM)
+        
         featureCount = 0
         featureList = []
-    
         try:
-          searchRadius = self.canvas.extent().width() * (identifyValue / 100.0) # почему деление на 100?
+          #searchRadius = self.canvas.extent().width() * (identifyValue / 100.0)
           r = QgsRectangle()
-          r.setXMinimum(point.x() - searchRadius)
-          r.setXMaximum(point.x() + searchRadius)
-          r.setYMinimum(point.y() - searchRadius)
-          r.setYMaximum(point.y() + searchRadius)
+          r.setXMinimum(pointFrom.x())
+          r.setXMaximum(pointTo.x())
+          r.setYMinimum(pointFrom.y())
+          r.setYMaximum(pointTo.y())
     
           r = self.tool.toLayerCoordinates(qgsMapLayer, r)
     
@@ -492,9 +513,7 @@ class IdentifyPlusResultsNew(QWidget, Ui_IdentifyPlusResultsNew):
           for f in qgsMapLayer.getFeatures(rq):
             featureList.append(QgsFeature(f))
         except QgsCsException as cse:
-          print "Caught CRS exception", cse.what()
-    
-        print "len(featureList): ", len(featureList)
+          QgsMessageLog.logMessage(self.tr("Caught CRS exception") + ":\n" + cse.what(), u'IdentifyPlus', QgsMessageLog.CRITICAL)
         
         myFilter = False
     
@@ -545,22 +564,7 @@ class IdentifyPlusResultsDock(QDockWidget):
         
         self.wResults = IdentifyPlusResultsNew(tool, canvas, self)
         self.setWidget(self.wResults)
-        """
-        self.movie = QMovie(":/icons/identification.gif");
-        self.processLabel = QLabel(self);
-        self.processLabel.setMovie(self.movie);
-        self.movie.start();
-        self.setWidget(self.processLabel)
-        
 
-        self.stackW = QStackedWidget()
-        self.stackW.addWidget(self.processLabel)
-        self.stackW.addWidget(self.wResults)
-        
-        self.stackW.setCurrentIndex(1)
-        
-        self.setWidget(self.stackW)
-        """
         self.setWidget(self.wResults)
         
         self.tool = tool
@@ -572,9 +576,7 @@ class IdentifyPlusResultsDock(QDockWidget):
         if not self.isVisible():
             self.setVisible(True)
         
-        #self.stackW.setCurrentIndex(0)
         self.wResults.identify(qgsMapLayer, x, y)
-        #self.stackW.setCurrentIndex(1)
         
         self.setEnabled(True)
         

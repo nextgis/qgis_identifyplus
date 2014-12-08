@@ -172,8 +172,8 @@ class NGWImageAPI(object):
           
           return images
           
-        except NGWAPIError as err:
-          print "raise NGWImageAPIError(str(err))"
+        except ngwapi.NGWAPIError as err:
+          #print "raise NGWImageAPIError(str(err))"
           raise NGWImageAPIError(str(err))
           
 

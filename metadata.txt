@@ -1,8 +1,8 @@
 [general]
 name=IdentifyPlus
 description=Extended identify tool
-category=Vector
-version=3.0.2
+category=Identification
+version=3.0.3
 qgisMinimumVersion=2.6
 
 author=NextGIS

@@ -87,7 +87,6 @@ def _createNGWResource(ngwBaseURL, jsonDescription):
 
 def getNGWResource(ngwBaseURL, resourceId, (userName, userPassword)):
     jsonRequestURL = u'%s/api/resource/%d' %(ngwBaseURL, resourceId) 
-    print " jsonRequestURL: ", jsonRequestURL
     try:
         response = requests.get(jsonRequestURL, auth=(userName, userPassword))
         
@@ -110,7 +109,6 @@ class NGWIdentificationInfo(object):
         return self._model["ext"]["feature_photo"]
 
 def ngwIdentification(ngwResourceVectorLayer, fid, (userName, userPassword)):
-    print "ngwIdentification"
     if not isinstance(ngwResourceVectorLayer, NGWResourceVectorLayer):
         return None
     
