@@ -1,0 +1,11 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+<qresource>
+     <file>addImageBtn.png</file>
+     <file>downloadImageBtn.png</file>
+     <file>deleteImageBtn.png</file>
+     <file>form.qml</file>
+     <file>Button.qml</file>
+     <file>ScrollBar.qml</file>
+ </qresource>
+ </RCC>

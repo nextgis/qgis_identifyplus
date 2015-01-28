@@ -38,72 +38,65 @@ photos associated with features. If you need more info please &lt;a href=&quot;m
         <translation>Результаты определения</translation>
     </message>
     <message>
-        <location filename="ui/attributestable.ui" line="36"/>
-        <source>a</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="ui/attributestable.ui" line="41"/>
-        <source>b</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="ui/attributestable.ui" line="46"/>
+        <location filename="ui/attributestable.ui" line="63"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="ui/attributestable.ui" line="51"/>
+        <location filename="ui/attributestable.ui" line="68"/>
         <source>Value</source>
         <translation>Значение</translation>
-    </message>
-    <message>
-        <location filename="ui/attributestable.ui" line="56"/>
-        <source>qwe</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="ui/attributestable.ui" line="61"/>
-        <source>qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe </source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="ui/attributestable.ui" line="66"/>
-        <source>qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe qwe </source>
-        <translation></translation>
     </message>
 </context>
 <context>
     <name>AttributesTableWithImages</name>
     <message>
-        <location filename="ui/attributestablewithimages.ui" line="14"/>
+        <location filename="ui/attributestablewithimages.ui" line="20"/>
         <source>Form</source>
         <translation>Результаты определения</translation>
     </message>
     <message>
-        <location filename="ui/attributestablewithimages.ui" line="30"/>
+        <location filename="ui/attributestablewithimages.ui" line="51"/>
         <source>Attributes</source>
         <translation>Атрибуты</translation>
     </message>
     <message>
-        <location filename="ui/attributestablewithimages.ui" line="43"/>
+        <location filename="ui/attributestablewithimages.ui" line="64"/>
         <source>Image</source>
         <translation>Изображения</translation>
     </message>
     <message>
-        <location filename="ui/attributestablewithimages.ui" line="83"/>
+        <location filename="ui/attributestablewithimages.ui" line="123"/>
         <source>Load photo to database</source>
         <translation>Загрузить изображение в базу данных</translation>
     </message>
     <message>
-        <location filename="ui/attributestablewithimages.ui" line="106"/>
+        <location filename="ui/attributestablewithimages.ui" line="146"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/attributestablewithimages.ui" line="103"/>
+        <location filename="ui/attributestablewithimages.ui" line="143"/>
         <source>Save all photos to disk</source>
         <translation>Сохранить все изображения на диск</translation>
+    </message>
+</context>
+<context>
+    <name>AttributesView</name>
+    <message>
+        <location filename="representations.py" line="124"/>
+        <source>attributes</source>
+        <translation>Атрибуты</translation>
+    </message>
+    <message>
+        <location filename="representations.py" line="141"/>
+        <source>Name</source>
+        <translation>Имя</translation>
+    </message>
+    <message>
+        <location filename="representations.py" line="141"/>
+        <source>Value</source>
+        <translation>Значение</translation>
     </message>
 </context>
 <context>
@@ -138,57 +131,65 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>DictView</name>
+    <message>
+        <location filename="representations.py" line="95"/>
+        <source>attributes</source>
+        <translation>Атрибуты</translation>
+    </message>
+    <message>
+        <location filename="representations.py" line="105"/>
+        <source>Name</source>
+        <translation>Имя</translation>
+    </message>
+    <message>
+        <location filename="representations.py" line="105"/>
+        <source>Value</source>
+        <translation>Значение</translation>
+    </message>
+</context>
+<context>
     <name>ExtendedFeature</name>
     <message>
         <location filename="identifyplusresults.py" line="94"/>
         <source>Length</source>
-        <translation>Длина</translation>
+        <translation type="obsolete">Длина</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="99"/>
         <source>firstX</source>
-        <translation>Начальный X</translation>
+        <translation type="obsolete">Начальный X</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="101"/>
         <source>firstY</source>
-        <translation>Начальный Y</translation>
+        <translation type="obsolete">Начальный Y</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="105"/>
         <source>lastX</source>
-        <translation>Конечный X</translation>
+        <translation type="obsolete">Конечный X</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="107"/>
         <source>lastY</source>
-        <translation>Конечный Y</translation>
+        <translation type="obsolete">Конечный Y</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="114"/>
         <source>Area</source>
-        <translation>Площадь</translation>
+        <translation type="obsolete">Площадь</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="118"/>
         <source>Perimeter</source>
-        <translation>Периметр</translation>
-    </message>
-    <message>
-        <location filename="identifyplusresults.py" line="123"/>
-        <source>X</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="identifyplusresults.py" line="125"/>
-        <source>Y</source>
-        <translation></translation>
+        <translation type="obsolete">Периметр</translation>
     </message>
 </context>
 <context>
     <name>IdentifyPlus</name>
     <message>
-        <location filename="identifyplus.py" line="68"/>
+        <location filename="identifyplus.py" line="69"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
@@ -206,23 +207,23 @@ Plugin will not be enabled.</source>
 Модуль не будет загружен.</translation>
     </message>
     <message>
-        <location filename="identifyplus.py" line="101"/>
+        <location filename="identifyplus.py" line="115"/>
         <source>IdentifyPlus</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="identifyplus.py" line="79"/>
+        <location filename="identifyplus.py" line="80"/>
         <source>About IdentifyPlus...</source>
         <translation>О IdentifyPlus...</translation>
     </message>
     <message>
-        <location filename="identifyplus.py" line="68"/>
+        <location filename="identifyplus.py" line="69"/>
         <source>QGIS %s detected.
 </source>
         <translation>Обнаружена QGIS версии %s.</translation>
     </message>
     <message>
-        <location filename="identifyplus.py" line="68"/>
+        <location filename="identifyplus.py" line="69"/>
         <source>This version of IdentifyPlus requires at least QGIS version 2.0.
 Plugin will not be enabled.</source>
         <translation>Эта версия IdentifyPlus требует наличия QGIS версии 2.0
@@ -234,57 +235,57 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="ui/identifyplusresultsbase.ui" line="14"/>
         <source>Identify results</source>
-        <translation>Результаты определения</translation>
+        <translation type="obsolete">Результаты определения</translation>
     </message>
     <message>
         <location filename="ui/identifyplusresultsbase.ui" line="126"/>
         <source>Attributes</source>
-        <translation>Атрибуты</translation>
+        <translation type="obsolete">Атрибуты</translation>
     </message>
     <message>
-        <location filename="ui/identifyplusresultsbase.ui" line="31"/>
+        <location filename="ui/identifyplusresultsbase.ui" line="101"/>
         <source>TextLabel</source>
         <translation></translation>
     </message>
     <message>
         <location filename="ui/identifyplusresultsbase.ui" line="154"/>
         <source>Name</source>
-        <translation>Имя</translation>
+        <translation type="obsolete">Имя</translation>
     </message>
     <message>
         <location filename="ui/identifyplusresultsbase.ui" line="159"/>
         <source>Value</source>
-        <translation>Значение</translation>
+        <translation type="obsolete">Значение</translation>
     </message>
     <message>
-        <location filename="ui/identifyplusresultsbase.ui" line="43"/>
+        <location filename="ui/identifyplusresultsbase.ui" line="113"/>
         <source>First feature</source>
         <translation>Первый объект</translation>
     </message>
     <message>
-        <location filename="ui/identifyplusresultsbase.ui" line="231"/>
+        <location filename="ui/identifyplusresultsbase.ui" line="158"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/identifyplusresultsbase.ui" line="57"/>
+        <location filename="ui/identifyplusresultsbase.ui" line="127"/>
         <source>Previous feature</source>
         <translation>Предыдущий объект</translation>
     </message>
     <message>
-        <location filename="ui/identifyplusresultsbase.ui" line="71"/>
+        <location filename="ui/identifyplusresultsbase.ui" line="141"/>
         <source>Next feature</source>
         <translation>Следующий объект</translation>
     </message>
     <message>
-        <location filename="ui/identifyplusresultsbase.ui" line="85"/>
+        <location filename="ui/identifyplusresultsbase.ui" line="155"/>
         <source>Last feature</source>
         <translation>Последний объект</translation>
     </message>
     <message>
         <location filename="ui/identifyplusresultsbase.ui" line="168"/>
         <source>Image</source>
-        <translation>Изображения</translation>
+        <translation type="obsolete">Изображения</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="206"/>
@@ -349,7 +350,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="ui/identifyplusresultsbase.ui" line="208"/>
         <source>Load photo to database</source>
-        <translation>Загрузить изображение в базу данных</translation>
+        <translation type="obsolete">Загрузить изображение в базу данных</translation>
     </message>
     <message>
         <location filename="identifyplusresultsbase.ui" line="288"/>
@@ -359,7 +360,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="ui/identifyplusresultsbase.ui" line="228"/>
         <source>Save all photos to disk</source>
-        <translation>Сохранить все изображения на диск</translation>
+        <translation type="obsolete">Сохранить все изображения на диск</translation>
     </message>
     <message>
         <location filename="identifyplusresultsbase.ui" line="316"/>
@@ -451,6 +452,39 @@ Plugin will not be enabled.</source>
         <source>Are you sure you want to delete this photo?</source>
         <translation type="obsolete">Вы уверены, что хотите удалить эту фотографию?</translation>
     </message>
+    <message>
+        <location filename="ui/identifyplusresultsbase.ui" line="20"/>
+        <source>Form</source>
+        <translation>Результаты определения</translation>
+    </message>
+    <message>
+        <location filename="identifyplusresults.py" line="195"/>
+        <source>No features</source>
+        <translation>Объекты не найдены</translation>
+    </message>
+    <message>
+        <location filename="identifyplusresults.py" line="164"/>
+        <source>Feature %s from %s (%s)</source>
+        <translation>Объект %s из %s (%s)</translation>
+    </message>
+    <message>
+        <location filename="identifyplusresults.py" line="172"/>
+        <source>%s: %s</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="identifyplusresults.py" line="200"/>
+        <source>Objects not found</source>
+        <translation>Объекты не найдены</translation>
+    </message>
+</context>
+<context>
+    <name>IdentifyPlusResultsDock</name>
+    <message>
+        <location filename="identifyplusresults.py" line="205"/>
+        <source>IdentifyPlus</source>
+        <translation></translation>
+    </message>
 </context>
 <context>
     <name>IdentifyPlusResultsNew</name>
@@ -482,22 +516,22 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="identifyplusresults.py" line="327"/>
         <source>Feature %s from %s</source>
-        <translation>Объект %s из %s</translation>
+        <translation type="obsolete">Объект %s из %s</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="360"/>
         <source>No features</source>
-        <translation>Объекты не найдены</translation>
+        <translation type="obsolete">Объекты не найдены</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="385"/>
         <source>gdallocationinfo return error status&lt;br/&gt;</source>
-        <translation>gdallocationinfo завершилась с ошибкой</translation>
+        <translation type="obsolete">gdallocationinfo завершилась с ошибкой</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="397"/>
         <source>Parsing gdallocationinfo request error&lt;br/&gt;</source>
-        <translation>Ошибка обработки результатов работы gdallocationinfo </translation>
+        <translation type="obsolete">Ошибка обработки результатов работы gdallocationinfo </translation>
     </message>
 </context>
 <context>
@@ -505,12 +539,12 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="identifyplustool.py" line="53"/>
         <source>No active layer</source>
-        <translation>Не задан активный слой</translation>
+        <translation type="obsolete">Не задан активный слой</translation>
     </message>
     <message>
         <location filename="identifyplustool.py" line="53"/>
         <source>To identify features, you must choose an active layer by clicking on its name in the legend</source>
-        <translation>Для выполнения определения объектов необходимо выбрать слой, щелкнув по его имени в легенде</translation>
+        <translation type="obsolete">Для выполнения определения объектов необходимо выбрать слой, щелкнув по его имени в легенде</translation>
     </message>
     <message>
         <location filename="identifyplustool.py" line="79"/>
@@ -535,7 +569,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="identifyplustool.py" line="75"/>
         <source>There is no appropriate objects</source>
-        <translation>Не найдены подходящие объекты</translation>
+        <translation type="obsolete">Не найдены подходящие объекты</translation>
     </message>
     <message>
         <location filename="identifyplustool.py" line="100"/>
@@ -545,12 +579,63 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="identifyplustool.py" line="75"/>
         <source>Unable to locate objects on the specified coordinates</source>
-        <translation>Не удалось найти объекты по заданным координатам</translation>
+        <translation type="obsolete">Не удалось найти объекты по заданным координатам</translation>
     </message>
     <message>
         <location filename="identifyplustool.py" line="75"/>
         <source>By reason of:</source>
-        <translation>По причине:</translation>
+        <translation type="obsolete">По причине:</translation>
+    </message>
+</context>
+<context>
+    <name>ImageGalleryWidget</name>
+    <message>
+        <location filename="imagegallery/Button.qml" line="163"/>
+        <source>Add new</source>
+        <translation type="obsolete">Добавить</translation>
+    </message>
+</context>
+<context>
+    <name>NGWImages</name>
+    <message>
+        <location filename="representations.py" line="171"/>
+        <source>No photos</source>
+        <translation>Фотографий нет</translation>
+    </message>
+    <message>
+        <location filename="representations.py" line="177"/>
+        <source>images</source>
+        <translation>Фотографии</translation>
+    </message>
+    <message>
+        <location filename="representations.py" line="212"/>
+        <source>Save image</source>
+        <translation>Сохранить изображение</translation>
+    </message>
+    <message>
+        <location filename="representations.py" line="212"/>
+        <source>PNG files (*.png)</source>
+        <translation>Файлы PNG (*.png)</translation>
+    </message>
+    <message>
+        <location filename="representations.py" line="229"/>
+        <source>The delete photo operation is not available</source>
+        <translation>Операция удаления изображения недоступна</translation>
+    </message>
+    <message>
+        <location filename="representations.py" line="235"/>
+        <source>Select directory</source>
+        <translation>Выбрать каталог</translation>
+    </message>
+    <message>
+        <location filename="representations.py" line="251"/>
+        <source>The add photo operation is not available</source>
+        <translation>Операция добавления изображения недоступна</translation>
+    </message>
+    <message>
+        <location filename="representations.py" line="255"/>
+        <source>IdentifyPlus message</source>
+        <translation>Сообщение IdentifyPlus</translation>
     </message>
 </context>
 <context>
@@ -558,12 +643,12 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="identifyplusresults.py" line="149"/>
         <source>Name</source>
-        <translation>Имя</translation>
+        <translation type="obsolete">Имя</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="149"/>
         <source>Value</source>
-        <translation>Значение</translation>
+        <translation type="obsolete">Значение</translation>
     </message>
 </context>
 <context>
@@ -571,27 +656,27 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="identifyplusresults.py" line="194"/>
         <source>No photos</source>
-        <translation>Фотографий нет</translation>
+        <translation type="obsolete">Фотографий нет</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="231"/>
         <source>Save image</source>
-        <translation>Сохранить изображение</translation>
+        <translation type="obsolete">Сохранить изображение</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="231"/>
         <source>PNG files (*.png)</source>
-        <translation>Файлы PNG (*.png)</translation>
+        <translation type="obsolete">Файлы PNG (*.png)</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="271"/>
         <source>Download photo error.&lt;br&gt;</source>
-        <translation>Ошибка скачивания фотографии. &lt;br&gt;</translation>
+        <translation type="obsolete">Ошибка скачивания фотографии. &lt;br&gt;</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="257"/>
         <source>Select directory</source>
-        <translation>Выбрать каталог</translation>
+        <translation type="obsolete">Выбрать каталог</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="724"/>
@@ -611,17 +696,17 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="identifyplusresults.py" line="251"/>
         <source>The delete photo operation is not available</source>
-        <translation>Операция удаления изображения недоступна</translation>
+        <translation type="obsolete">Операция удаления изображения недоступна</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="276"/>
         <source>The add photo operation is not available</source>
-        <translation>Операция добавления изображения недоступна</translation>
+        <translation type="obsolete">Операция добавления изображения недоступна</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="280"/>
         <source>IdentifyPlus message</source>
-        <translation>Сообщение IdentifyPlus</translation>
+        <translation type="obsolete">Сообщение IdentifyPlus</translation>
     </message>
 </context>
 <context>

@@ -24,7 +24,7 @@
 # MA 02110-1335 USA.
 #
 #******************************************************************************
-import re, requests, json
+import re, json
 import identifyplus.requests as requests
 
 class NGWAPIError(Exception):

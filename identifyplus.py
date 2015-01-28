@@ -31,13 +31,13 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 import identifyplustool
-import identifyplusresults
+from identifyplusresults import IdentifyPlusResultsDock, IdentifyPlusResults
 import aboutdialog
-
 import resources_rc
 
-class IdentifyPlus:
+class IdentifyPlus():
   def __init__(self, iface):
+
     self.iface = iface
 
     self.qgsVersion = unicode(QGis.QGIS_VERSION_INT)
@@ -87,15 +87,19 @@ class IdentifyPlus:
 
     self.actionRun.triggered.connect(self.run)
     self.actionAbout.triggered.connect(self.about)
-
+    
     # prepare map tool
     self.mapTool = identifyplustool.IdentifyPlusTool(self.iface.mapCanvas())
     self.iface.mapCanvas().mapToolSet.connect(self.mapToolChanged)
-    self.toggleTool(self.iface.mapCanvas().currentLayer())
 
     # handle layer changes
-    self.iface.currentLayerChanged.connect(self.toggleTool)
-    self.dockWidget = identifyplusresults.IdentifyPlusResultsDock(self.mapTool, self.iface.mapCanvas(), self)
+    #self.iface.currentLayerChanged.connect(self.toggleTool)
+    self.dockWidget = IdentifyPlusResultsDock(self.iface)
+    
+    self.wIdentifyResults = IdentifyPlusResults(self.iface.mapCanvas(), self.dockWidget)
+    self.dockWidget.setWidget(self.wIdentifyResults)
+    
+    self.mapTool.used.connect(self.wIdentifyResults.identify)
     
     settings = QSettings();
     self.iface.addDockWidget( settings.value("identifyplus/dockWidgetArea", Qt.RightDockWidgetArea,  type=int), self.dockWidget)
@@ -105,13 +109,14 @@ class IdentifyPlus:
     self.dockWidget.setVisible( settings.value("identifyplus/dockWidgetIsVisible", True, type=bool))
     
   def unload(self):
+
     self.iface.attributesToolBar().removeAction(self.actionRun)
     self.iface.removePluginMenu(QCoreApplication.translate("IdentifyPlus", "IdentifyPlus"), self.actionRun)
     self.iface.removePluginMenu(QCoreApplication.translate("IdentifyPlus", "IdentifyPlus"), self.actionAbout)
 
     if self.iface.mapCanvas().mapTool() == self.mapTool:
       self.iface.mapCanvas().unsetMapTool(self.mapTool)
-
+    
     settings = QSettings();
     settings.setValue("identifyplus/dockIsFloating", self.dockWidget.isFloating())
     mw = self.iface.mainWindow()
@@ -120,8 +125,8 @@ class IdentifyPlus:
     settings.setValue("identifyplus/dockWidgetPos", self.dockWidget.pos())
     settings.setValue("identifyplus/dockWidgetIsVisible", self.dockWidget.isVisible())
       
-    del self.mapTool
     del self.dockWidget
+    del self.mapTool
 
   def mapToolChanged(self, tool):
     if tool != self.mapTool:
@@ -132,12 +137,13 @@ class IdentifyPlus:
     self.actionRun.setChecked(True)
 
   def toggleTool(self, layer):
-    if not self.mapTool.isAvalable(layer):
-      self.actionRun.setEnabled(False)
-      if self.iface.mapCanvas().mapTool() == self.mapTool:
-        self.iface.mapCanvas().unsetMapTool(self.mapTool)
-    else:
-      self.actionRun.setEnabled(True)
+    #if not self.mapTool.isAvalable():
+    #  self.actionRun.setEnabled(False)
+    #  if self.iface.mapCanvas().mapTool() == self.mapTool:
+    #    self.iface.mapCanvas().unsetMapTool(self.mapTool)
+    #else:
+    #  self.actionRun.setEnabled(True)
+    pass
 
   def about(self):
     dlg = aboutdialog.AboutDialog()

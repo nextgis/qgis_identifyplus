@@ -2,8 +2,8 @@ SOURCES = __init__.py \
           identifyplus.py \
           identifyplustool.py \
           identifyplusresults.py \
-          identifyplusresultsnew.py \
-          aboutdialog.py
+          aboutdialog.py \
+          representations.py
 
 FORMS = ui\identifyplusresultsbase.ui \
         ui\aboutdialogbase.ui \

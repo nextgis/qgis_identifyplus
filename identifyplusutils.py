@@ -26,9 +26,10 @@
 #******************************************************************************
 
 import xml.etree.ElementTree as ET
-import json
+import json, requests
 
-from image_gallery.ngwImageAPI import *
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
 def gdallocationinfoXMLOutputProcessing(outputXMLString):
     """
@@ -58,7 +59,11 @@ def gdallocationinfoXMLOutputProcessing(outputXMLString):
         else:
             results = []
             for r in jsonLocationInfo["results"]:
-                results.append(r[u'attributes'])
+                attrs = r[u'attributes']
+                attrs.update({u'layerId': str(r[u'layerId'])})
+                attrs.update({'layerName': r[u'layerName']})
+                
+                results.append(attrs)
             
             return [None, results]
     except ValueError as err:
@@ -85,15 +90,8 @@ def gdallocationinfoXMLOutputProcessing(outputXMLString):
     return [10, "Cann't parse input data"]
 
 def getImageByURL(url, proxy):
-    try:
-      response = requests.get(url, proxies=proxy)
-    except requests.exceptions.RequestException as err:
-      raise KrasnogorskImageAPIError( "RequestException: %s"%(err.message) )
-    except:
-      raise KrasnogorskImageAPIError( "Common Exception: %s"%( str(sys.exc_info())) )
-
-    if response.content is None or response.content == "":
-      raise KrasnogorskImageAPIError( "<h1>Error: image not found</h1><p>Photo with ID %s not found using URL %s</p>" % (image.id, image.url) )
+    
+    response = requests.get(url, proxies=proxy)
     
     img = QPixmap()
     img.loadFromData(QByteArray(response.content))
