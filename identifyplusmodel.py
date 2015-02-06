@@ -131,17 +131,19 @@ class IdentifyPlusModel(QObject):
         resourceID = 0
             
         o = urlparse(qgsMapLayer.source())
-        m = re.search('^/\w+/resource/\d+/',o.path)
+        
+        m = re.search('^\w*/resource/\d+/',o.path)
         if m is None:
             return None
         
-        # o.path is '/<ngw service name>/resource/<resource id>/.......'
-        # m.group() is '/<ngw service name>/resource/<resource id>/'
+        # o.path is '.../resource/<resource id>/.......'
+        # m.group() is '.../resource/<resource id>/'
         basePathStructure = m.group().strip('/').split('/')
-        baseURL = o.scheme + '://' + o.netloc + '/' + basePathStructure[0]
-        resourceID = int(basePathStructure[2])
 
+        baseURL = o.scheme + '://' + o.netloc + '/' + '/'.join(basePathStructure[:-2])
+        resourceID = int(basePathStructure[-1])
         requestAttrs = parse_qs(o.query)
+
         if qgsMapLayer.providerType() == u'WFS':
             if requestAttrs.has_key(u'username'):
                 ngw_username = requestAttrs.get(u'username')[0]
@@ -154,7 +156,6 @@ class IdentifyPlusModel(QObject):
                 ngw_password = auth_data.split(':')[1]
         else:
             return None
-        
         additionAttrs = {}
         if requestAttrs.get(u'TYPENAME') is not None:
             additionAttrs.update({u'LayerName': requestAttrs[u'TYPENAME'][0]})
@@ -171,7 +172,7 @@ class IdentifyPlusModel(QObject):
         
     def _initRasterLayer(self, qgsMapLayer, qgsPoint):
         QgsMessageLog.logMessage(
-            "identification point %f %f"%(qgsPoint.x(), qgsPoint.y()),
+            "identification raster point %f %f"%(qgsPoint.x(), qgsPoint.y()),
             u'IdentifyPlus',
             QgsMessageLog.INFO)
         
@@ -181,12 +182,46 @@ class IdentifyPlusModel(QObject):
         process = QProcess()
         GdalTools_utils.setProcessEnvironment(process)
         
+        gdallocationinfo_params = []
+        
+        settings = QSettings()
+        proxyEnabled = settings.value("proxy/proxyEnabled", False, type=bool)
+        
+        if proxyEnabled == True:
+            proxyType = settings.value("proxy/proxyType", "", type=unicode)
+            if  proxyType == "HttpProxy":
+                
+                GDAL_HTTP_PROXY = ""
+                proxyHost = settings.value("proxy/proxyHost", None, type=unicode)
+                if proxyHost is None:
+                    QgsMessageLog.logMessage(
+                        self.tr("QGIS proxysettings error") + ": " + self.tr("Parameter 'proxyHost' is missing"), 
+                        u'IdentifyPlus', 
+                        QgsMessageLog.CRITICAL)
+                    return []                
+                GDAL_HTTP_PROXY = GDAL_HTTP_PROXY + proxyHost             
+                proxyPort = settings.value("proxy/proxyPort", None, type=unicode)
+                if proxyPort is not None:
+                    GDAL_HTTP_PROXY = GDAL_HTTP_PROXY  + ":%s"%proxyPort
+                gdallocationinfo_params.extend(["--config", "GDAL_HTTP_PROXY", GDAL_HTTP_PROXY])
+                
+                GDAL_HTTP_PROXYUSERPWD = ""
+                proxyUser = settings.value("proxy/proxyUser", None, type=unicode)
+                if proxyUser is not None:
+                    GDAL_HTTP_PROXYUSERPWD = GDAL_HTTP_PROXYUSERPWD + proxyUser
+                    proxyPassword = settings.value("proxy/proxyPassword", None, type=unicode)
+                    if proxyPassword is not None:
+                        GDAL_HTTP_PROXYUSERPWD = GDAL_HTTP_PROXYUSERPWD + ":%s"%proxyPassword
+                    gdallocationinfo_params.extend(["--config", "GDAL_HTTP_PROXYUSERPWD", GDAL_HTTP_PROXYUSERPWD])
+        
+        gdallocationinfo_params.extend(["-xml","-b", "1" ,"-geoloc", qgsMapLayer.source(), str(point.x()), str(point.y())])
+        
         QgsMessageLog.logMessage(
-            "gdallocationinfo -xml -b 1 -geoloc %s %f %f"%(qgsMapLayer.source(), point.x(), point.y()),
+            "gdallocationinfo "+ " ".join(gdallocationinfo_params),
             u'IdentifyPlus',
             QgsMessageLog.INFO)
-        
-        process.start("gdallocationinfo", ["-xml","-b", "1" ,"-geoloc", qgsMapLayer.source(), str(point.x()), str(point.y())], QIODevice.ReadOnly)
+            
+        process.start("gdallocationinfo", gdallocationinfo_params, QIODevice.ReadOnly)
         finishWaitSuccess = process.waitForFinished()
         
         #if not finishWaitSuccess:
