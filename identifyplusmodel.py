@@ -132,7 +132,7 @@ class IdentifyPlusModel(QObject):
             
         o = urlparse(qgsMapLayer.source())
         
-        m = re.search('^\w*/resource/\d+/',o.path)
+        m = re.search('^.*/resource/\d+/',o.path)
         if m is None:
             return None
         
