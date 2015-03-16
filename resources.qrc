@@ -8,5 +8,8 @@
     <file>icons/next.png</file>
     <file>icons/previous.png</file>
     <file>icons/close.png</file>
+    <file>icons/addImageBtn.png</file>
+    <file>icons/deleteImageBtn.png</file>
+    <file>icons/downloadImageBtn.png</file>
   </qresource>
 </RCC>

@@ -86,17 +86,17 @@ photos associated with features. If you need more info please &lt;a href=&quot;m
     <message>
         <location filename="representations.py" line="124"/>
         <source>attributes</source>
-        <translation>Атрибуты</translation>
+        <translation type="obsolete">Атрибуты</translation>
     </message>
     <message>
         <location filename="representations.py" line="141"/>
         <source>Name</source>
-        <translation>Имя</translation>
+        <translation type="obsolete">Имя</translation>
     </message>
     <message>
         <location filename="representations.py" line="141"/>
         <source>Value</source>
-        <translation>Значение</translation>
+        <translation type="obsolete">Значение</translation>
     </message>
 </context>
 <context>
@@ -135,17 +135,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="representations.py" line="95"/>
         <source>attributes</source>
-        <translation>Атрибуты</translation>
+        <translation type="obsolete">Атрибуты</translation>
     </message>
     <message>
         <location filename="representations.py" line="105"/>
         <source>Name</source>
-        <translation>Имя</translation>
+        <translation type="obsolete">Имя</translation>
     </message>
     <message>
         <location filename="representations.py" line="105"/>
         <source>Value</source>
-        <translation>Значение</translation>
+        <translation type="obsolete">Значение</translation>
     </message>
 </context>
 <context>
@@ -187,9 +187,37 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>IdentificationWorker</name>
+    <message>
+        <location filename="identifyplusmodel.py" line="132"/>
+        <source>QGIS proxysettings error</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="identifyplusmodel.py" line="132"/>
+        <source>Parameter &apos;proxyHost&apos; is missing</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="identifyplusmodel.py" line="171"/>
+        <source>gdallocationinfo return error status&lt;br/&gt;</source>
+        <translation>gdallocationinfo завершилась с ошибкой</translation>
+    </message>
+    <message>
+        <location filename="identifyplusmodel.py" line="177"/>
+        <source>Parsing gdallocationinfo request error&lt;br/&gt;</source>
+        <translation>Ошибка обработки результатов работы gdallocationinfo </translation>
+    </message>
+    <message>
+        <location filename="identifyplusmodel.py" line="224"/>
+        <source>Caught CRS exception</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
     <name>IdentifyPlus</name>
     <message>
-        <location filename="identifyplus.py" line="69"/>
+        <location filename="identifyplus.py" line="72"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
@@ -207,23 +235,23 @@ Plugin will not be enabled.</source>
 Модуль не будет загружен.</translation>
     </message>
     <message>
-        <location filename="identifyplus.py" line="115"/>
+        <location filename="identifyplus.py" line="132"/>
         <source>IdentifyPlus</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="identifyplus.py" line="80"/>
+        <location filename="identifyplus.py" line="85"/>
         <source>About IdentifyPlus...</source>
         <translation>О IdentifyPlus...</translation>
     </message>
     <message>
-        <location filename="identifyplus.py" line="69"/>
+        <location filename="identifyplus.py" line="72"/>
         <source>QGIS %s detected.
 </source>
         <translation>Обнаружена QGIS версии %s.</translation>
     </message>
     <message>
-        <location filename="identifyplus.py" line="69"/>
+        <location filename="identifyplus.py" line="72"/>
         <source>This version of IdentifyPlus requires at least QGIS version 2.0.
 Plugin will not be enabled.</source>
         <translation>Эта версия IdentifyPlus требует наличия QGIS версии 2.0
@@ -243,7 +271,7 @@ Plugin will not be enabled.</source>
         <translation type="obsolete">Атрибуты</translation>
     </message>
     <message>
-        <location filename="ui/identifyplusresultsbase.ui" line="101"/>
+        <location filename="ui/identifyplusresultsbase.ui" line="58"/>
         <source>TextLabel</source>
         <translation></translation>
     </message>
@@ -258,27 +286,27 @@ Plugin will not be enabled.</source>
         <translation type="obsolete">Значение</translation>
     </message>
     <message>
-        <location filename="ui/identifyplusresultsbase.ui" line="113"/>
+        <location filename="ui/identifyplusresultsbase.ui" line="73"/>
         <source>First feature</source>
         <translation>Первый объект</translation>
     </message>
     <message>
-        <location filename="ui/identifyplusresultsbase.ui" line="158"/>
+        <location filename="ui/identifyplusresultsbase.ui" line="118"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ui/identifyplusresultsbase.ui" line="127"/>
+        <location filename="ui/identifyplusresultsbase.ui" line="87"/>
         <source>Previous feature</source>
         <translation>Предыдущий объект</translation>
     </message>
     <message>
-        <location filename="ui/identifyplusresultsbase.ui" line="141"/>
+        <location filename="ui/identifyplusresultsbase.ui" line="101"/>
         <source>Next feature</source>
         <translation>Следующий объект</translation>
     </message>
     <message>
-        <location filename="ui/identifyplusresultsbase.ui" line="155"/>
+        <location filename="ui/identifyplusresultsbase.ui" line="115"/>
         <source>Last feature</source>
         <translation>Последний объект</translation>
     </message>
@@ -458,30 +486,35 @@ Plugin will not be enabled.</source>
         <translation>Результаты определения</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="195"/>
+        <location filename="identifyplusresults.py" line="58"/>
         <source>No features</source>
         <translation>Объекты не найдены</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="164"/>
+        <location filename="identifyplusresults.py" line="162"/>
         <source>Feature %s from %s (%s)</source>
         <translation>Объект %s из %s (%s)</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="172"/>
-        <source>%s: %s</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="identifyplusresults.py" line="200"/>
+        <location filename="identifyplusresults.py" line="132"/>
         <source>Objects not found</source>
         <translation>Объекты не найдены</translation>
+    </message>
+    <message>
+        <location filename="ui/identifyplusresultsbase.ui" line="231"/>
+        <source>Identification status</source>
+        <translation>Статус идентификацмм</translation>
+    </message>
+    <message>
+        <location filename="identifyplusresults.py" line="84"/>
+        <source>Process layer: %s</source>
+        <translation>Обработка слоя: %s</translation>
     </message>
 </context>
 <context>
     <name>IdentifyPlusResultsDock</name>
     <message>
-        <location filename="identifyplusresults.py" line="205"/>
+        <location filename="identifyplusresults.py" line="171"/>
         <source>IdentifyPlus</source>
         <translation></translation>
     </message>
@@ -588,6 +621,14 @@ Plugin will not be enabled.</source>
     </message>
 </context>
 <context>
+    <name>ImageDownloadDialog</name>
+    <message>
+        <location filename="representation_ngw.py" line="452"/>
+        <source>Download images process</source>
+        <translation>Процесс загрузки изображений</translation>
+    </message>
+</context>
+<context>
     <name>ImageGalleryWidget</name>
     <message>
         <location filename="imagegallery/Button.qml" line="163"/>
@@ -596,46 +637,87 @@ Plugin will not be enabled.</source>
     </message>
 </context>
 <context>
+    <name>ImageLabel</name>
+    <message>
+        <location filename="representation_ngw.py" line="138"/>
+        <source>Loading...</source>
+        <translation>Загрузка...</translation>
+    </message>
+</context>
+<context>
     <name>NGWImages</name>
     <message>
         <location filename="representations.py" line="171"/>
         <source>No photos</source>
-        <translation>Фотографий нет</translation>
+        <translation type="obsolete">Фотографий нет</translation>
     </message>
     <message>
         <location filename="representations.py" line="177"/>
         <source>images</source>
-        <translation>Фотографии</translation>
+        <translation type="obsolete">Фотографии</translation>
     </message>
     <message>
         <location filename="representations.py" line="212"/>
         <source>Save image</source>
-        <translation>Сохранить изображение</translation>
+        <translation type="obsolete">Сохранить изображение</translation>
     </message>
     <message>
         <location filename="representations.py" line="212"/>
         <source>PNG files (*.png)</source>
-        <translation>Файлы PNG (*.png)</translation>
+        <translation type="obsolete">Файлы PNG (*.png)</translation>
     </message>
     <message>
         <location filename="representations.py" line="229"/>
         <source>The delete photo operation is not available</source>
-        <translation>Операция удаления изображения недоступна</translation>
+        <translation type="obsolete">Операция удаления изображения недоступна</translation>
     </message>
     <message>
         <location filename="representations.py" line="235"/>
         <source>Select directory</source>
-        <translation>Выбрать каталог</translation>
+        <translation type="obsolete">Выбрать каталог</translation>
     </message>
     <message>
         <location filename="representations.py" line="251"/>
         <source>The add photo operation is not available</source>
-        <translation>Операция добавления изображения недоступна</translation>
+        <translation type="obsolete">Операция добавления изображения недоступна</translation>
     </message>
     <message>
         <location filename="representations.py" line="255"/>
         <source>IdentifyPlus message</source>
-        <translation>Сообщение IdentifyPlus</translation>
+        <translation type="obsolete">Сообщение IdentifyPlus</translation>
+    </message>
+</context>
+<context>
+    <name>NGWImagesView</name>
+    <message>
+        <location filename="representation_ngw.py" line="307"/>
+        <source>Loading...</source>
+        <translation>Загрузка...</translation>
+    </message>
+    <message>
+        <location filename="representation_ngw.py" line="321"/>
+        <source>No photos</source>
+        <translation>Фотографий нет</translation>
+    </message>
+    <message>
+        <location filename="representation_ngw.py" line="384"/>
+        <source>Choose photo(s)</source>
+        <translation>Выберите фотографию</translation>
+    </message>
+    <message>
+        <location filename="representation_ngw.py" line="384"/>
+        <source>Image Files (*.png *.jpg *.bmp)</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="representation_ngw.py" line="405"/>
+        <source>Save photo</source>
+        <translation>Сохронить фотографию</translation>
+    </message>
+    <message>
+        <location filename="representation_ngw.py" line="430"/>
+        <source>Select directory fo save photos</source>
+        <translation>Выберите папку для сохранения фотографий</translation>
     </message>
 </context>
 <context>
@@ -715,6 +797,45 @@ Plugin will not be enabled.</source>
         <location filename="identifyplusresults.py" line="163"/>
         <source>&lt;h1&gt;Error: image not found&lt;/h1&gt;&lt;p&gt;Photo with ID %s not found using URL %s&lt;/p&gt;</source>
         <translation type="obsolete">&lt;h1&gt;Ошибка: изображение не найдено&lt;/h1&gt;&lt;p&gt;Фотография с ID %s на найдена по адресу %s&lt;/p&gt;</translation>
+    </message>
+</context>
+<context>
+    <name>Plugin</name>
+    <message>
+        <location filename="identifyplus.py" line="124"/>
+        <source>IdentifyPlus</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="identifyplus.py" line="124"/>
+        <source>Identifiction allready run</source>
+        <translation>Идентификация уже идет</translation>
+    </message>
+</context>
+<context>
+    <name>QGISAttributesModel</name>
+    <message>
+        <location filename="representation_qgis.py" line="38"/>
+        <source>key</source>
+        <translation>ключ</translation>
+    </message>
+    <message>
+        <location filename="representation_qgis.py" line="38"/>
+        <source>value</source>
+        <translation>значение</translation>
+    </message>
+</context>
+<context>
+    <name>RepresentationContainer</name>
+    <message>
+        <location filename="representations.py" line="127"/>
+        <source>Attributes</source>
+        <translation>Атрибуты</translation>
+    </message>
+    <message>
+        <location filename="representations.py" line="133"/>
+        <source>Photos</source>
+        <translation>Фотографии</translation>
     </message>
 </context>
 </TS>

@@ -1,9 +1,12 @@
 SOURCES = __init__.py \
           identifyplus.py \
+          identifyplusmodel.py \
           identifyplustool.py \
           identifyplusresults.py \
           aboutdialog.py \
-          representations.py
+          representations.py \
+          representation_ngw.py \
+          representation_qgis.py \
 
 FORMS = ui\identifyplusresultsbase.ui \
         ui\aboutdialogbase.ui \
