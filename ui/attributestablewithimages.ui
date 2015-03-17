@@ -120,13 +120,16 @@
          <item>
           <widget class="QToolButton" name="btnLoadPhoto">
            <property name="toolTip">
-            <string>Load photo to database</string>
+            <string>Download photos</string>
+           </property>
+           <property name="statusTip">
+            <string>Download photos</string>
            </property>
            <property name="text">
             <string>...</string>
            </property>
            <property name="icon">
-            <iconset resource="../resources.qrc">
+            <iconset>
              <normaloff>:/icons/add.png</normaloff>:/icons/add.png</iconset>
            </property>
            <property name="iconSize">
@@ -146,7 +149,7 @@
             <string>...</string>
            </property>
            <property name="icon">
-            <iconset resource="../resources.qrc">
+            <iconset>
              <normaloff>:/icons/download.png</normaloff>:/icons/download.png</iconset>
            </property>
            <property name="iconSize">

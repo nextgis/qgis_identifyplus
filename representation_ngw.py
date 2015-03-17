@@ -119,7 +119,7 @@ class NGWImagesModel(QtCore.QAbstractListModel):
             return None
 
 class ImageLoader(QtCore.QObject):
-    finished = QtCore.pyqtSignal(QtGui.QPixmap)
+    finished = QtCore.pyqtSignal(QtGui.QImage)
     
     def __init__(self, ngw_attachment, parent = None):
         QtCore.QObject.__init__(self, parent)
@@ -127,11 +127,13 @@ class ImageLoader(QtCore.QObject):
         
     def loadImage(self):
         img = QtGui.QImage()
-        img.loadFromData(self.__ngw_attachment.get_image()[2])
-        pm = QtGui.QPixmap(img)
-        self.finished.emit(pm)
+        img_info = self.__ngw_attachment.get_image()
+        res = img.loadFromData(img_info[2])
+        self.finished.emit(img)
          
 class ImageLabel(QtGui.QLabel):
+    imageLoaded = QtCore.pyqtSignal()
+    
     def __init__(self, ngw_attachment, parent = None):        
         QtGui.QLabel.__init__(self, parent)
         self.pm = None
@@ -144,23 +146,24 @@ class ImageLabel(QtGui.QLabel):
         self.__worker.finished.connect(self.load)
         self.__thread.start()
 
-    def load(self, pm):
-        self.pm = pm
+    def load(self, img):
+        self.pm = QtGui.QPixmap()
+        self.pm.convertFromImage(img)
         self.clear()
-        
+
         self._k = 1
         self.setScaledContents(True) 
         sp = QtGui.QSizePolicy(QtGui.QSizePolicy.Maximum, QtGui.QSizePolicy.Maximum)
         sp.setHeightForWidth(True)
         self.setSizePolicy(sp)
         self.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
-        self.setMinimumSize(self.pm.size().width() / 5, self.pm.size().height() / 5 )
-        self._calculate_koeff()
+        self.setMinimumSize(self.pm.width() / 5, self.pm.height() / 5 )
+        
+        self._k = 1.0 * self.pm.height() / self.pm.width()
         
         self.setPixmap(self.pm)
-
-    def _calculate_koeff(self):
-        self._k = 1.0 * self.pm.size().height() / self.pm.size().width()
+        
+        self.imageLoaded.emit()     
         
     def heightForWidth(self, width):
         if width < self.pm.size().width():
@@ -182,6 +185,7 @@ class Image(QtGui.QWidget):
         self.__vbl_layout.setSpacing(0)
         
         self.__image_container = ImageLabel(ngw_attachment, self)
+        self.__image_container.imageLoaded.connect(self.imageLoadedHandle)
         self.__vbl_layout.addWidget(self.__image_container)
         
         self.__w_buttons_widget = QtGui.QWidget()
@@ -193,13 +197,25 @@ class Image(QtGui.QWidget):
         
         self.__pb_download_image = QtGui.QPushButton()
         self.__pb_download_image.setIcon(QtGui.QIcon(":/icons/downloadImageBtn.png"))
+        self.__pb_download_image.setToolTip( self.tr("Download photo") )
+        self.__pb_download_image.setStatusTip( self.tr("Download photo") )
+        self.__pb_download_image.setVisible(False)
+
         self.__pb_download_image.clicked.connect(self.emitDownloadImage)
         self.__hbl_buttons_layout.addWidget(self.__pb_download_image)
         
         self.__pb_delete_image = QtGui.QPushButton()
         self.__pb_delete_image.setIcon(QtGui.QIcon(":/icons/deleteImageBtn.png"))
+        self.__pb_delete_image.setToolTip( self.tr("Delete photo") )
+        self.__pb_delete_image.setStatusTip( self.tr("Delete photo") )
+        self.__pb_delete_image.setVisible(False)
+        
         self.__pb_delete_image.clicked.connect(self.emitDeleteImage)
         self.__hbl_buttons_layout.addWidget(self.__pb_delete_image)
+    
+    def imageLoadedHandle(self):
+        self.__pb_download_image.setVisible(True)
+        self.__pb_delete_image.setVisible(True)
         
     def emitDownloadImage(self):
         self.downloadImage.emit(self)
@@ -276,13 +292,18 @@ class NGWImagesView(QtGui.QWidget):
         self.__hbl_buttons_layout.setSpacing(1)
         l.addWidget(self.__w_buttons_widget)
         
-        self.__pb_download_image = QtGui.QPushButton()
-        self.__pb_download_image.setIcon(QtGui.QIcon(":/icons/downloadImageBtn.png"))
-        self.__pb_download_image.clicked.connect(self.downloadImages)
-        self.__hbl_buttons_layout.addWidget(self.__pb_download_image)
+        self.__pb_download_images = QtGui.QPushButton()
+        self.__pb_download_images.setIcon(QtGui.QIcon(":/icons/downloadImageBtn.png"))
+        self.__pb_download_images.setToolTip( self.tr("Download photos") )
+        self.__pb_download_images.setStatusTip( self.tr("Download photos") )
+        self.__pb_download_images.setEnabled(False)
+        self.__pb_download_images.clicked.connect(self.downloadImages)
+        self.__hbl_buttons_layout.addWidget(self.__pb_download_images)
         
         self.__pb_add_image = QtGui.QPushButton()
         self.__pb_add_image.setIcon(QtGui.QIcon(":/icons/addImageBtn.png"))
+        self.__pb_add_image.setToolTip( self.tr("Add photo(s)") )
+        self.__pb_add_image.setStatusTip( self.tr("Add photo(s)") )
         self.__pb_add_image.clicked.connect(self.addImage)
         self.__hbl_buttons_layout.addWidget(self.__pb_add_image)
         
@@ -316,36 +337,21 @@ class NGWImagesView(QtGui.QWidget):
 #             QgsMessageLog.INFO)
         
         if self.__model.rowCount() > 0:
+            self.__pb_download_images.setEnabled(True)
             self.__message.clear()
         else:
+            self.__pb_download_images.setEnabled(False)
             self.__message.setText(self.tr("No photos"))
             
-    def setModel(self, model):
-        
-#         QgsMessageLog.logMessage(
-#             "NGWImagesView setModel",
-#             u'IdentifyPlus',
-#             QgsMessageLog.INFO)
-        
+    def setModel(self, model):        
         self.__model = model
         self.__model.initEnded.connect(self.loadModelData)
         self.__model.rowsRemoved.connect(self.rowsRemovedProcess)
         self.__model.rowsInserted.connect(self.rowsInsertedProcess)
-    
+
     def loadModelData(self):
         self.__updateMessage()
-    '''
-        for i in range(0, self.__model.rowCount()):
-            index = self.__model.index(i,0)
-            data = self.__model.data(index)
-            
-            img = Image(data, self.w)
-            img.deleteImage.connect(self.deleteImage)
-            img.downloadImage.connect(self.downloadImage)
-            self.__images.append(img)
-            
-            self.__vbl_images_container.addWidget(img)
-    '''        
+      
     def rowsRemovedProcess(self, parent, start, end):        
         rem_ids = range(start, end)
         rem_ids.reverse()
@@ -357,10 +363,7 @@ class NGWImagesView(QtGui.QWidget):
         self.__updateMessage()
     
     def rowsInsertedProcess(self, parent, start, end):
-#         QgsMessageLog.logMessage(
-#                      "NGWImagesView rowsInsertedProcess %d %d"%(start, end),
-#                      u'IdentifyPlus',
-#                      QgsMessageLog.INFO)
+
         for i in range(start, end+1):
             index = self.__model.index(i,0)
             data = self.__model.data(index)
@@ -387,13 +390,7 @@ class NGWImagesView(QtGui.QWidget):
             settings.setValue("identifyplus/lastLoadPhotoDir", QtCore.QFileInfo(file_name).absolutePath())
             self.__model.addImage(file_name)
     
-    def downloadImage(self, image):
-        
-#         QgsMessageLog.logMessage(
-#             "NGWImagesView downloadImage",
-#             u'IdentifyPlus',
-#             QgsMessageLog.INFO)
-        
+    def downloadImage(self, image):        
         i = self.__images.index(image)
         index = self.__model.index(i,0)
         
@@ -417,13 +414,7 @@ class NGWImagesView(QtGui.QWidget):
         downloadDialog = ImageDownloadDialog(ngw_attachments, file_info.absolutePath(), default_names)
         downloadDialog.exec_()
         
-    def downloadImages(self):
-        
-#         QgsMessageLog.logMessage(
-#             "NGWImagesView downloadImages",
-#             u'IdentifyPlus',
-#             QgsMessageLog.INFO)
-        
+    def downloadImages(self):        
         settings = QtCore.QSettings()
         lastSavePhotosDir = settings.value("identifyplus/lastSavePhotosDir", "", type=unicode)
         

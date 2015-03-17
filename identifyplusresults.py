@@ -110,6 +110,11 @@ class IdentifyPlusResults(QWidget, Ui_IdentifyPlusResults):
         
         self.lblFeatures.setText(self.tr("Objects not found"))
         
+        self.btnFirstRecord.setEnabled(False)
+        self.btnLastRecord.setEnabled(False)
+        self.btnNextRecord.setEnabled(False)
+        self.btnPrevRecord.setEnabled(False)
+            
         self.representations.clear()
         self.parent().show()
     
