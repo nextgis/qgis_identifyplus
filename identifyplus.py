@@ -123,7 +123,7 @@ class IdentifyPlus():
   def modelBusyProcess(self):
     self.iface.messageBar().pushMessage(
         QCoreApplication.translate("Plugin", 'IdentifyPlus'),
-        QCoreApplication.translate("Plugin", 'Identifiction allready run'),
+        QCoreApplication.translate("Plugin", 'Identification is already running'),
         level=QgsMessageBar.WARNING)
      
   def unload(self):
