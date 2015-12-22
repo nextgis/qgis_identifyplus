@@ -4,9 +4,9 @@
 #
 # IdentifyPlus
 # ---------------------------------------------------------
-# Extended identify tool. Supports displaying and modifying photos
+# Extended identify tool. Supports displaying and modifying photos.
 #
-# Copyright (C) 2012-2013 NextGIS (info@nextgis.org)
+# Copyright (C) 2012-2015 NextGIS (info@nextgis.com)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -76,14 +76,14 @@ class IdentifyPlus():
       return None
 
     self.actionRun = QAction(QCoreApplication.translate("IdentifyPlus", "IdentifyPlus"), self.iface.mainWindow())
-    self.actionRun.setIcon(QIcon(":/icons/identifyplus.png"))
+    self.actionRun.setIcon(QIcon(":/plugins/identifyplus/icons/identifyplus.png"))
     self.actionRun.setWhatsThis("Extended identify tool")
     self.actionRun.setCheckable(True)
     self.actionRun.triggered.connect(self.run)
     #self.actionRun.triggered.connect(self.mapToolInit)
     
     self.actionAbout = QAction(QCoreApplication.translate("IdentifyPlus", "About IdentifyPlus..."), self.iface.mainWindow())
-    self.actionAbout.setIcon(QIcon(":/icons/about.png"))
+    self.actionAbout.setIcon(QIcon(":/plugins/identifyplus/icons/about.png"))
     self.actionAbout.setWhatsThis("About IdentifyPlus")
     self.actionAbout.triggered.connect(self.about)
     
