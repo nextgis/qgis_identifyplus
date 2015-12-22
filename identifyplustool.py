@@ -4,9 +4,9 @@
 #
 # IdentifyPlus
 # ---------------------------------------------------------
-# Extended identify tool. Supports displaying and modifying photos
+# Extended identify tool. Supports displaying and modifying photos.
 #
-# Copyright (C) 2012-2013 NextGIS (info@nextgis.org)
+# Copyright (C) 2012-2015 NextGIS (info@nextgis.com)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -38,7 +38,7 @@ class IdentifyPlusTool(QgsMapTool):
   def __init__(self, canvas):
     QgsMapTool.__init__(self, canvas)
     self.canvas = canvas
-    self.cursor = QCursor(QPixmap(":/icons/cursor.png"), 1, 1)
+    self.cursor = QCursor(QPixmap(":/plugins/identifyplus/icons/cursor.png"), 1, 1)
   
   def activate(self):
     self.canvas.setCursor(self.cursor)
