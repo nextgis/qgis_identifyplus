@@ -4,9 +4,9 @@
 #
 # IdentifyPlus
 # ---------------------------------------------------------
-# Extended identify tool. Supports displaying and modifying photos
+# Extended identify tool. Supports displaying and modifying photos.
 #
-# Copyright (C) 2012-2013 NextGIS (info@nextgis.org)
+# Copyright (C) 2012-2015 NextGIS (info@nextgis.com)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -46,7 +46,7 @@ class AboutDialog(QDialog, Ui_Dialog):
     cfg.read(os.path.join(os.path.dirname(__file__), "metadata.txt"))
     version = cfg.get("general", "version")
 
-    self.lblLogo.setPixmap(QPixmap(":/icons/identifyplus.png"))
+    self.lblLogo.setPixmap(QPixmap(":/plugins/identifyplus/icons/identifyplus.png"))
     self.lblVersion.setText(self.tr("Version: %s") % (version))
     doc = QTextDocument()
     doc.setHtml(self.getAboutText())
