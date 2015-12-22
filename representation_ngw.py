@@ -6,7 +6,7 @@
 # ---------------------------------------------------------
 # Extended identify tool. Supports displaying and modifying photos
 #
-# Copyright (C) 2012-2013 NextGIS (info@nextgis.org)
+# Copyright (C) 2012-2015 NextGIS (info@nextgis.com)
 #
 # This source is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free
@@ -196,7 +196,7 @@ class Image(QtGui.QWidget):
         self.__vbl_layout.addWidget(self.__w_buttons_widget)
         
         self.__pb_download_image = QtGui.QPushButton()
-        self.__pb_download_image.setIcon(QtGui.QIcon(":/icons/downloadImageBtn.png"))
+        self.__pb_download_image.setIcon(QtGui.QIcon(":/plugins/identifyplus/icons/downloadImageBtn.png"))
         self.__pb_download_image.setToolTip( self.tr("Download photo") )
         self.__pb_download_image.setStatusTip( self.tr("Download photo") )
         self.__pb_download_image.setVisible(False)
@@ -205,7 +205,7 @@ class Image(QtGui.QWidget):
         self.__hbl_buttons_layout.addWidget(self.__pb_download_image)
         
         self.__pb_delete_image = QtGui.QPushButton()
-        self.__pb_delete_image.setIcon(QtGui.QIcon(":/icons/deleteImageBtn.png"))
+        self.__pb_delete_image.setIcon(QtGui.QIcon(":/plugins/identifyplus/icons/deleteImageBtn.png"))
         self.__pb_delete_image.setToolTip( self.tr("Delete photo") )
         self.__pb_delete_image.setStatusTip( self.tr("Delete photo") )
         self.__pb_delete_image.setVisible(False)
@@ -293,7 +293,7 @@ class NGWImagesView(QtGui.QWidget):
         l.addWidget(self.__w_buttons_widget)
         
         self.__pb_download_images = QtGui.QPushButton()
-        self.__pb_download_images.setIcon(QtGui.QIcon(":/icons/downloadImageBtn.png"))
+        self.__pb_download_images.setIcon(QtGui.QIcon(":/plugins/identifyplus/icons/downloadImageBtn.png"))
         self.__pb_download_images.setToolTip( self.tr("Download photos") )
         self.__pb_download_images.setStatusTip( self.tr("Download photos") )
         self.__pb_download_images.setEnabled(False)
@@ -301,7 +301,7 @@ class NGWImagesView(QtGui.QWidget):
         self.__hbl_buttons_layout.addWidget(self.__pb_download_images)
         
         self.__pb_add_image = QtGui.QPushButton()
-        self.__pb_add_image.setIcon(QtGui.QIcon(":/icons/addImageBtn.png"))
+        self.__pb_add_image.setIcon(QtGui.QIcon(":/plugins/identifyplus/icons/addImageBtn.png"))
         self.__pb_add_image.setToolTip( self.tr("Add photo(s)") )
         self.__pb_add_image.setStatusTip( self.tr("Add photo(s)") )
         self.__pb_add_image.clicked.connect(self.addImage)
