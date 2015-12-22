@@ -130,7 +130,7 @@
            </property>
            <property name="icon">
             <iconset>
-             <normaloff>:/icons/add.png</normaloff>:/icons/add.png</iconset>
+             <normaloff>:/plugins/identifyplus/icons/add.png</normaloff>:/plugins/identifyplus/icons/add.png</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -150,7 +150,7 @@
            </property>
            <property name="icon">
             <iconset>
-             <normaloff>:/icons/download.png</normaloff>:/icons/download.png</iconset>
+             <normaloff>:/plugins/identifyplus/icons/download.png</normaloff>:/plugins/identifyplus/icons/download.png</iconset>
            </property>
            <property name="iconSize">
             <size>
