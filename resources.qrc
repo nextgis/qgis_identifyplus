@@ -1,5 +1,5 @@
 <RCC>
-  <qresource>
+  <qresource '/plugins/identifyplus/'>
     <file>icons/identifyplus.png</file>
     <file>icons/about.png</file>
     <file>icons/cursor.png</file>
