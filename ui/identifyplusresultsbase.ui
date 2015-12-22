@@ -77,7 +77,7 @@
          </property>
          <property name="icon">
           <iconset resource="../resources.qrc">
-           <normaloff>:/icons/first.png</normaloff>:/icons/first.png</iconset>
+           <normaloff>:/plugins/identifyplus/icons/first.png</normaloff>:/plugins/identifyplus/icons/first.png</iconset>
          </property>
         </widget>
        </item>
@@ -91,7 +91,7 @@
          </property>
          <property name="icon">
           <iconset resource="../resources.qrc">
-           <normaloff>:/icons/previous.png</normaloff>:/icons/previous.png</iconset>
+           <normaloff>:/plugins/identifyplus/icons/previous.png</normaloff>:/plugins/identifyplus/icons/previous.png</iconset>
          </property>
         </widget>
        </item>
@@ -105,7 +105,7 @@
          </property>
          <property name="icon">
           <iconset resource="../resources.qrc">
-           <normaloff>:/icons/next.png</normaloff>:/icons/next.png</iconset>
+           <normaloff>:/plugins/identifyplus/icons/next.png</normaloff>:/plugins/identifyplus/icons/next.png</iconset>
          </property>
         </widget>
        </item>
@@ -119,7 +119,7 @@
          </property>
          <property name="icon">
           <iconset resource="../resources.qrc">
-           <normaloff>:/icons/last.png</normaloff>:/icons/last.png</iconset>
+           <normaloff>:/plugins/identifyplus/icons/last.png</normaloff>:/plugins/identifyplus/icons/last.png</iconset>
          </property>
         </widget>
        </item>
@@ -213,7 +213,7 @@
        </property>
        <property name="icon">
         <iconset resource="../resources.qrc">
-         <normaloff>:/icons/close.png</normaloff>:/icons/close.png</iconset>
+         <normaloff>:/plugins/identifyplus/icons/close.png</normaloff>:/plugins/identifyplus/icons/close.png</iconset>
        </property>
       </widget>
      </item>
