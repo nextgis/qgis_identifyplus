@@ -76,7 +76,7 @@ class IdentifyPlus():
       return None
 
     self.actionRun = QAction(QCoreApplication.translate("IdentifyPlus", "IdentifyPlus"), self.iface.mainWindow())
-    self.actionRun.setIcon(QIcon(":/plugins/identifyplus/icons/identifyplus.png"))
+    self.actionRun.setIcon(QIcon(":/plugins/identifyplus/icons/identifyplus.svg"))
     self.actionRun.setWhatsThis("Extended identify tool")
     self.actionRun.setCheckable(True)
     self.actionRun.triggered.connect(self.run)

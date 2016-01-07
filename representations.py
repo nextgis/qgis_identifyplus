@@ -23,7 +23,8 @@
 # to the Free Software Foundation, 51 Franklin Street, Suite 500 Boston,
 # MA 02110-1335 USA.
 #
-#******************************************************************************eimport time
+#******************************************************************************e
+import time
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *

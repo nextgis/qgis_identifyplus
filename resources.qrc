@@ -1,6 +1,7 @@
 <RCC>
-  <qresource '/plugins/identifyplus/'>
+  <qresource prefix='/plugins/identifyplus/'>
     <file>icons/identifyplus.png</file>
+    <file>icons/identifyplus.svg</file>
     <file>icons/about.png</file>
     <file>icons/cursor.png</file>
     <file>icons/first.png</file>
