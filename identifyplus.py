@@ -34,9 +34,8 @@ from qgis.gui import *
 from qgis_plugin_base import Plugin
 from identifytools import allTools
 
-from identifyplusmaptool import IdentifyPlusTool, IdentifyPlusMapTool
+from identifyplusmaptool import IdentifyPlusMapTool
 from identifyplusresults import IdentifyPlusResultsDock, IdentifyPlusResults
-# from identifyplusmodel import IdentifyPlusModel
 
 import aboutdialog
 import resources_rc
@@ -99,25 +98,15 @@ class IdentifyPlus(Plugin):
     self.iface.attributesToolBar().addAction(self.actionRun)
 
     
-    # prepare map tool
-    # self.mapTool = IdentifyPlusTool(self.iface.mapCanvas())
-    
+    # prepare map tool   
     self.mapTool = IdentifyPlusMapTool(self.iface.mapCanvas())
     self.mapTool.avalableChanged.connect(self.actionRun.setEnabled)
-    
     self.actionRun.setEnabled(self.mapTool.isAvalable())
-
     self.iface.mapCanvas().mapToolSet.connect(self.mapToolChanged)
           
-    # model
-    # self.model = IdentifyPlusModel(self.iface.mapCanvas())
-    # self.model.busy.connect(self.modelBusyProcess)
-    # self.mapTool.used.connect(self.model.identify)
-    
     self.dockWidget = IdentifyPlusResultsDock(self.iface.mainWindow())
     
     self.wIdentifyResults = IdentifyPlusResults(self.dockWidget)
-    # self.wIdentifyResults.setModel(self.model)
     self.dockWidget.setWidget(self.wIdentifyResults)
 
     self.mapTool.identified.connect(self.wIdentifyResults.appendIdentifyRes)
@@ -132,12 +121,6 @@ class IdentifyPlus(Plugin):
     self.dockWidget.resize( settings.value("identifyplus/dockWidgetSize", QSize(150, 300), type=QSize) )
     self.dockWidget.move( settings.value("identifyplus/dockWidgetPos", QPoint(500, 500), type=QPoint) )
     self.dockWidget.setVisible( settings.value("identifyplus/dockWidgetIsVisible", True, type=bool))
-
-  # def modelBusyProcess(self):
-  #   self.iface.messageBar().pushMessage(
-  #       QCoreApplication.translate("Plugin", 'IdentifyPlus'),
-  #       QCoreApplication.translate("Plugin", 'Identification is already running'),
-  #       level=QgsMessageBar.WARNING)
      
   def unload(self):
     self.iface.attributesToolBar().removeAction(self.actionRun)

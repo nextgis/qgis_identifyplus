@@ -66,9 +66,6 @@ class IdentifyPlusResults(QWidget, Ui_IdentifyPlusResults):
 
         self.pushButton.setVisible(False)
         self.lblIdentifyStatus.setVisible(False)
-        
-        # self.thread = None;
-        # self.worker = None;
     
     def progressShow(self, cur, max):
         self.progressBar.setMaximum(max)
@@ -104,71 +101,6 @@ class IdentifyPlusResults(QWidget, Ui_IdentifyPlusResults):
             self.btnNextRecord.setEnabled(True)
             self.btnPrevRecord.setEnabled(True)
             self.nextRecord()
-
-    # def setModel(self, model):
-    #     self.__model = model
-    #     self.__model.identificationProgress.connect(self.identifyProgressHandel)
-    #     self.__model.identificationLayer.connect(self.identifyMessageHandel)
-    #     self.__model.finished.connect(self.identifyFinishedHandel)
-    #     self.__model.reseted.connect(self.modelResetHandel)
-    #     self.__model.objectsAppended.connect(self.modelAppendObjectsHandel)
-    
-    # def identifyMessageHandel(self, layerName):
-    #      self.lblIdentifyStatus.setText( self.tr("Process layer: %s")%layerName )
-    
-    # def identifyProgressHandel(self, i1, i2):
-    #     if i1 == 0:
-    #         self.progressBar.setVisible(True)
-    #         self.lblIdentifyStatus.setVisible(True)
-    #         self.progressBar.setRange(i1, i2)
-    #     else:
-    #         self.progressBar.setValue(i1)
-    
-    # def identifyFinishedHandel(self):
-    #     self.progressBar.setVisible(False)
-    #     self.lblIdentifyStatus.setVisible(False)
-    #     self.progressBar.setValue(0)
-    
-    # def modelChangeProcess(self):
-    #     if len(self._model.objects) == 0:
-    #         self.resetModelProcess()
-    #     else:
-    #         self.changeModelProcess()
-            
-    #     if  self._model.state == self._model.IdentificationIsDone:
-    #         self.finishedModelProcess()
-    
-    # def modelResetHandel(self):
-    #     self.currentObjectIndex = -1
-        
-    #     self.lblFeatures.setText(self.tr("Objects not found"))
-        
-    #     self.btnFirstRecord.setEnabled(False)
-    #     self.btnLastRecord.setEnabled(False)
-    #     self.btnNextRecord.setEnabled(False)
-    #     self.btnPrevRecord.setEnabled(False)
-            
-    #     self.representations.clear()
-    #     self.parent().show()
-    
-    # def modelAppendObjectsHandel(self):
-    #     # if self.__model.objectsCount() > 0:
-    #     #     self.btnFirstRecord.setEnabled(True)
-    #     #     self.btnLastRecord.setEnabled(True)
-    #     #     self.btnNextRecord.setEnabled(True)
-    #     #     self.btnPrevRecord.setEnabled(True)
-            
-    #     #     self.updateInterface()
-    #     #     if self.currentObjectIndex == -1:
-    #     #         self.firstRecord()
-    #     # else:
-    #     #     self.lblFeatures.setText(self.tr("Objects not found"))
-    #     #     self.btnFirstRecord.setEnabled(False)
-    #     #     self.btnLastRecord.setEnabled(False)
-    #     #     self.btnNextRecord.setEnabled(False)
-    #     #     self.btnPrevRecord.setEnabled(False)
-    #     #     QgsMessageLog.logMessage(self.tr("Objects not found"), u'IdentifyPlus', QgsMessageLog.WARNING)
-    #     pass
 
     def firstRecord(self):
         self.currentObjectIndex = 0
