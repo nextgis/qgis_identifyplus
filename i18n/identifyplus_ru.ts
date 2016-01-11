@@ -18,7 +18,7 @@ photos associated with features. If you need more info please &lt;a href=&quot;m
     <message>
         <location filename="aboutdialog.py" line="50"/>
         <source>Version: %s</source>
-        <translation>Версия: %s</translation>
+        <translation type="obsolete">Версия: %s</translation>
     </message>
     <message>
         <location filename="aboutdialog.py" line="75"/>
@@ -26,7 +26,7 @@ photos associated with features. If you need more info please &lt;a href=&quot;m
 &lt;p&gt;NOTE: Plugin needs access to special web-service in order to be able display
 photos associated with features. If you need more info please &lt;a href=&quot;mailto:info@nextgis.org&quot;&gt;contact us&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation>&lt;p&gt;Альтернативный инструмент определения объектов с дополнительными возможностями.&lt;/p&gt;
+        <translation type="obsolete">&lt;p&gt;Альтернативный инструмент определения объектов с дополнительными возможностями.&lt;/p&gt;
 &lt;p&gt;ПРИМЕЧАНИЕ: Для отображения и работы с присоединенными изображениями, модулю необходим доступ к специальному веб-сервису. Получить более подробную информацию можно &lt;a href=&quot;mailto:info@nextgis.org&quot;&gt;связавшись с нами&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
 </context>
@@ -35,17 +35,17 @@ photos associated with features. If you need more info please &lt;a href=&quot;m
     <message>
         <location filename="ui/attributestable.ui" line="14"/>
         <source>Form</source>
-        <translation>Результаты определения</translation>
+        <translation type="obsolete">Результаты определения</translation>
     </message>
     <message>
         <location filename="ui/attributestable.ui" line="63"/>
         <source>Name</source>
-        <translation>Имя</translation>
+        <translation type="obsolete">Имя</translation>
     </message>
     <message>
         <location filename="ui/attributestable.ui" line="68"/>
         <source>Value</source>
-        <translation>Значение</translation>
+        <translation type="obsolete">Значение</translation>
     </message>
 </context>
 <context>
@@ -53,32 +53,27 @@ photos associated with features. If you need more info please &lt;a href=&quot;m
     <message>
         <location filename="ui/attributestablewithimages.ui" line="20"/>
         <source>Form</source>
-        <translation>Результаты определения</translation>
+        <translation type="obsolete">Результаты определения</translation>
     </message>
     <message>
         <location filename="ui/attributestablewithimages.ui" line="51"/>
         <source>Attributes</source>
-        <translation>Атрибуты</translation>
+        <translation type="obsolete">Атрибуты</translation>
     </message>
     <message>
         <location filename="ui/attributestablewithimages.ui" line="64"/>
         <source>Image</source>
-        <translation>Изображения</translation>
+        <translation type="obsolete">Изображения</translation>
     </message>
     <message>
         <location filename="ui/attributestablewithimages.ui" line="123"/>
         <source>Load photo to database</source>
-        <translation>Загрузить изображение в базу данных</translation>
-    </message>
-    <message>
-        <location filename="ui/attributestablewithimages.ui" line="146"/>
-        <source>...</source>
-        <translation></translation>
+        <translation type="obsolete">Загрузить изображение в базу данных</translation>
     </message>
     <message>
         <location filename="ui/attributestablewithimages.ui" line="143"/>
         <source>Save all photos to disk</source>
-        <translation>Сохранить все изображения на диск</translation>
+        <translation type="obsolete">Сохранить все изображения на диск</translation>
     </message>
 </context>
 <context>
@@ -104,30 +99,7 @@ photos associated with features. If you need more info please &lt;a href=&quot;m
     <message>
         <location filename="ui/aboutdialogbase.ui" line="14"/>
         <source>About IdentifyPlus</source>
-        <translation>О IdentifyPlus</translation>
-    </message>
-    <message>
-        <location filename="ui/aboutdialogbase.ui" line="44"/>
-        <source>TextLabel</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="ui/aboutdialogbase.ui" line="30"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600;&quot;&gt;IdentifyPlus&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="ui/aboutdialogbase.ui" line="67"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation></translation>
+        <translation type="obsolete">О IdentifyPlus</translation>
     </message>
 </context>
 <context>
@@ -189,29 +161,14 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>IdentificationWorker</name>
     <message>
-        <location filename="identifyplusmodel.py" line="132"/>
-        <source>QGIS proxysettings error</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="identifyplusmodel.py" line="132"/>
-        <source>Parameter &apos;proxyHost&apos; is missing</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="identifyplusmodel.py" line="171"/>
         <source>gdallocationinfo return error status&lt;br/&gt;</source>
-        <translation>gdallocationinfo завершилась с ошибкой</translation>
+        <translation type="obsolete">gdallocationinfo завершилась с ошибкой</translation>
     </message>
     <message>
         <location filename="identifyplusmodel.py" line="177"/>
         <source>Parsing gdallocationinfo request error&lt;br/&gt;</source>
-        <translation>Ошибка обработки результатов работы gdallocationinfo </translation>
-    </message>
-    <message>
-        <location filename="identifyplusmodel.py" line="224"/>
-        <source>Caught CRS exception</source>
-        <translation></translation>
+        <translation type="obsolete">Ошибка обработки результатов работы gdallocationinfo </translation>
     </message>
 </context>
 <context>
@@ -219,7 +176,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="identifyplus.py" line="72"/>
         <source>Error</source>
-        <translation>Ошибка</translation>
+        <translation type="obsolete">Ошибка</translation>
     </message>
     <message>
         <location filename="identifyplus.py" line="73"/>
@@ -235,26 +192,21 @@ Plugin will not be enabled.</source>
 Модуль не будет загружен.</translation>
     </message>
     <message>
-        <location filename="identifyplus.py" line="132"/>
-        <source>IdentifyPlus</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="identifyplus.py" line="85"/>
         <source>About IdentifyPlus...</source>
-        <translation>О IdentifyPlus...</translation>
+        <translation type="obsolete">О IdentifyPlus...</translation>
     </message>
     <message>
         <location filename="identifyplus.py" line="72"/>
         <source>QGIS %s detected.
 </source>
-        <translation>Обнаружена QGIS версии %s.</translation>
+        <translation type="obsolete">Обнаружена QGIS версии %s.</translation>
     </message>
     <message>
         <location filename="identifyplus.py" line="72"/>
         <source>This version of IdentifyPlus requires at least QGIS version 2.0.
 Plugin will not be enabled.</source>
-        <translation>Эта версия IdentifyPlus требует наличия QGIS версии 2.0
+        <translation type="obsolete">Эта версия IdentifyPlus требует наличия QGIS версии 2.0
 Модуль не будет загружен.</translation>
     </message>
 </context>
@@ -271,11 +223,6 @@ Plugin will not be enabled.</source>
         <translation type="obsolete">Атрибуты</translation>
     </message>
     <message>
-        <location filename="ui/identifyplusresultsbase.ui" line="58"/>
-        <source>TextLabel</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="ui/identifyplusresultsbase.ui" line="154"/>
         <source>Name</source>
         <translation type="obsolete">Имя</translation>
@@ -288,27 +235,22 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="ui/identifyplusresultsbase.ui" line="73"/>
         <source>First feature</source>
-        <translation>Первый объект</translation>
-    </message>
-    <message>
-        <location filename="ui/identifyplusresultsbase.ui" line="118"/>
-        <source>...</source>
-        <translation></translation>
+        <translation type="obsolete">Первый объект</translation>
     </message>
     <message>
         <location filename="ui/identifyplusresultsbase.ui" line="87"/>
         <source>Previous feature</source>
-        <translation>Предыдущий объект</translation>
+        <translation type="obsolete">Предыдущий объект</translation>
     </message>
     <message>
         <location filename="ui/identifyplusresultsbase.ui" line="101"/>
         <source>Next feature</source>
-        <translation>Следующий объект</translation>
+        <translation type="obsolete">Следующий объект</translation>
     </message>
     <message>
         <location filename="ui/identifyplusresultsbase.ui" line="115"/>
         <source>Last feature</source>
-        <translation>Последний объект</translation>
+        <translation type="obsolete">Последний объект</translation>
     </message>
     <message>
         <location filename="ui/identifyplusresultsbase.ui" line="168"/>
@@ -483,38 +425,43 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="ui/identifyplusresultsbase.ui" line="20"/>
         <source>Form</source>
-        <translation>Результаты определения</translation>
+        <translation type="obsolete">Результаты определения</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="58"/>
+        <location filename="identifyplusresults.py" line="217"/>
         <source>No features</source>
         <translation>Объекты не найдены</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="162"/>
+        <location filename="identifyplusresults.py" line="208"/>
         <source>Feature %s from %s (%s)</source>
         <translation>Объект %s из %s (%s)</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="132"/>
         <source>Objects not found</source>
-        <translation>Объекты не найдены</translation>
+        <translation type="obsolete">Объекты не найдены</translation>
     </message>
     <message>
         <location filename="ui/identifyplusresultsbase.ui" line="231"/>
         <source>Identification status</source>
-        <translation>Статус идентификацмм</translation>
+        <translation type="obsolete">Статус идентификацмм</translation>
     </message>
     <message>
         <location filename="identifyplusresults.py" line="84"/>
         <source>Process layer: %s</source>
-        <translation>Обработка слоя: %s</translation>
+        <translation type="obsolete">Обработка слоя: %s</translation>
+    </message>
+    <message>
+        <location filename="identifyplusresults.py" line="78"/>
+        <source>Identification...</source>
+        <translation>Идентификация...</translation>
     </message>
 </context>
 <context>
     <name>IdentifyPlusResultsDock</name>
     <message>
-        <location filename="identifyplusresults.py" line="171"/>
+        <location filename="identifyplusresults.py" line="223"/>
         <source>IdentifyPlus</source>
         <translation></translation>
     </message>
@@ -625,7 +572,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="representation_ngw.py" line="452"/>
         <source>Download images process</source>
-        <translation>Процесс загрузки изображений</translation>
+        <translation type="obsolete">Процесс загрузки изображений</translation>
     </message>
 </context>
 <context>
@@ -641,7 +588,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="representation_ngw.py" line="138"/>
         <source>Loading...</source>
-        <translation>Загрузка...</translation>
+        <translation type="obsolete">Загрузка...</translation>
     </message>
 </context>
 <context>
@@ -692,32 +639,27 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="representation_ngw.py" line="307"/>
         <source>Loading...</source>
-        <translation>Загрузка...</translation>
+        <translation type="obsolete">Загрузка...</translation>
     </message>
     <message>
         <location filename="representation_ngw.py" line="321"/>
         <source>No photos</source>
-        <translation>Фотографий нет</translation>
+        <translation type="obsolete">Фотографий нет</translation>
     </message>
     <message>
         <location filename="representation_ngw.py" line="384"/>
         <source>Choose photo(s)</source>
-        <translation>Выберите фотографию</translation>
-    </message>
-    <message>
-        <location filename="representation_ngw.py" line="384"/>
-        <source>Image Files (*.png *.jpg *.bmp)</source>
-        <translation></translation>
+        <translation type="obsolete">Выберите фотографию</translation>
     </message>
     <message>
         <location filename="representation_ngw.py" line="405"/>
         <source>Save photo</source>
-        <translation>Сохронить фотографию</translation>
+        <translation type="obsolete">Сохронить фотографию</translation>
     </message>
     <message>
         <location filename="representation_ngw.py" line="430"/>
         <source>Select directory fo save photos</source>
-        <translation>Выберите папку для сохранения фотографий</translation>
+        <translation type="obsolete">Выберите папку для сохранения фотографий</translation>
     </message>
 </context>
 <context>
@@ -803,13 +745,8 @@ Plugin will not be enabled.</source>
     <name>Plugin</name>
     <message>
         <location filename="identifyplus.py" line="124"/>
-        <source>IdentifyPlus</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="identifyplus.py" line="124"/>
         <source>Identifiction allready run</source>
-        <translation>Идентификация уже идет</translation>
+        <translation type="obsolete">Идентификация уже идет</translation>
     </message>
 </context>
 <context>
@@ -817,12 +754,30 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="representation_qgis.py" line="38"/>
         <source>key</source>
-        <translation>ключ</translation>
+        <translation type="obsolete">ключ</translation>
     </message>
     <message>
         <location filename="representation_qgis.py" line="38"/>
         <source>value</source>
-        <translation>значение</translation>
+        <translation type="obsolete">значение</translation>
+    </message>
+</context>
+<context>
+    <name>QGISTool</name>
+    <message>
+        <location filename="identifytool_qgis.py" line="44"/>
+        <source>attribute</source>
+        <translation type="obsolete">Аттрибут</translation>
+    </message>
+    <message>
+        <location filename="identifytool_qgis.py" line="44"/>
+        <source>value</source>
+        <translation type="obsolete">Значение</translation>
+    </message>
+    <message>
+        <location filename="identifytool_qgis.py" line="57"/>
+        <source>Base options</source>
+        <translation type="obsolete">Основные аттрибуты</translation>
     </message>
 </context>
 <context>
@@ -830,12 +785,12 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="representations.py" line="127"/>
         <source>Attributes</source>
-        <translation>Атрибуты</translation>
+        <translation type="obsolete">Атрибуты</translation>
     </message>
     <message>
         <location filename="representations.py" line="133"/>
         <source>Photos</source>
-        <translation>Фотографии</translation>
+        <translation type="obsolete">Фотографии</translation>
     </message>
 </context>
 </TS>

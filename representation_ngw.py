@@ -228,11 +228,6 @@ class NGWImagesView(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
         
-#         QgsMessageLog.logMessage(
-#             "NGWImagesView __init__",
-#             u'IdentifyPlus',
-#             QgsMessageLog.INFO)
-        
         self.__model = None
         self.__images = []
         
@@ -330,12 +325,7 @@ class NGWImagesView(QtGui.QWidget):
         self.__message.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         self.__vbl_images_container.addWidget(self.__message)
     
-    def __updateMessage(self):
-#         QgsMessageLog.logMessage(
-#             "NGWImagesView __updateMessage",
-#             u'IdentifyPlus',
-#             QgsMessageLog.INFO)
-        
+    def __updateMessage(self):        
         if self.__model.rowCount() > 0:
             self.__pb_download_images.setEnabled(True)
             self.__message.clear()

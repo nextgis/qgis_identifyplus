@@ -31,15 +31,19 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
-from identifyplustool import IdentifyPlusTool
+from qgis_plugin_base import Plugin
+from identifytools import allTools
+
+from identifyplusmaptool import IdentifyPlusTool, IdentifyPlusMapTool
 from identifyplusresults import IdentifyPlusResultsDock, IdentifyPlusResults
-from identifyplusmodel import IdentifyPlusModel
+# from identifyplusmodel import IdentifyPlusModel
 
 import aboutdialog
 import resources_rc
 
-class IdentifyPlus():
+class IdentifyPlus(Plugin):
   def __init__(self, iface):
+    Plugin.__init__(self, iface, "identifyplus")
 
     self.iface = iface
 
@@ -65,6 +69,9 @@ class IdentifyPlus():
       self.translator = QTranslator()
       self.translator.load(self.localePath)
       QCoreApplication.installTranslator(self.translator)
+
+  def getTargetIdentTools(self):
+    return allTools()
 
   def initGui(self):
     if int(self.qgsVersion) < 10900:
@@ -93,25 +100,31 @@ class IdentifyPlus():
 
     
     # prepare map tool
-    self.mapTool = IdentifyPlusTool(self.iface.mapCanvas())
+    # self.mapTool = IdentifyPlusTool(self.iface.mapCanvas())
+    
+    self.mapTool = IdentifyPlusMapTool(self.iface.mapCanvas())
+    self.mapTool.avalableChanged.connect(self.actionRun.setEnabled)
+    
+    self.actionRun.setEnabled(self.mapTool.isAvalable())
+
     self.iface.mapCanvas().mapToolSet.connect(self.mapToolChanged)
+          
+    # model
+    # self.model = IdentifyPlusModel(self.iface.mapCanvas())
+    # self.model.busy.connect(self.modelBusyProcess)
+    # self.mapTool.used.connect(self.model.identify)
     
-    '''
-    # handle layer changes
-    #self.iface.currentLayerChanged.connect(self.toggleTool)
-    '''
-      
-    #model
-    self.model = IdentifyPlusModel(self.iface.mapCanvas())
-    self.model.busy.connect(self.modelBusyProcess)
-    self.mapTool.used.connect(self.model.identify)
+    self.dockWidget = IdentifyPlusResultsDock(self.iface.mainWindow())
     
-    
-    self.dockWidget = IdentifyPlusResultsDock(self.iface)
-    
-    self.wIdentifyResults = IdentifyPlusResults(self.iface.mapCanvas(), self.dockWidget)
-    self.wIdentifyResults.setModel(self.model)
+    self.wIdentifyResults = IdentifyPlusResults(self.dockWidget)
+    # self.wIdentifyResults.setModel(self.model)
     self.dockWidget.setWidget(self.wIdentifyResults)
+
+    self.mapTool.identified.connect(self.wIdentifyResults.appendIdentifyRes)
+    self.mapTool.progressChanged.connect(self.wIdentifyResults.progressShow)
+    self.mapTool.identifyStarted.connect(self.wIdentifyResults.identifyProcessStart)
+    self.mapTool.identifyFinished.connect(self.wIdentifyResults.identifyProcessFinish)
+    self.mapTool.identifyStarted.connect(self.dockWidget.show)
      
     settings = QSettings();
     self.iface.addDockWidget( settings.value("identifyplus/dockWidgetArea", Qt.RightDockWidgetArea,  type=int), self.dockWidget)
@@ -120,11 +133,11 @@ class IdentifyPlus():
     self.dockWidget.move( settings.value("identifyplus/dockWidgetPos", QPoint(500, 500), type=QPoint) )
     self.dockWidget.setVisible( settings.value("identifyplus/dockWidgetIsVisible", True, type=bool))
 
-  def modelBusyProcess(self):
-    self.iface.messageBar().pushMessage(
-        QCoreApplication.translate("Plugin", 'IdentifyPlus'),
-        QCoreApplication.translate("Plugin", 'Identification is already running'),
-        level=QgsMessageBar.WARNING)
+  # def modelBusyProcess(self):
+  #   self.iface.messageBar().pushMessage(
+  #       QCoreApplication.translate("Plugin", 'IdentifyPlus'),
+  #       QCoreApplication.translate("Plugin", 'Identification is already running'),
+  #       level=QgsMessageBar.WARNING)
      
   def unload(self):
     self.iface.attributesToolBar().removeAction(self.actionRun)
@@ -141,6 +154,8 @@ class IdentifyPlus():
     settings.setValue("identifyplus/dockWidgetSize", self.dockWidget.size())
     settings.setValue("identifyplus/dockWidgetPos", self.dockWidget.pos())
     settings.setValue("identifyplus/dockWidgetIsVisible", self.dockWidget.isVisible())
+    
+    self.iface.mapCanvas().mapToolSet.disconnect(self.mapToolChanged)
     
     del self.dockWidget
     del self.mapTool
