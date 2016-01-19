@@ -45,18 +45,20 @@ class Worker(QtCore.QObject):
         self.tableName = tableName
         self.fid = fid
 
-        Plugin().plPrint("Init sqlite worker: %s (%s) %s" % (self.sqliteFilename, self.tableName, self.fid))
+        # Plugin().plPrint("Init sqlite worker: %s (%s) %s" % (self.sqliteFilename, self.tableName, self.fid))
 
     def run(self):
-        Plugin().plPrint("Run sqlite worker")
+        # Plugin().plPrint("Run sqlite worker")
 
         conn = sqlite3.connect(self.sqliteFilename)
         cur = conn.cursor()
 
+        aliases = self.__getAliases(cur)
+
         cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
         tables = [v[0] for v in cur.fetchall()]
         tables.remove(self.tableName)
-        Plugin().plPrint("tables: " + str(tables))
+        # Plugin().plPrint("tables: " + str(tables))
 
         pkFieldName = None
         cur.execute("PRAGMA table_info(%s)" % self.tableName)
@@ -71,7 +73,7 @@ class Worker(QtCore.QObject):
             for field in cur.fetchall():
                 if field[2] == self.tableName and field[4] == pkFieldName:
                     refTables.append([table, field[3]])
-        Plugin().plPrint("refTables: " + str(refTables))
+        # Plugin().plPrint("refTables: " + str(refTables))
 
         for table in refTables:
             data = []
@@ -85,25 +87,45 @@ class Worker(QtCore.QObject):
             for row in cur.fetchall():
                 rowData = []
                 for idx, col in enumerate(cur.description):
-                    rowData.append( (col[0], row[idx]) )
+                    rowData.append( 
+                        (
+                            aliases.get(table[0]).get(col[0], col[0]),
+                            row[idx]
+                        )
+                    )
 
                 data.append( (unicode(rowIndex), rowData) )
                 rowIndex += 1
 
-            self.refTableProcessed.emit({table[0]: data})
+            self.refTableProcessed.emit({
+                aliases.get(table[0]).get(None, table[0]): data
+            })
 
+    def __getAliases(self, cur):
+        res = {}
+        try:
+            cur.execute("SELECT * FROM aliases")
+            aliases = cur.fetchall()
 
-class SQLiteTool(IdentifyTool, QtCore.QObject):
+            for alias in aliases:
+                if not res.has_key(alias[0]):
+                    res[alias[0]] = {}
+
+                res[alias[0]][alias[1]] = alias[2]                
+                    
+        except Exception as err:
+            Plugin().plPrint("Find aliases in BD error: " + str(err), QgsMessageLog.WARNING)
+
+        return res
+
+class SQLiteTool(IdentifyTool):
     def __init__(self):
         IdentifyTool.__init__(self, "sqlite", "sqlite identification")
-        QtCore.QObject.__init__(self)
 
+        self.__aliases = {}
     def identify(self, qgisIdentResultVector, resultsContainer):
         if not self.isAvailable(qgisIdentResultVector._qgsMapLayer):
             return
-        
-        self.aliases = qgisIdentResultVector._qgsMapLayer.attributeAliases()
-        Plugin().plPrint("self.aliases: " +  unicode(self.aliases))
 
         self.__resultsContainer = resultsContainer
 
@@ -119,7 +141,16 @@ class SQLiteTool(IdentifyTool, QtCore.QObject):
         # view.setModel(model)
         # self.__resultsContainer.addResult(view, key)
 
-        thread = QtCore.QThread(self)
+        self.model = QtGui.QStandardItemModel()
+        self.model.setHorizontalHeaderLabels([
+            QCoreApplication.translate("QGISTool", "attribute"),
+            QCoreApplication.translate("QGISTool", "value")
+        ])
+        self.view = QtGui.QTreeView()
+        self.view.setModel(self.model)
+        self.__is_added_to_container = False
+
+        thread = QtCore.QThread(self.__resultsContainer)
         worker = Worker(qgisIdentResultVector.getFeature().id(), sqlite_filename, table_name)
         worker.moveToThread(thread)
         worker.refTableProcessed.connect(self.__addRefTableInfo)
@@ -131,33 +162,28 @@ class SQLiteTool(IdentifyTool, QtCore.QObject):
         self.thread = thread
 
     def __addRefTableInfo(self, data):
-        # Plugin().plPrint("__addRefTableInfo: " + str(data))
-        model = QtGui.QStandardItemModel()
-        model.setHorizontalHeaderLabels([
-            QCoreApplication.translate("QGISTool", "attribute"),
-            QCoreApplication.translate("QGISTool", "value")
-        ])
+        if self.__is_added_to_container is False:
+            self.__resultsContainer.addResult(self.view, QCoreApplication.translate("QGISTool", "Reference tables"))
+            self.__is_added_to_container = True
 
         for key, value in data.items():
-            # Plugin().plPrint("key: " + str(key))
-            # Plugin().plPrint("value: " + str(value))
-        
-            view = QtGui.QTreeView()
-        
-            view.setModel(model)
-            self.__resultsContainer.addResult(view, self.aliases.get(key, key))
+            item = QtGui.QStandardItem(key)
+            self.model.appendRow([item, QtGui.QStandardItem()])
 
-            self.__addItems(model, value)
+            self.__addItems(item, value)
 
     def __addItems(self, parent, elements):
         for text, children in elements:
-            item = QtGui.QStandardItem(self.aliases.get(text, text))
+            item = QtGui.QStandardItem(text)
             if isinstance(children, list):
                 parent.appendRow([item, QtGui.QStandardItem()])
                 if children:
                     self.__addItems(item, children)
             else:
                 parent.appendRow([item, QtGui.QStandardItem(unicode(children))])
+
+    def __setAliases(self, aliases):
+        self.__aliases = aliases
 
     @staticmethod
     def isAvailable(qgsMapLayer):

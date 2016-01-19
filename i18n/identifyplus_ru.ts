@@ -894,12 +894,12 @@ Plugin will not be enabled.</source>
 <context>
     <name>QGISTool</name>
     <message>
-        <location filename="identifytool_sqlite.py" line="136"/>
+        <location filename="identifytool_sqlite.py" line="145"/>
         <source>attribute</source>
         <translation>Аттрибут</translation>
     </message>
     <message>
-        <location filename="identifytool_sqlite.py" line="136"/>
+        <location filename="identifytool_sqlite.py" line="145"/>
         <source>value</source>
         <translation>Значение</translation>
     </message>
@@ -907,6 +907,11 @@ Plugin will not be enabled.</source>
         <location filename="identifytool_qgis.py" line="58"/>
         <source>Base options</source>
         <translation>Основные аттрибуты</translation>
+    </message>
+    <message>
+        <location filename="identifytool_sqlite.py" line="166"/>
+        <source>Reference tables</source>
+        <translation type="unfinished">Связаные таблицы</translation>
     </message>
 </context>
 <context>
