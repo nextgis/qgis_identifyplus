@@ -25,7 +25,7 @@
 #
 #******************************************************************************
 
-import sqlite3
+import os
 
 from PyQt4 import QtGui, QtCore
 
@@ -36,6 +36,8 @@ from qgis_plugin_base import Plugin
 
 from ngw_external_api_python.core.ngw_utils import ngw_resource_from_qgs_map_layer
 from ngw_external_api_python.core.ngw_error import NGWError
+from ngw_external_api_python.core.ngw_feature import NGWFeature
+from ngw_external_api_python.core.ngw_attachment import NGWAttachment
 
 import resources_rc
 
@@ -50,7 +52,7 @@ class NGWTool(IdentifyTool, QtCore.QObject):
         
         if ngw_resource is not None:
             view = NGWImagesView()
-            model = NGWImagesModel(qgisIdentResultVector, provider.ngw_resource)                                  
+            model = NGWImagesModel(qgisIdentResultVector, ngw_resource)                                  
             view.setModel(model)
             
             resultsContainer.addResult(view, "Photos" + " (ngw)")
@@ -89,8 +91,11 @@ class NGWImagesModel(QtCore.QAbstractListModel):
         self.__thread.start()
     
     def initModel(self):
-        fid = self.__obj.fid
-        dataProvider = self.__obj.qgsMapLayer.dataProvider()
+        Plugin().plPrint(">>> initModel")
+        fid = self.__obj.getFeature().id()
+        Plugin().plPrint(">>> --- fid: %s" % fid)
+
+        dataProvider = self.__obj._qgsMapLayer.dataProvider()
         if dataProvider.name() == u'WFS':
             if hasattr(dataProvider, 'idFromFid') and callable(getattr(dataProvider, 'idFromFid')):
                 fid = dataProvider.idFromFid(fid)

@@ -100,6 +100,8 @@ class IdentifyPlus(Plugin):
     
     # prepare map tool   
     self.mapTool = IdentifyPlusMapTool(self.iface.mapCanvas())
+    Plugin().plPrint(">>> IdentifyPlusMapTool inited")
+
     self.mapTool.avalableChanged.connect(self.actionRun.setEnabled)
     self.actionRun.setEnabled(self.mapTool.isAvalable())
     self.iface.mapCanvas().mapToolSet.connect(self.mapToolChanged)

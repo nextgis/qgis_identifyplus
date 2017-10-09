@@ -1,0 +1,22 @@
+[general]
+name=Identifyplus
+description=Extended identify tool
+category=Identification
+version={VERSION}
+qgisMinimumVersion=2.6
+
+author=NextGIS
+email=info@nextgis.org
+
+icon=icons/identifyplus.png
+
+tags=feature,maptool,identification
+
+homepage=
+tracker=
+repository=https://github.com/nextgis/IdentifyPlus
+
+experimental=True
+deprecated=False
+
+checngelog={CHANGELOG}

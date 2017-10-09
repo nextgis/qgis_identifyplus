@@ -143,6 +143,8 @@ class Worker(QObject):
         self.targetIdentTools = targetIdentTools
         self.canvas = canvas
 
+        Plugin().plPrint(">>> self.targetLayers: %s" % self.targetLayers)
+
         self.progressMax = len(self.targetLayers) + 1
         self.progress = -1
 
@@ -161,7 +163,12 @@ class Worker(QObject):
 
         if len(self.targetLayers) > 0:
             for qgsLayer in self.targetLayers:
+
+                Plugin().plPrint(">>> check layer: %s" % qgsLayer.name())
+
                 availableTools = [tool for tool in self.targetIdentTools if tool.isAvailable(qgsLayer)]
+                Plugin().plPrint(">>> availableTools: %s" % availableTools)
+
                 if len(availableTools) == 0:
                     continue    
 
@@ -194,9 +201,11 @@ class IdentifyPlusMapTool(QgsMapTool):
         self.canvas().currentLayerChanged.connect(self.checkAvalable)
 
     def activate(self):
+        Plugin().plPrint(">>> IdentifyPlusMapTool activateed!")
         self.canvas().setCursor(self.cursor)
 
-    def canvasReleaseEvent(self, event):       
+    def canvasReleaseEvent(self, event):   
+
         QApplication.setOverrideCursor(Qt.WaitCursor)
         
         qgsPoint = QgsPoint(event.x(), event.y())
