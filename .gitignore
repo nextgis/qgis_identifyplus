@@ -11,4 +11,4 @@ ui_*.py
 *_rc.py
 
 # QGIS plugin
-metadata.txt
+# metadata.txt

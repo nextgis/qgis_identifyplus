@@ -16,12 +16,12 @@ photos associated with features. If you need more info please &lt;a href=&quot;m
 &lt;p&gt;ПРИМЕЧАНИЕ: Для отображения и работы с присоединенными изображениями, модулю необходим доступ к специальному веб-сервису. Получить более подробную информацию можно &lt;a href=&quot;mailto:info@nextgis.org&quot;&gt;связавшись с нами&lt;/a&gt;&lt;/p</translation>
     </message>
     <message>
-        <location filename="aboutdialog.py" line="50"/>
+        <location filename="../aboutdialog.py" line="50"/>
         <source>Version: %s</source>
         <translation>Версия: %s</translation>
     </message>
     <message>
-        <location filename="aboutdialog.py" line="75"/>
+        <location filename="../aboutdialog.py" line="75"/>
         <source>&lt;p&gt;Alternate identify tool with additional capabilities.&lt;/p&gt;
 &lt;p&gt;NOTE: Plugin needs access to special web-service in order to be able display
 photos associated with features. If you need more info please &lt;a href=&quot;mailto:info@nextgis.org&quot;&gt;contact us&lt;/a&gt;&lt;/p&gt;
@@ -33,17 +33,17 @@ photos associated with features. If you need more info please &lt;a href=&quot;m
 <context>
     <name>AttributesTable</name>
     <message>
-        <location filename="attributestable.ui" line="14"/>
+        <location filename="../ui_attributestable.py" line="62"/>
         <source>Form</source>
         <translation>Результаты определения</translation>
     </message>
     <message>
-        <location filename="attributestable.ui" line="63"/>
+        <location filename="../ui_attributestable.py" line="64"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="attributestable.ui" line="68"/>
+        <location filename="../ui_attributestable.py" line="66"/>
         <source>Value</source>
         <translation>Значение</translation>
     </message>
@@ -51,17 +51,17 @@ photos associated with features. If you need more info please &lt;a href=&quot;m
 <context>
     <name>AttributesTableWithImages</name>
     <message>
-        <location filename="attributestablewithimages.ui" line="20"/>
+        <location filename="../ui_attributestablewithimages.py" line="101"/>
         <source>Form</source>
         <translation>Результаты определения</translation>
     </message>
     <message>
-        <location filename="attributestablewithimages.ui" line="51"/>
+        <location filename="../ui_attributestablewithimages.py" line="102"/>
         <source>Attributes</source>
         <translation>Атрибуты</translation>
     </message>
     <message>
-        <location filename="attributestablewithimages.ui" line="64"/>
+        <location filename="../ui_attributestablewithimages.py" line="108"/>
         <source>Image</source>
         <translation>Изображения</translation>
     </message>
@@ -71,17 +71,17 @@ photos associated with features. If you need more info please &lt;a href=&quot;m
         <translation type="obsolete">Загрузить изображение в базу данных</translation>
     </message>
     <message>
-        <location filename="attributestablewithimages.ui" line="146"/>
+        <location filename="../ui_attributestablewithimages.py" line="106"/>
         <source>Save all photos to disk</source>
         <translation>Сохранить все изображения на диск</translation>
     </message>
     <message>
-        <location filename="attributestablewithimages.ui" line="126"/>
+        <location filename="../ui_attributestablewithimages.py" line="104"/>
         <source>Download photos</source>
         <translation>Загрузить фотографии</translation>
     </message>
     <message>
-        <location filename="attributestablewithimages.ui" line="149"/>
+        <location filename="../ui_attributestablewithimages.py" line="107"/>
         <source>...</source>
         <translation></translation>
     </message>
@@ -105,19 +105,27 @@ photos associated with features. If you need more info please &lt;a href=&quot;m
     </message>
 </context>
 <context>
+    <name>CurrentQGISProjectImporter</name>
+    <message>
+        <location filename="../ngw_external_api_python/qgis/ngw_resource_model_4qgis.py" line="993"/>
+        <source>Import &apos;%s&apos; failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Dialog</name>
     <message>
-        <location filename="aboutdialogbase.ui" line="14"/>
+        <location filename="../ui_aboutdialogbase.py" line="60"/>
         <source>About IdentifyPlus</source>
         <translation>О IdentifyPlus</translation>
     </message>
     <message>
-        <location filename="aboutdialogbase.ui" line="44"/>
+        <location filename="../ui_aboutdialogbase.py" line="67"/>
         <source>TextLabel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="aboutdialogbase.ui" line="30"/>
+        <location filename="../ui_aboutdialogbase.py" line="62"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -126,7 +134,7 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="aboutdialogbase.ui" line="67"/>
+        <location filename="../ui_aboutdialogbase.py" line="68"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -135,34 +143,59 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="ngw_connection_edit_dialog_base.ui" line="32"/>
-        <source>Create a new NGW connection</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="ngw_connection_edit_dialog_base.ui" line="41"/>
-        <source>Connection details</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="ngw_connection_edit_dialog_base.ui" line="47"/>
+        <location filename="../ui_ngw_connection_edit_dialog_base.py" line="125"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="ngw_connection_edit_dialog_base.ui" line="57"/>
+        <location filename="../ui_ngw_connection_edit_dialog_base.py" line="132"/>
         <source>URL</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ngw_connection_edit_dialog_base.ui" line="67"/>
-        <source>User name</source>
+        <location filename="../ui_ngw_connection_edit_dialog_base.py" line="130"/>
+        <source>Password</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="ngw_connection_edit_dialog_base.ui" line="77"/>
-        <source>Password</source>
-        <translation></translation>
+        <location filename="../ui_ngw_connection_edit_dialog_base.py" line="123"/>
+        <source>Create Web GIS connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui_ngw_connection_edit_dialog_base.py" line="124"/>
+        <source>Connection testing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui_ngw_connection_edit_dialog_base.py" line="126"/>
+        <source>As guest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui_ngw_connection_edit_dialog_base.py" line="127"/>
+        <source>User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui_ngw_connection_edit_dialog_base.py" line="128"/>
+        <source>Login</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui_ngw_connection_edit_dialog_base.py" line="129"/>
+        <source>administrator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui_ngw_connection_edit_dialog_base.py" line="131"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://docs.nextgis.com/docs_ngcom/source/ngqgis_connect.html#ngcom-ngqgis-connect-connection&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Where do I get these?&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui_ngw_connection_edit_dialog_base.py" line="133"/>
+        <source>connection addres (e.g. mygis.nextgis.com)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -224,27 +257,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>IdentificationWorker</name>
     <message>
-        <location filename="identifyplusmodel.py" line="174"/>
+        <location filename="../identifyplusmodel.py" line="174"/>
         <source>gdallocationinfo return error status&lt;br/&gt;</source>
         <translation>gdallocationinfo завершилась с ошибкой</translation>
     </message>
     <message>
-        <location filename="identifyplusmodel.py" line="180"/>
+        <location filename="../identifyplusmodel.py" line="180"/>
         <source>Parsing gdallocationinfo request error&lt;br/&gt;</source>
         <translation>Ошибка обработки результатов работы gdallocationinfo </translation>
     </message>
     <message>
-        <location filename="identifyplusmodel.py" line="134"/>
+        <location filename="../identifyplusmodel.py" line="134"/>
         <source>QGIS proxysettings error</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="identifyplusmodel.py" line="134"/>
+        <location filename="../identifyplusmodel.py" line="134"/>
         <source>Parameter &apos;proxyHost&apos; is missing</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="identifyplusmodel.py" line="227"/>
+        <location filename="../identifyplusmodel.py" line="227"/>
         <source>Caught CRS exception</source>
         <translation></translation>
     </message>
@@ -252,7 +285,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>IdentifyPlus</name>
     <message>
-        <location filename="identifyplus.py" line="78"/>
+        <location filename="../identifyplus.py" line="80"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
@@ -270,25 +303,25 @@ Plugin will not be enabled.</source>
 Модуль не будет загружен.</translation>
     </message>
     <message>
-        <location filename="identifyplus.py" line="91"/>
+        <location filename="../identifyplus.py" line="93"/>
         <source>About IdentifyPlus...</source>
         <translation>О IdentifyPlus...</translation>
     </message>
     <message>
-        <location filename="identifyplus.py" line="78"/>
+        <location filename="../identifyplus.py" line="80"/>
         <source>QGIS %s detected.
 </source>
         <translation>Обнаружена QGIS версии %s.</translation>
     </message>
     <message>
-        <location filename="identifyplus.py" line="78"/>
+        <location filename="../identifyplus.py" line="80"/>
         <source>This version of IdentifyPlus requires at least QGIS version 2.0.
 Plugin will not be enabled.</source>
         <translation>Эта версия IdentifyPlus требует наличия QGIS версии 2.0
 Модуль не будет загружен.</translation>
     </message>
     <message>
-        <location filename="identifyplus.py" line="128"/>
+        <location filename="../identifyplus.py" line="132"/>
         <source>IdentifyPlus</source>
         <translation></translation>
     </message>
@@ -316,22 +349,22 @@ Plugin will not be enabled.</source>
         <translation type="obsolete">Значение</translation>
     </message>
     <message>
-        <location filename="identifyplusresultsbase.ui" line="52"/>
+        <location filename="../ui_identifyplusresultsbase.py" line="138"/>
         <source>First feature</source>
         <translation>Первый объект</translation>
     </message>
     <message>
-        <location filename="identifyplusresultsbase.ui" line="66"/>
+        <location filename="../ui_identifyplusresultsbase.py" line="140"/>
         <source>Previous feature</source>
         <translation>Предыдущий объект</translation>
     </message>
     <message>
-        <location filename="identifyplusresultsbase.ui" line="96"/>
+        <location filename="../ui_identifyplusresultsbase.py" line="143"/>
         <source>Next feature</source>
         <translation>Следующий объект</translation>
     </message>
     <message>
-        <location filename="identifyplusresultsbase.ui" line="110"/>
+        <location filename="../ui_identifyplusresultsbase.py" line="145"/>
         <source>Last feature</source>
         <translation>Последний объект</translation>
     </message>
@@ -506,17 +539,17 @@ Plugin will not be enabled.</source>
         <translation type="obsolete">Вы уверены, что хотите удалить эту фотографию?</translation>
     </message>
     <message>
-        <location filename="identifyplusresultsbase.ui" line="20"/>
+        <location filename="../ui_identifyplusresultsbase.py" line="137"/>
         <source>Form</source>
         <translation>Результаты определения</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="149"/>
+        <location filename="../identifyplusresults.py" line="149"/>
         <source>No features</source>
         <translation>Объекты не найдены</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="140"/>
+        <location filename="../identifyplusresults.py" line="140"/>
         <source>Feature %s from %s (%s)</source>
         <translation>Объект %s из %s (%s)</translation>
     </message>
@@ -526,7 +559,7 @@ Plugin will not be enabled.</source>
         <translation type="obsolete">Объекты не найдены</translation>
     </message>
     <message>
-        <location filename="identifyplusresultsbase.ui" line="224"/>
+        <location filename="../ui_identifyplusresultsbase.py" line="147"/>
         <source>Identification status</source>
         <translation>Статус идентификацмм</translation>
     </message>
@@ -536,17 +569,17 @@ Plugin will not be enabled.</source>
         <translation type="obsolete">Обработка слоя: %s</translation>
     </message>
     <message>
-        <location filename="identifyplusresults.py" line="75"/>
+        <location filename="../identifyplusresults.py" line="75"/>
         <source>Identification...</source>
         <translation>Идентификация...</translation>
     </message>
     <message>
-        <location filename="identifyplusresultsbase.ui" line="113"/>
+        <location filename="../ui_identifyplusresultsbase.py" line="146"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="identifyplusresultsbase.ui" line="86"/>
+        <location filename="../ui_identifyplusresultsbase.py" line="142"/>
         <source>Feature X from Y (layer)</source>
         <translation></translation>
     </message>
@@ -554,7 +587,7 @@ Plugin will not be enabled.</source>
 <context>
     <name>IdentifyPlusResultsDock</name>
     <message>
-        <location filename="identifyplusresults.py" line="155"/>
+        <location filename="../identifyplusresults.py" line="155"/>
         <source>IdentifyPlus</source>
         <translation></translation>
     </message>
@@ -663,12 +696,12 @@ Plugin will not be enabled.</source>
 <context>
     <name>Image</name>
     <message>
-        <location filename="representation_ngw.py" line="201"/>
+        <location filename="../identifytool_ngw.py" line="233"/>
         <source>Download photo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="representation_ngw.py" line="210"/>
+        <location filename="../identifytool_ngw.py" line="242"/>
         <source>Delete photo</source>
         <translation></translation>
     </message>
@@ -676,7 +709,7 @@ Plugin will not be enabled.</source>
 <context>
     <name>ImageDownloadDialog</name>
     <message>
-        <location filename="representation_ngw.py" line="433"/>
+        <location filename="../identifytool_ngw.py" line="465"/>
         <source>Download images process</source>
         <translation>Процесс загрузки изображений</translation>
     </message>
@@ -692,9 +725,42 @@ Plugin will not be enabled.</source>
 <context>
     <name>ImageLabel</name>
     <message>
-        <location filename="representation_ngw.py" line="140"/>
+        <location filename="../identifytool_ngw.py" line="172"/>
         <source>Loading...</source>
         <translation>Загрузка...</translation>
+    </message>
+</context>
+<context>
+    <name>NGWConnectionEditDialog</name>
+    <message>
+        <location filename="../ngw_external_api_python/qgis/ngw_connection_edit_dialog.py" line="98"/>
+        <source>http://docs.nextgis.com/docs_ngcom/source/ngqgis_connect.html#ngcom-ngqgis-connect-connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ngw_external_api_python/qgis/ngw_connection_edit_dialog.py" line="98"/>
+        <source>Where do I get these?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ngw_external_api_python/qgis/ngw_connection_edit_dialog.py" line="211"/>
+        <source>Fill it!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ngw_external_api_python/qgis/ngw_connection_edit_dialog.py" line="252"/>
+        <source>Connection test...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ngw_external_api_python/qgis/ngw_connection_edit_dialog.py" line="258"/>
+        <source>Connection successful!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ngw_external_api_python/qgis/ngw_connection_edit_dialog.py" line="262"/>
+        <source>Specified URL webgis not found! Or your webgis version is below 3</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -743,44 +809,70 @@ Plugin will not be enabled.</source>
 <context>
     <name>NGWImagesView</name>
     <message>
-        <location filename="representation_ngw.py" line="323"/>
+        <location filename="../identifytool_ngw.py" line="355"/>
         <source>Loading...</source>
         <translation>Загрузка...</translation>
     </message>
     <message>
-        <location filename="representation_ngw.py" line="334"/>
+        <location filename="../identifytool_ngw.py" line="366"/>
         <source>No photos</source>
         <translation>Фотографий нет</translation>
     </message>
     <message>
-        <location filename="representation_ngw.py" line="377"/>
+        <location filename="../identifytool_ngw.py" line="409"/>
         <source>Choose photo(s)</source>
         <translation>Выберите фотографию</translation>
     </message>
     <message>
-        <location filename="representation_ngw.py" line="392"/>
+        <location filename="../identifytool_ngw.py" line="424"/>
         <source>Save photo</source>
         <translation>Сохронить фотографию</translation>
     </message>
     <message>
-        <location filename="representation_ngw.py" line="411"/>
+        <location filename="../identifytool_ngw.py" line="443"/>
         <source>Select directory fo save photos</source>
         <translation>Выберите папку для сохранения фотографий</translation>
     </message>
     <message>
-        <location filename="representation_ngw.py" line="293"/>
+        <location filename="../identifytool_ngw.py" line="325"/>
         <source>Download photos</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="representation_ngw.py" line="301"/>
+        <location filename="../identifytool_ngw.py" line="333"/>
         <source>Add photo(s)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="representation_ngw.py" line="377"/>
+        <location filename="../identifytool_ngw.py" line="409"/>
         <source>Image Files (*.png *.jpg *.bmp)</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>NGWResourceModelJob</name>
+    <message>
+        <location filename="../ngw_external_api_python/qt/qt_ngw_resource_model_job.py" line="126"/>
+        <source>Bad http comunication.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ngw_external_api_python/qt/qt_ngw_resource_model_job.py" line="129"/>
+        <source>Cann&apos;t parse server answer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ngw_external_api_python/qt/qt_ngw_resource_model_job.py" line="132"/>
+        <source>Something wrong with request to server</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>NGWTool</name>
+    <message>
+        <location filename="../identifytool_ngw.py" line="58"/>
+        <source>Photos (ngw)</source>
+        <translation>Фото (ngw)</translation>
     </message>
 </context>
 <context>
@@ -873,12 +965,12 @@ Plugin will not be enabled.</source>
 <context>
     <name>QGISAttributesModel</name>
     <message>
-        <location filename="representation_qgis.py" line="38"/>
+        <location filename="../representation_qgis.py" line="38"/>
         <source>key</source>
         <translation>ключ</translation>
     </message>
     <message>
-        <location filename="representation_qgis.py" line="38"/>
+        <location filename="../representation_qgis.py" line="38"/>
         <source>value</source>
         <translation>значение</translation>
     </message>
@@ -886,32 +978,50 @@ Plugin will not be enabled.</source>
 <context>
     <name>QGISIdentResultVector</name>
     <message>
-        <location filename="identifyplusmaptool.py" line="123"/>
+        <location filename="../identifyplusmaptool.py" line="123"/>
         <source>Caught CRS exception</source>
         <translation></translation>
     </message>
 </context>
 <context>
+    <name>QGISResourceJob</name>
+    <message>
+        <location filename="../ngw_external_api_python/qgis/ngw_resource_model_4qgis.py" line="285"/>
+        <source>Your web GIS cann&apos;t create base maps.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ngw_external_api_python/qgis/ngw_resource_model_4qgis.py" line="535"/>
+        <source>We&apos;ve renamed fields {0} for layer &apos;{1}&apos;. Style for this layer may become invalid.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ngw_external_api_python/qgis/ngw_resource_model_4qgis.py" line="603"/>
+        <source>We&apos;ve excluded features with id {0} for layer &apos;{1}&apos;. Reason: invalid geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QGISTool</name>
     <message>
-        <location filename="identifytool_sqlite.py" line="145"/>
+        <location filename="../identifytool_sqlite.py" line="145"/>
         <source>attribute</source>
-        <translation>Аттрибут</translation>
+        <translation>атрибут</translation>
     </message>
     <message>
-        <location filename="identifytool_sqlite.py" line="145"/>
+        <location filename="../identifytool_sqlite.py" line="145"/>
         <source>value</source>
-        <translation>Значение</translation>
+        <translation>значение</translation>
     </message>
     <message>
-        <location filename="identifytool_qgis.py" line="58"/>
+        <location filename="../identifytool_qgis.py" line="58"/>
         <source>Base options</source>
-        <translation>Основные аттрибуты</translation>
+        <translation>Основные атрибуты</translation>
     </message>
     <message>
-        <location filename="identifytool_sqlite.py" line="166"/>
+        <location filename="../identifytool_sqlite.py" line="166"/>
         <source>Reference tables</source>
-        <translation type="unfinished">Связаные таблицы</translation>
+        <translation>Связаные таблицы</translation>
     </message>
 </context>
 <context>

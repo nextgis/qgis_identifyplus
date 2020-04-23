@@ -55,7 +55,7 @@ class NGWTool(IdentifyTool, QtCore.QObject):
             model = NGWImagesModel(qgisIdentResultVector, ngw_resource)                                  
             view.setModel(model)
             
-            resultsContainer.addResult(view, "Photos" + " (ngw)")
+            resultsContainer.addResult(view, self.tr("Photos (ngw)"))
 
     @staticmethod
     def isAvailable(qgsMapLayer):
@@ -102,14 +102,14 @@ class NGWImagesModel(QtCore.QAbstractListModel):
                 if type(fid) != 'long':
                     fid = long(fid)
         
-        self.__ngw_feature = NGWFeature(fid, self.__ngw_resource)
+        self.__ngw_feature = NGWFeature({'id':fid}, self.__ngw_resource)
         self.__images_urls = []
         
         attachments = self.__ngw_feature.get_attachments()
         for attachment in attachments:
             if attachment[u'is_image'] == True:
                 self.insertRow(NGWAttachment(attachment[u'id'], self.__ngw_feature))
-        
+
         self.initEnded.emit()
           
     def rowCount(self, parent=QtCore.QModelIndex()):        
@@ -189,7 +189,7 @@ class ImageLabel(QtGui.QLabel):
         sp.setHeightForWidth(True)
         self.setSizePolicy(sp)
         self.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
-        self.setMinimumSize(self.pm.width() / 5, self.pm.height() / 5 )
+        self.setMinimumSize(50, 50)
         
         self._k = 1.0 * self.pm.height() / self.pm.width()
         

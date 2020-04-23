@@ -63,7 +63,9 @@ class IdentifyPlus(Plugin):
     else:
       translationPath = systemPluginPath + "/i18n/identifyplus_" + localeFullName + ".qm"
     
+    
     self.localePath = translationPath
+    self.plPrint("self.localePath: %s" % self.localePath)
     if QFileInfo(self.localePath).exists():
       self.translator = QTranslator()
       self.translator.load(self.localePath)
