@@ -24,7 +24,6 @@
 # MA 02110-1335 USA.
 #
 #******************************************************************************e
-import time
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -32,55 +31,8 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
-from ngw_external_api_python.core.ngw_utils import ngw_resource_from_qgs_map_layer
+from qgis_plugin_base import Plugin
 
-from representation_qgis import QGISAttributesModel, QGISAttributesView
-from representation_ngw import NGWImagesModel, NGWImagesView
-
-class DataProvider(object):
-    def __init__(self, name, priority):
-        self.__name = name
-        self.__priority = priority
-    
-    def __str__(self):
-        return self.__name + " data provider"
-    def __repr__(self):
-        return self.__name + " data provider"
-    
-    @property
-    def name(self):
-        return self.__name
-    
-    @property
-    def priority(self):
-        return self.__priority
-    
-class QGISDataProvider(DataProvider):
-    def __init__(self):
-        DataProvider.__init__(self, "qgis", 0)
-
-class NGWDataProvider(DataProvider):
-    def __init__(self, ngw_resource):
-        DataProvider.__init__(self, "ngw", 1)
-        self.__ngw_resource = ngw_resource
-        
-    @property
-    def ngw_resource(self):
-        return self.__ngw_resource
-    
-def provider_definition(qgsMapLayer):
-    provides = [ QGISDataProvider() ]
-    
-    #if qgsMapLayer.type() == QgsMapLayer.RasterLayer:
-    #    provides.append(GDALDataProvider())
-        
-    if qgsMapLayer.type() == QgsMapLayer.VectorLayer:
-        
-        ngw_resource = ngw_resource_from_qgs_map_layer(qgsMapLayer)        
-        if ngw_resource is not None:            
-            provides.append(NGWDataProvider(ngw_resource))
-    
-    return provides
 
 class RepresentationsCache(object):
     def __init__(self):
@@ -101,6 +53,7 @@ class RepresentationsCache(object):
         else:
             return 0
 
+
 class RepresentationContainer(QTabWidget):
     def __init__(self, parent = None):
         QTabWidget.__init__(self, parent)
@@ -109,7 +62,9 @@ class RepresentationContainer(QTabWidget):
         self.reprs_cashe = RepresentationsCache()
     
         self.currentChanged.connect(self.tabChangedHandle)
-    
+        
+        self.__tools = list()
+
     def allReprs(self):
         reprs = []
         for i in range( 0, self.count() ):
@@ -119,25 +74,20 @@ class RepresentationContainer(QTabWidget):
     def tabChangedHandle(self, index):
         self.reprs_cashe.save(self.allReprs(), index) 
     
-    def takeControl(self, obj):
+    def takeControl(self, obj, identifyTools):
         self.clear()
-        for provider in obj.providers:
-            if isinstance(provider, QGISDataProvider):
-                repr_widget = QGISAttributesView(self)                
-                repr_widget.setModel(QGISAttributesModel(obj))
-                tab_index = self.addTab(repr_widget, self.tr("Attributes"))
-            
-            if isinstance(provider, NGWDataProvider):
-                #startTime = time.time()
-                
-                repr_widget = NGWImagesView(self)
-                tab_index = self.addTab(repr_widget, self.tr("Photos") + " (ngw)")
-                model = NGWImagesModel(obj, provider.ngw_resource)                                  
-                repr_widget.setModel( model )
-            
-        self.setCurrentIndex(self.reprs_cashe.getIndex(self.allReprs()))
-            
+        for toolCls in identifyTools:
+            tool = toolCls()
+            tool.identify(obj, self)
+            self.__tools.append(tool)
+
+    def addResult(self, widget, name):
+        # Plugin().plPrint("addResult: " + name)
+        widget.setParent(self)
+        self.addTab(widget, name)
+
     def clear(self):
+        self.__tools = list()
         for i in range( 0, self.count() ):
             self.widget(0).hide()
             self.widget(0).close()

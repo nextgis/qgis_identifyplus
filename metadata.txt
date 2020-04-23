@@ -1,8 +1,8 @@
 [general]
-name=IdentifyPlus
+name=identifyplus
 description=Extended identify tool
 category=Identification
-version=3.1.8
+version=4.0.1-1
 qgisMinimumVersion=2.6
 
 author=NextGIS
@@ -18,3 +18,7 @@ repository=https://github.com/nextgis/IdentifyPlus
 
 experimental=True
 deprecated=False
+
+checngelog=4.0.1-1
+	    * Fix bugs
+	    * Read sqlite related tables

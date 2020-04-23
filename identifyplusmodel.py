@@ -42,6 +42,7 @@ class IdentificationObject(object):
         self.__identificationTool = identificationTool
         self.__fid = fid
         self.providers = []
+    
     @property
     def qgsMapLayer(self):
         return self.__qgsMapLayer
@@ -270,6 +271,7 @@ class IdentifyPlusModel(QObject):
     objectsAppended = pyqtSignal(int)
     
     busy = pyqtSignal()
+    
     def __init__(self, qgsMapCanvas):
         QObject.__init__(self)
 
@@ -282,6 +284,7 @@ class IdentifyPlusModel(QObject):
         self._identificationObjects = []
         
         self.__is_busy = False
+
     def data(self, index):
         return self._identificationObjects[index]
     
@@ -337,12 +340,14 @@ class IdentifyPlusModel(QObject):
         #    u'IdentifyPlus',
         #    QgsMessageLog.INFO)
         pass
+    
     def threadFinished(self):
         #QgsMessageLog.logMessage(
         #    "Identification thread finish",
         #    u'IdentifyPlus',
         #    QgsMessageLog.INFO)
         pass
+    
     def identificationProgressHandle(self, i, c):
         self.identificationProgress.emit(i,c)
         
