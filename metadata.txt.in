@@ -19,4 +19,4 @@ repository=https://github.com/nextgis/IdentifyPlus
 experimental=True
 deprecated=False
 
-checngelog={CHANGELOG}
+changelog={CHANGELOG}

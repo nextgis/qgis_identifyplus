@@ -19,10 +19,10 @@ repository=https://github.com/nextgis/IdentifyPlus
 experimental=True
 deprecated=False
 
-checngelog=
+changelog=
 	4.1.dev0
 		* Fix localization
-		* Decrease ngw images min size
+		* Decrease min size of ngw images
 	4.0.1-1
 	    * Fix bugs
 	    * Read sqlite related tables
