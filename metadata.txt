@@ -2,7 +2,7 @@
 name=identifyplus
 description=Extended identify tool
 category=Identification
-version=4.1.dev0
+version=4.0.3
 qgisMinimumVersion=2.6
 
 author=NextGIS
@@ -19,7 +19,8 @@ repository=https://github.com/nextgis/IdentifyPlus
 experimental=True
 deprecated=False
 
-changelog=4.1.dev0
+changelog=4.0.3
+        * Fix download images
     4.0.2
         * Fix localization
         * Decrease min size of ngw images
