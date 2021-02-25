@@ -128,7 +128,7 @@ class NGWImagesModel(QtCore.QAbstractListModel):
         return True
     
     def addImage(self, image_filename):
-        uploaded_file_info = self.__ngw_feature.ngw_resource._res_factory.connection.upload_file(image_filename)
+        uploaded_file_info = self.__ngw_feature.ngw_vector_layer._res_factory.connection.upload_file(image_filename, callback = lambda total, readed: None)
         id = self.__ngw_feature.link_attachment(uploaded_file_info)
         self.insertRow(NGWAttachment(id, self.__ngw_feature))
     
