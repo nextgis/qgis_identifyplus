@@ -16,7 +16,7 @@ homepage=https://nextgis.com
 tracker=https://github.com/nextgis/IdentifyPlus/issues
 repository=https://github.com/nextgis/IdentifyPlus
 
-experimental=True
+experimental=False
 deprecated=False
 
 changelog=4.0.4
