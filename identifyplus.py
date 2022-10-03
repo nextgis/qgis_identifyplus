@@ -25,20 +25,26 @@
 #
 #******************************************************************************
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtCore import (
+  Qt, QSettings, QFileInfo, QLocale, 
+  QCoreApplication, QTranslator, 
+  QPoint, QSize
+)
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QAction, QMessageBox
 
 from qgis.core import *
 from qgis.gui import *
 
-from qgis_plugin_base import Plugin
-from identifytools import allTools
+from .qgis_plugin_base import Plugin
+from .identifytools import allTools
 
-from identifyplusmaptool import IdentifyPlusMapTool
-from identifyplusresults import IdentifyPlusResultsDock, IdentifyPlusResults
+from .identifyplusmaptool import IdentifyPlusMapTool
+from .identifyplusresults import IdentifyPlusResultsDock, IdentifyPlusResults
 
-import aboutdialog
-import resources_rc
+from . import aboutdialog
+from . import resources_rc
+
 
 class IdentifyPlus(Plugin):
   def __init__(self, iface):
@@ -46,10 +52,13 @@ class IdentifyPlus(Plugin):
 
     self.iface = iface
 
-    self.qgsVersion = unicode(QGis.QGIS_VERSION_INT)
+    self.qgsVersion = str(Qgis.QGIS_VERSION_INT)
 
     # For i18n support
-    userPluginPath = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/identifyplus"
+    userPluginPath = "%s%s"%(
+        QFileInfo(QgsApplication.qgisUserDatabaseFilePath()).path(),
+        "/python/plugins/identifyplus"
+      )
     systemPluginPath = QgsApplication.prefixPath() + "/python/plugins/identifyplus"
 
     overrideLocale = bool(QSettings().value("locale/overrideFlag", False, bool))
@@ -62,8 +71,8 @@ class IdentifyPlus(Plugin):
       translationPath = userPluginPath + "/i18n/identifyplus_" + localeFullName + ".qm"
     else:
       translationPath = systemPluginPath + "/i18n/identifyplus_" + localeFullName + ".qm"
-    
-    
+
+
     self.localePath = translationPath
     self.plPrint("self.localePath: %s" % self.localePath)
     if QFileInfo(self.localePath).exists():
@@ -75,12 +84,12 @@ class IdentifyPlus(Plugin):
     return allTools()
 
   def initGui(self):
-    if int(self.qgsVersion) < 10900:
+    if int(self.qgsVersion) < 30000:
       qgisVersion = self.qgsVersion[0] + "." + self.qgsVersion[2] + "." + self.qgsVersion[3]
       QMessageBox.warning(self.iface.mainWindow(),
                            QCoreApplication.translate("IdentifyPlus", "Error"),
                            QCoreApplication.translate("IdentifyPlus", "QGIS %s detected.\n") % (qgisVersion) +
-                           QCoreApplication.translate("IdentifyPlus", "This version of IdentifyPlus requires at least QGIS version 2.0.\nPlugin will not be enabled."))
+                           QCoreApplication.translate("IdentifyPlus", "This version of IdentifyPlus requires at least QGIS version 3.0.\nPlugin will not be enabled."))
       return None
 
     self.actionRun = QAction(QCoreApplication.translate("IdentifyPlus", "IdentifyPlus"), self.iface.mainWindow())
@@ -118,14 +127,15 @@ class IdentifyPlus(Plugin):
     self.mapTool.identifyStarted.connect(self.wIdentifyResults.identifyProcessStart)
     self.mapTool.identifyFinished.connect(self.wIdentifyResults.identifyProcessFinish)
     self.mapTool.identifyStarted.connect(self.dockWidget.show)
-     
-    settings = QSettings();
-    self.iface.addDockWidget( settings.value("identifyplus/dockWidgetArea", Qt.RightDockWidgetArea,  type=int), self.dockWidget)
+    self.mapTool.progressChanged.connect(self.dockWidget.raise_)
+
+    settings = QSettings()
+    self.iface.addDockWidget( settings.value("identifyplus/dockWidgetArea", Qt.RightDockWidgetArea, type=int), self.dockWidget)
     self.dockWidget.setFloating( settings.value("identifyplus/dockIsFloating", False, type=bool))
     self.dockWidget.resize( settings.value("identifyplus/dockWidgetSize", QSize(150, 300), type=QSize) )
     self.dockWidget.move( settings.value("identifyplus/dockWidgetPos", QPoint(500, 500), type=QPoint) )
     self.dockWidget.setVisible( settings.value("identifyplus/dockWidgetIsVisible", True, type=bool))
-     
+
   def unload(self):
     self.iface.attributesToolBar().removeAction(self.actionRun)
     self.iface.removePluginMenu(QCoreApplication.translate("IdentifyPlus", "IdentifyPlus"), self.actionRun)
@@ -134,7 +144,7 @@ class IdentifyPlus(Plugin):
     if self.iface.mapCanvas().mapTool() == self.mapTool:
       self.iface.mapCanvas().unsetMapTool(self.mapTool)
     
-    settings = QSettings();
+    settings = QSettings()
     settings.setValue("identifyplus/dockIsFloating", self.dockWidget.isFloating())
     mw = self.iface.mainWindow()
     settings.setValue("identifyplus/dockWidgetArea", mw.dockWidgetArea(self.dockWidget))

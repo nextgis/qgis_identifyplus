@@ -27,13 +27,14 @@
 
 import sqlite3
 
-from PyQt4.QtCore import QCoreApplication
-from PyQt4 import QtGui, QtCore
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt import QtGui, QtCore
 
 from qgis.core import *
 
-from identifytool import *
-from qgis_plugin_base import Plugin
+from .identifytool import *
+from .qgis_plugin_base import Plugin
+
 
 class Worker(QtCore.QObject):
 
@@ -94,7 +95,7 @@ class Worker(QtCore.QObject):
                         )
                     )
 
-                data.append( (unicode(rowIndex), rowData) )
+                data.append( (str(rowIndex), rowData) )
                 rowIndex += 1
 
             self.refTableProcessed.emit({
@@ -108,7 +109,7 @@ class Worker(QtCore.QObject):
             aliases = cur.fetchall()
 
             for alias in aliases:
-                if not res.has_key(alias[0]):
+                if alias[0] not in res:
                     res[alias[0]] = {}
 
                 res[alias[0]][alias[1]] = alias[2]                
@@ -166,7 +167,7 @@ class SQLiteTool(IdentifyTool):
             self.__resultsContainer.addResult(self.view, QCoreApplication.translate("QGISTool", "Reference tables"))
             self.__is_added_to_container = True
 
-        for key, value in data.items():
+        for key, value in list(data.items()):
             item = QtGui.QStandardItem(key)
             self.model.appendRow([item, QtGui.QStandardItem()])
 
@@ -180,7 +181,7 @@ class SQLiteTool(IdentifyTool):
                 if children:
                     self.__addItems(item, children)
             else:
-                parent.appendRow([item, QtGui.QStandardItem(unicode(children))])
+                parent.appendRow([item, QtGui.QStandardItem(str(children))])
 
     def __setAliases(self, aliases):
         self.__aliases = aliases

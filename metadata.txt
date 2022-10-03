@@ -3,7 +3,7 @@ name=identifyplus
 description=Extended identify tool
 category=Identification
 version=4.1.dev0
-qgisMinimumVersion=2.6
+qgisMinimumVersion=3.0
 
 author=NextGIS
 email=info@nextgis.org

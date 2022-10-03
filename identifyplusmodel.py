@@ -24,18 +24,23 @@
 # MA 02110-1335 USA.
 #
 #******************************************************************************
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+
+from qgis.PyQt.QtCore import (
+    pyqtSignal, QSettings, QThread,
+    QObject, pyqtSlot, QProcess,
+    QIODevice
+)
 
 from qgis.core import *
 from qgis.gui import *
 
 from GdalTools.tools import GdalTools_utils
 
-from identifyplusutils import  gdallocationinfoXMLOutputProcessing
-from representations import provider_definition
+from .identifyplusutils import  gdallocationinfoXMLOutputProcessing
+from .representations import provider_definition
 
-class IdentificationObject(object):
+
+class IdentificationObject:
     def __init__(self, attributes, qgsMapLayer, identificationTool = None, fid = None):
         self.__attributes = attributes
         self.__qgsMapLayer = qgsMapLayer
@@ -61,7 +66,7 @@ class IdentificationObject(object):
         
 class IdentificationWorker(QObject):
     identificationProgress = pyqtSignal(int, int)
-    identificationLayer = pyqtSignal(unicode)
+    identificationLayer = pyqtSignal(str)
     identificationResultsInLayer = pyqtSignal(list)
     finished = pyqtSignal()
     def __init__(self, qgsMapCanvas, qgsPoint, qgsLayers):
@@ -105,30 +110,33 @@ class IdentificationWorker(QObject):
         #QgsMessageLog.logMessage(
         #    "Identification raster point %f %f"%(self.__qgsPoint.x(), self.__qgsPoint.y()),
         #    u'IdentifyPlus',
-        #    QgsMessageLog.INFO)
+        #    QgsMessageLog.Info)
         
-        point = self.__qgsMapCanvas.getCoordinateTransform().toMapCoordinates(self.__qgsPoint.x(), self.__qgsPoint.y())
-        
+        point = self.__qgsMapCanvas.getCoordinateTransform().toMapCoordinates(
+            int(self.__qgsPoint.x()),
+            int(self.__qgsPoint.y())
+        )
+
         #QgsMessageLog.logMessage(
         #    "Identification raster point %f %f"%(point.x(), point.y()),
         #    u'IdentifyPlus',
-        #    QgsMessageLog.INFO)
-        
+        #    QgsMessageLog.Info)
+
         #Use gdalocationinfo utility
         process = QProcess()
         GdalTools_utils.setProcessEnvironment(process)
-        
+
         gdallocationinfo_params = []
-        
+
         settings = QSettings()
         proxyEnabled = settings.value("proxy/proxyEnabled", False, type=bool)
-        
+
         if proxyEnabled == True:
-            proxyType = settings.value("proxy/proxyType", "", type=unicode)
+            proxyType = settings.value("proxy/proxyType", "", type=str)
             if  proxyType == "HttpProxy":
-                
+
                 GDAL_HTTP_PROXY = ""
-                proxyHost = settings.value("proxy/proxyHost", None, type=unicode)
+                proxyHost = settings.value("proxy/proxyHost", None, type=str)
                 if proxyHost is None:
                     QgsMessageLog.logMessage(
                         self.tr("QGIS proxysettings error") + ": " + self.tr("Parameter 'proxyHost' is missing"), 
@@ -136,73 +144,74 @@ class IdentificationWorker(QObject):
                         QgsMessageLog.CRITICAL)
                     return []                
                 GDAL_HTTP_PROXY = GDAL_HTTP_PROXY + proxyHost             
-                proxyPort = settings.value("proxy/proxyPort", None, type=unicode)
+                proxyPort = settings.value("proxy/proxyPort", None, type=str)
                 if proxyPort is not None:
                     GDAL_HTTP_PROXY = GDAL_HTTP_PROXY  + ":%s"%proxyPort
                 gdallocationinfo_params.extend(["--config", "GDAL_HTTP_PROXY", GDAL_HTTP_PROXY])
-                
+
                 GDAL_HTTP_PROXYUSERPWD = ""
-                proxyUser = settings.value("proxy/proxyUser", None, type=unicode)
+                proxyUser = settings.value("proxy/proxyUser", None, type=str)
                 if proxyUser is not None:
                     GDAL_HTTP_PROXYUSERPWD = GDAL_HTTP_PROXYUSERPWD + proxyUser
-                    proxyPassword = settings.value("proxy/proxyPassword", None, type=unicode)
+                    proxyPassword = settings.value("proxy/proxyPassword", None, type=str)
                     if proxyPassword is not None:
                         GDAL_HTTP_PROXYUSERPWD = GDAL_HTTP_PROXYUSERPWD + ":%s"%proxyPassword
                     gdallocationinfo_params.extend(["--config", "GDAL_HTTP_PROXYUSERPWD", GDAL_HTTP_PROXYUSERPWD])
-        
+
         gdallocationinfo_params.extend(["-xml","-b", "1" ,"-geoloc", qgsLayer.source(), str(point.x()), str(point.y())])
-        
+
         #QgsMessageLog.logMessage(
         #    "gdallocationinfo "+ " ".join(gdallocationinfo_params),
         #    u'IdentifyPlus',
-        #    QgsMessageLog.INFO)
-            
+        #    QgsMessageLog.Info)
+
         process.start("gdallocationinfo", gdallocationinfo_params, QIODevice.ReadOnly)
         finishWaitSuccess = process.waitForFinished()
-        
+
         #if not finishWaitSuccess:
         #    QgsMessageLog.logMessage(self.tr("Wait for gdallocationinfo more then 5 sec <br/>"), u'IdentifyPlus', QgsMessageLog.CRITICAL)
         #    return []
-        
+
         if(process.exitCode() != 0):
             err_msg = str(process.readAllStandardError())
             if err_msg == '':
                 err_msg = str(process.readAllStandardOutput())
-            
+
             QgsMessageLog.logMessage(self.tr("gdallocationinfo return error status<br/>") + ":\n" + err_msg, u'IdentifyPlus', QgsMessageLog.CRITICAL)
         else:
             data = str(process.readAllStandardOutput());
             res = gdallocationinfoXMLOutputProcessing(data)
-            
+
             if res[0] != None:
                QgsMessageLog.logMessage(self.tr("Parsing gdallocationinfo request error<br/>") + ":\n" + res[1] + "\n" + data, u'IdentifyPlus', QgsMessageLog.CRITICAL)
             else:
                 identificationObjects = []
                 for obj in res[1]:
                     identificationObjects.append(IdentificationObject(obj, qgsLayer, "gdallocationinfo utility")) 
-                
+
                 return identificationObjects
         return []
-    
+
     def identificationInVector(self, qgsLayer):
         #QgsMessageLog.logMessage(
         #    "Identification vector in point %f %f"%(self.__qgsPoint.x(), self.__qgsPoint.y()),
         #    u'IdentifyPlus',
-        #    QgsMessageLog.INFO)
-        
+        #    QgsMessageLog.Info)
+
         settings = QSettings()
-        identifyValue = float(settings.value("/Map/searchRadiusMM", QGis.DEFAULT_IDENTIFY_RADIUS))
-    
+        identifyValue = float(settings.value("/Map/searchRadiusMM", Qgis.DEFAULT_SEARCH_RADIUS_MM))
+
         if identifyValue <= 0.0:
-          identifyValue = QGis.DEFAULT_IDENTIFY_RADIUS
+          identifyValue = Qgis.DEFAULT_SEARCH_RADIUS_MM
 
         pointFrom = self.__qgsMapCanvas.getCoordinateTransform().toMapCoordinates(
-            self.__qgsPoint.x() - identifyValue * self.__qgsMapCanvas.PdmWidthMM, 
-            self.__qgsPoint.y() + identifyValue * self.__qgsMapCanvas.PdmHeightMM)
+            int(self.__qgsPoint.x() - identifyValue * self.__qgsMapCanvas.PdmWidthMM),
+            int(self.__qgsPoint.y() + identifyValue * self.__qgsMapCanvas.PdmHeightMM)
+        )
             
         pointTo = self.__qgsMapCanvas.getCoordinateTransform().toMapCoordinates(
-            self.__qgsPoint.x() + identifyValue * self.__qgsMapCanvas.PdmWidthMM, 
-            self.__qgsPoint.y() - identifyValue * self.__qgsMapCanvas.PdmHeightMM)
+            int(self.__qgsPoint.x() + identifyValue * self.__qgsMapCanvas.PdmWidthMM),
+            int(self.__qgsPoint.y() - identifyValue * self.__qgsMapCanvas.PdmHeightMM))
         
         featureCount = 0
         featureList = []
@@ -228,7 +237,7 @@ class IdentificationWorker(QObject):
     
         #renderer = qgsLayer.rendererV2() # РЅРµРёР·РІРµСЃС‚РЅРѕСЃС‚СЊ
     
-        qgsVersion = int(unicode(QGis.QGIS_VERSION_INT))
+        qgsVersion = int(str(Qgis.QGIS_VERSION_INT))
         
         
         #if renderer is not None and (renderer.capabilities() | QgsFeatureRendererV2.ScaleDependent):
@@ -255,7 +264,7 @@ class IdentificationWorker(QObject):
             attrs = {}
             qgsAttrs = qgsFeature.attributes()
             fields = qgsFeature.fields().toList()
-            for i in xrange(len(qgsAttrs)):
+            for i in range(len(qgsAttrs)):
                 attrs.update( {fields[i].name(): qgsAttrs[i]} )
                 
             identificationObjects.append(IdentificationObject(attrs, qgsLayer, "qgis", qgsFeature.id())) 
@@ -264,7 +273,7 @@ class IdentificationWorker(QObject):
     
 class IdentifyPlusModel(QObject):
     identificationProgress = pyqtSignal(int, int)
-    identificationLayer = pyqtSignal(unicode)
+    identificationLayer = pyqtSignal(str)
     finished = pyqtSignal()
     
     reseted = pyqtSignal()
@@ -294,7 +303,7 @@ class IdentifyPlusModel(QObject):
     def _defineLayers(self, **args):
         del self._qgsMapLayers[:]
 
-        if (args.has_key(u"all_qgis_layers")):
+        if (u"all_qgis_layers" in args):
             if args[u"all_qgis_layers"] == True:
                 self._qgsMapLayers.extend(self._qgsMapCanvas.layers())
 
@@ -331,21 +340,21 @@ class IdentifyPlusModel(QObject):
         #QgsMessageLog.logMessage(
         #    "Identification thread terminated",
         #    u'IdentifyPlus',
-        #    QgsMessageLog.INFO)
+        #    QgsMessageLog.Info)
         pass
         
     def threadStarted(self):
         #QgsMessageLog.logMessage(
         #    "Identification thread start",
         #    u'IdentifyPlus',
-        #    QgsMessageLog.INFO)
+        #    QgsMessageLog.Info)
         pass
     
     def threadFinished(self):
         #QgsMessageLog.logMessage(
         #    "Identification thread finish",
         #    u'IdentifyPlus',
-        #    QgsMessageLog.INFO)
+        #    QgsMessageLog.Info)
         pass
     
     def identificationProgressHandle(self, i, c):

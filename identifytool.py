@@ -27,7 +27,8 @@
 
 import abc
 
-class IdentifyTool(object):
+
+class IdentifyTool:
     def __init__(self, name, desc):
         self._name = name
         self._desc = desc

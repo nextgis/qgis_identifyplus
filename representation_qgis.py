@@ -24,16 +24,18 @@
 # MA 02110-1335 USA.
 #
 #******************************************************************************
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+
+from qgis.PyQt.QtCore import QAbstractTableModel, QModelIndex, Qt
+from qgis.PyQt.QtWidgets import QTableView, QHeaderView
 
 from qgis.core import *
 from qgis.gui import *
 
-class QGISAttributesModel(QtCore.QAbstractTableModel):
+
+class QGISAttributesModel(QAbstractTableModel):
     #def __init__(self, qgsFeature, parent = None):
     def __init__(self, identificationObject, parent = None):
-        QtCore.QAbstractTableModel.__init__(self, parent)
+        QAbstractTableModel.__init__(self, parent)
         
         self.__header = [self.tr("key"), self.tr("value")]
         
@@ -45,7 +47,7 @@ class QGISAttributesModel(QtCore.QAbstractTableModel):
         #QgsMessageLog.logMessage( str(qgsIdentifyResult.mDerivedAttributes.items()) , u'IdentifyPlus', QgsMessageLog.CRITICAL)
         #self.__data.extend( qgsIdentifyResult.mParams.items() )
         #QgsMessageLog.logMessage( str(qgsIdentifyResult.mParams.items()) , u'IdentifyPlus', QgsMessageLog.CRITICAL)
-        self.__data.extend(identificationObject.attributes.items())
+        self.__data.extend(list(identificationObject.attributes.items()))
         
         #qgsFeature = qgsIdentifyResult.mFeature
         #if qgsFeature is not None:
@@ -54,44 +56,44 @@ class QGISAttributesModel(QtCore.QAbstractTableModel):
         #    for i in xrange(len(qgsAttrs)):
         #        self.__data.extend( [(fields[i].name(), qgsAttrs[i])] )
         
-    def rowCount(self, parent=QtCore.QModelIndex()):
+    def rowCount(self, parent=QModelIndex()):
         return len(self.__data)
     
-    def columnCount(self, parent=QtCore.QModelIndex()):
+    def columnCount(self, parent=QModelIndex()):
         return 2
         
-    def data(self, index, role=QtCore.Qt.DisplayRole):
+    def data(self, index, role=Qt.DisplayRole):
         if not index.isValid(): 
             return None
-        elif role != QtCore.Qt.DisplayRole: 
+        elif role != Qt.DisplayRole: 
             return None
         
         return self.__data[index.row()][index.column()]
 
     def headerData(self, section, orientation, role):             
-        if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
+        if orientation == Qt.Horizontal and role == Qt.DisplayRole:
             return self.__header[section]
-        elif orientation == QtCore.Qt.Vertical and role == QtCore.Qt.DisplayRole:
+        elif orientation == Qt.Vertical and role == Qt.DisplayRole:
             return section+1
         
         return None
 
-class QGISAttributesView(QtGui.QTableView):
+class QGISAttributesView(QTableView):
     def __init__(self, parent = None):
-        QtGui.QTableView.__init__(self, parent)
+        QTableView.__init__(self, parent)
         self.setWordWrap(True)
         self.horizontalHeader().setStretchLastSection(True)
-        self.verticalHeader().setResizeMode(QtGui.QHeaderView.ResizeToContents)
+        self.verticalHeader().setResizeMode(QHeaderView.ResizeToContents)
         #QgsMessageLog.logMessage(
         #    "QGISAttributesView sizeHintForColumn: %s"%str(size),
         #    u'IdentifyPlus',
-        #    QgsMessageLog.INFO)
+        #    QgsMessageLog.Info)
 
     def setModel(self, model):
-        QtGui.QTableView.setModel(self, model)
+        QTableView.setModel(self, model)
         #self.horizontalHeader().setDefaultSectionSize(10)
         #self.horizontalHeader().setMinimumSectionSize ( 10 )
-        #self.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-        self.horizontalHeader().setResizeMode(0, QtGui.QHeaderView.ResizeToContents)
-        self.horizontalHeader().setResizeMode(1, QtGui.QHeaderView.Stretch)
+        #self.horizontalHeader().setResizeMode(QHeaderView.Stretch)
+        self.horizontalHeader().setResizeMode(0, QHeaderView.ResizeToContents)
+        self.horizontalHeader().setResizeMode(1, QHeaderView.Stretch)
     

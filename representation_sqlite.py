@@ -27,20 +27,22 @@
 
 import sqlite3
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+from qgis.PyQt.QtCore import QObject, pyqtSignal, QThread
+from qgis.PyQt.QtGui import QStandardItem, QStandardItemModel
+from qgis.PyQt.QtWidgets import QTreeView
 
 from qgis.core import *
 from qgis.gui import *
 
-from qgis_plugin_base import Plugin
+from .qgis_plugin_base import Plugin
 
-class Worker(QtCore.QObject):
 
-    refTableProcessed = QtCore.pyqtSignal(dict)
+class Worker(QObject):
+
+    refTableProcessed = pyqtSignal(dict)
 
     def __init__(self, fid, sqliteFilename, tableName, parent = None):
-        QtCore.QObject.__init__(self, parent)
+        QObject.__init__(self, parent)
         self.sqliteFilename = sqliteFilename
         self.tableName = tableName
         self.fid = fid
@@ -87,14 +89,14 @@ class Worker(QtCore.QObject):
                 for idx, col in enumerate(cur.description):
                     rowData.append( (col[0], row[idx]) )
 
-                data.append( (unicode(rowIndex), rowData) )
+                data.append( (str(rowIndex), rowData) )
                 rowIndex += 1
 
             self.refTableProcessed.emit({table[0]: data})
 
-class SQLiteAttributesModel(QtGui.QStandardItemModel):
+class SQLiteAttributesModel(QStandardItemModel):
     def __init__(self, fid, sqlite_filename, table_name, parent = None):
-        QtGui.QStandardItemModel.__init__(self, parent)
+        QStandardItemModel.__init__(self, parent)
 
         # self.__header = [self.tr("key"), self.tr("value")]
         self.setHorizontalHeaderLabels(["key", "value"])
@@ -104,7 +106,7 @@ class SQLiteAttributesModel(QtGui.QStandardItemModel):
         
         # self.addItems(self, self.__data)
 
-        thread = QtCore.QThread(self)
+        thread = QThread(self)
         worker = Worker(fid, sqlite_filename, table_name)
         worker.moveToThread(thread)
         worker.refTableProcessed.connect(self.addReferencedInfo)
@@ -116,21 +118,21 @@ class SQLiteAttributesModel(QtGui.QStandardItemModel):
         self.thread = thread
     
     def addReferencedInfo(self, data):
-        for key, value in data.items():
-            item = QtGui.QStandardItem(key)
-            self.appendRow([item, QtGui.QStandardItem()])
+        for key, value in list(data.items()):
+            item = QStandardItem(key)
+            self.appendRow([item, QStandardItem()])
 
             self.addItems(item, value)
 
     def addItems(self, parent, elements):
         for text, children in elements:
-            item = QtGui.QStandardItem(text)
+            item = QStandardItem(text)
             if isinstance(children, list):
-                parent.appendRow([item, QtGui.QStandardItem()])
+                parent.appendRow([item, QStandardItem()])
                 if children:
                     self.addItems(item, children)
             else:
-                parent.appendRow([item, QtGui.QStandardItem(unicode(children))])
+                parent.appendRow([item, QStandardItem(str(children))])
 
     # def index(self, row, column, parent=QtCore.QModelIndex()):
     #     return self.createIndex(row, column) 
@@ -158,9 +160,9 @@ class SQLiteAttributesModel(QtGui.QStandardItemModel):
     #     return None
 
 
-class SQLiteAttributesView(QtGui.QTreeView):
+class SQLiteAttributesView(QTreeView):
     def __init__(self, parent = None):
-        QtGui.QTreeView.__init__(self, parent)
+        QTreeView.__init__(self, parent)
         self.setWordWrap(True)
         # self.horizontalHeader().setStretchLastSection(True)
         # self.verticalHeader().setResizeMode(QtGui.QHeaderView.ResizeToContents)

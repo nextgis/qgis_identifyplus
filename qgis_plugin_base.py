@@ -26,9 +26,11 @@
 #
 #*****************************************************************************
 
-from PyQt4 import QtGui
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QAction
+
 from qgis.core import (
-    QgsMessageLog,
+    QgsMessageLog, Qgis
 )
 
 
@@ -40,15 +42,14 @@ class Singleton(type):
         return cls._instances[Singleton]
 
 
-class Plugin():
-    __metaclass__ = Singleton
+class Plugin(metaclass=Singleton):
     def __init__(self, iface, pluginName):
         self._iface = iface
         self._name = pluginName
 
         self.__actions = []
 
-    def plPrint(self, msg, level=QgsMessageLog.INFO):
+    def plPrint(self, msg, level=Qgis.Info):
         QgsMessageLog.logMessage(
             msg,
             self._name,
@@ -56,8 +57,8 @@ class Plugin():
         )
 
     def addAction(self, name, iconSrc):
-        action = QtGui.QAction(name, self._iface.mainWindow())
-        action.setIcon(QtGui.QIcon(iconSrc))
+        action = QAction(name, self._iface.mainWindow())
+        action.setIcon(QIcon(iconSrc))
 
         self.__actions.append(action)
         index = len(self.__actions) - 1

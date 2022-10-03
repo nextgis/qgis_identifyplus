@@ -26,5 +26,5 @@
 #******************************************************************************
 
 def classFactory(iface):
-  from identifyplus import IdentifyPlus
+  from .identifyplus import IdentifyPlus
   return IdentifyPlus(iface)

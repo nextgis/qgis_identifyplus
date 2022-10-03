@@ -20,20 +20,20 @@ all: $(ALL_FILES)
 ui: $(UI_FILES)
 
 ts: $(PRO_FILES)
-	pylupdate4 -verbose $<
+	pylupdate5 -verbose $<
 
 lang: $(LANG_FILES)
 
 res: $(RES_FILES)
 
 $(UI_FILES): ui_%.py: $(UI_PATH)/%.ui
-	pyuic4 -o $@ $<
+	pyuic5 -o $@ $<
 
 $(LANG_FILES): $(LANG_PATH)/%.qm: $(LANG_PATH)/%.ts
 	lrelease $<
 
 $(RES_FILES): $(RES_PATH)/%_rc.py: $(RES_PATH)/%.qrc
-	pyrcc4 -o $@ $<
+	pyrcc5 -o $@ $<
 
 clean:
 	rm -f $(ALL_FILES)
