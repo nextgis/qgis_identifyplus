@@ -2,7 +2,7 @@
 name=identifyplus
 description=Extended identify tool
 category=Identification
-version=4.0.4
+version=4.0.5
 qgisMinimumVersion=3.0
 
 author=NextGIS
@@ -19,7 +19,10 @@ repository=https://github.com/nextgis/IdentifyPlus
 experimental=False
 deprecated=False
 
-changelog=4.0.4
+changelog=
+    4.0.5
+        * Ported to QGIS 3
+    4.0.4
         * Fix upload images
     4.0.3
         * Fix download images
