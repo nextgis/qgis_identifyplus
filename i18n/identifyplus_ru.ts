@@ -4,7 +4,7 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="aboutdialog.py" line="75"/>
+        <location filename="aboutdialog.py" line="76"/>
         <source>&lt;p&gt;Alternate identify tool with additional capabilities.&lt;/p&gt;
 &lt;p&gt;Plugin developed by &lt;a href=&quot;http://nextgis.org&quot;&gt;NextGIS&lt;/a&gt; as part of the Krasnogorsk
 municipal GIS&lt;/p&gt;
@@ -16,12 +16,12 @@ photos associated with features. If you need more info please &lt;a href=&quot;m
 &lt;p&gt;ПРИМЕЧАНИЕ: Для отображения и работы с присоединенными изображениями, модулю необходим доступ к специальному веб-сервису. Получить более подробную информацию можно &lt;a href=&quot;mailto:info@nextgis.org&quot;&gt;связавшись с нами&lt;/a&gt;&lt;/p</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="50"/>
+        <location filename="../aboutdialog.py" line="51"/>
         <source>Version: %s</source>
         <translation>Версия: %s</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="75"/>
+        <location filename="../aboutdialog.py" line="76"/>
         <source>&lt;p&gt;Alternate identify tool with additional capabilities.&lt;/p&gt;
 &lt;p&gt;NOTE: Plugin needs access to special web-service in order to be able display
 photos associated with features. If you need more info please &lt;a href=&quot;mailto:info@nextgis.org&quot;&gt;contact us&lt;/a&gt;&lt;/p&gt;
@@ -33,17 +33,17 @@ photos associated with features. If you need more info please &lt;a href=&quot;m
 <context>
     <name>AttributesTable</name>
     <message>
-        <location filename="../ui_attributestable.py" line="62"/>
+        <location filename="../ui_attributestable.py" line="52"/>
         <source>Form</source>
         <translation>Результаты определения</translation>
     </message>
     <message>
-        <location filename="../ui_attributestable.py" line="64"/>
+        <location filename="../ui_attributestable.py" line="54"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="../ui_attributestable.py" line="66"/>
+        <location filename="../ui_attributestable.py" line="56"/>
         <source>Value</source>
         <translation>Значение</translation>
     </message>
@@ -51,32 +51,27 @@ photos associated with features. If you need more info please &lt;a href=&quot;m
 <context>
     <name>AttributesTableWithImages</name>
     <message>
-        <location filename="../ui_attributestablewithimages.py" line="101"/>
+        <location filename="../ui_attributestablewithimages.py" line="90"/>
         <source>Form</source>
         <translation>Результаты определения</translation>
     </message>
     <message>
-        <location filename="../ui_attributestablewithimages.py" line="102"/>
+        <location filename="../ui_attributestablewithimages.py" line="91"/>
         <source>Attributes</source>
         <translation>Атрибуты</translation>
     </message>
     <message>
-        <location filename="../ui_attributestablewithimages.py" line="108"/>
+        <location filename="../ui_attributestablewithimages.py" line="97"/>
         <source>Image</source>
         <translation>Изображения</translation>
     </message>
     <message>
-        <location filename="ui/attributestablewithimages.ui" line="123"/>
-        <source>Load photo to database</source>
-        <translation type="obsolete">Загрузить изображение в базу данных</translation>
-    </message>
-    <message>
-        <location filename="../ui_attributestablewithimages.py" line="106"/>
+        <location filename="../ui_attributestablewithimages.py" line="95"/>
         <source>Save all photos to disk</source>
         <translation>Сохранить все изображения на диск</translation>
     </message>
     <message>
-        <location filename="../ui_attributestablewithimages.py" line="104"/>
+        <location filename="../ui_attributestablewithimages.py" line="92"/>
         <source>Download photos</source>
         <translation>Загрузить фотографии</translation>
     </message>
@@ -696,7 +691,7 @@ Plugin will not be enabled.</source>
 <context>
     <name>Image</name>
     <message>
-        <location filename="../identifytool_ngw.py" line="233"/>
+        <location filename="../identifytool_ngw.py" line="252"/>
         <source>Download photo</source>
         <translation></translation>
     </message>
@@ -704,6 +699,14 @@ Plugin will not be enabled.</source>
         <location filename="../identifytool_ngw.py" line="242"/>
         <source>Delete photo</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>ImageUploadDialog</name>
+    <message>
+        <location filename="../identifytool_ngw.py" line="465"/>
+        <source>Upload images process</source>
+        <translation>Процесс загрузки изображений на сервер</translation>
     </message>
 </context>
 <context>

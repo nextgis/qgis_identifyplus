@@ -26,14 +26,15 @@
 #******************************************************************************
 
 import os
-import ConfigParser
+import configparser
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtGui import QPixmap, QTextDocument
+from qgis.PyQt.QtWidgets import  QDialog, QDialogButtonBox
 
-from ui_aboutdialogbase import Ui_Dialog
+from .ui_aboutdialogbase import Ui_Dialog
 
-import resources_rc
+from . import resources_rc
+
 
 class AboutDialog(QDialog, Ui_Dialog):
   def __init__(self):
@@ -42,7 +43,7 @@ class AboutDialog(QDialog, Ui_Dialog):
 
     self.btnHelp = self.buttonBox.button(QDialogButtonBox.Help)
 
-    cfg = ConfigParser.SafeConfigParser()
+    cfg = configparser.SafeConfigParser()
     cfg.read(os.path.join(os.path.dirname(__file__), "metadata.txt"))
     version = cfg.get("general", "version")
 

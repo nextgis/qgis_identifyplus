@@ -28,8 +28,9 @@
 import xml.etree.ElementTree as ET
 import json, requests
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtCore import QByteArray
+from qgis.PyQt.QtGui import QPixmap
+
 
 def gdallocationinfoXMLOutputProcessing(outputXMLString):
     """
@@ -53,7 +54,7 @@ def gdallocationinfoXMLOutputProcessing(outputXMLString):
     try:
         jsonLocationInfo = json.JSONDecoder().decode(location_info_node.text.encode("utf-8"))
         
-        if jsonLocationInfo.has_key("error"):
+        if "error" in jsonLocationInfo:
             err_msg = "Error code: " + str(jsonLocationInfo["error"]["code"]) + " message: \n" + jsonLocationInfo["error"]["message"]
             return [4, err_msg]
         else:
@@ -76,7 +77,7 @@ def gdallocationinfoXMLOutputProcessing(outputXMLString):
         features = []
         for child in xmlLocationInfo:
             attrs = {}
-            for k in child.attrib.keys():
+            for k in list(child.attrib.keys()):
                 attrs.update({k: child.attrib[k]})
             
             features.append(attrs)

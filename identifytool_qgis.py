@@ -25,12 +25,13 @@
 #
 #******************************************************************************
 
-from PyQt4.QtCore import QCoreApplication
-from PyQt4 import QtGui
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
+from qgis.PyQt.QtWidgets import QTableView, QHeaderView
 
 from qgis.core import *
 
-from identifytool import *
+from .identifytool import *
 
 
 class QGISTool(IdentifyTool):
@@ -41,29 +42,29 @@ class QGISTool(IdentifyTool):
         qgsFeature = qgisIdentResultVector.getFeature()
         aliases = qgisIdentResultVector._qgsMapLayer.attributeAliases()
         
-        model = QtGui.QStandardItemModel()
+        model = QStandardItemModel()
         model.setHorizontalHeaderLabels([
             QCoreApplication.translate("QGISTool", "attribute"),
             QCoreApplication.translate("QGISTool", "value")
         ])
 
-        view = QtGui.QTableView()
+        view = QTableView()
         view.setModel(model)
-        view.horizontalHeader().setResizeMode(0, QtGui.QHeaderView.ResizeToContents)
-        view.horizontalHeader().setResizeMode(1, QtGui.QHeaderView.Stretch)
+        view.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        view.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
         view.setWordWrap(True)
         view.horizontalHeader().setStretchLastSection(True)
-        view.verticalHeader().setResizeMode(QtGui.QHeaderView.ResizeToContents)
+        view.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
 
         resultContainer.addResult(view, QCoreApplication.translate("QGISTool", "Base options"))
 
         qgsAttrs = qgsFeature.attributes()
         fields = qgsFeature.fields().toList()
-        for i in xrange(len(qgsAttrs)):
+        for i in range(len(qgsAttrs)):
             model.appendRow(
                 [
-                    QtGui.QStandardItem(aliases.get(fields[i].name(), fields[i].name())),
-                    QtGui.QStandardItem(unicode(qgsAttrs[i]))
+                    QStandardItem(aliases.get(fields[i].name(), fields[i].name())),
+                    QStandardItem(str(qgsAttrs[i]))
                 ]
             )
 

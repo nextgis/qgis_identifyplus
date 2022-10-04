@@ -24,16 +24,17 @@
 # MA 02110-1335 USA.
 #
 #******************************************************************************
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+
+from qgis.PyQt.QtWidgets import QWidget, QDockWidget
 
 from qgis.core import *
 from qgis.gui import *
 
-from qgis_plugin_base import Plugin
-from ui_identifyplusresultsbase import Ui_IdentifyPlusResults
+from .qgis_plugin_base import Plugin
+from .ui_identifyplusresultsbase import Ui_IdentifyPlusResults
 
-from representations import RepresentationContainer
+from .representations import RepresentationContainer
+
 
 class IdentifyPlusResults(QWidget, Ui_IdentifyPlusResults):
     def __init__(self, parent):
@@ -82,7 +83,7 @@ class IdentifyPlusResults(QWidget, Ui_IdentifyPlusResults):
         self.btnNextRecord.setEnabled(False)
         self.btnPrevRecord.setEnabled(False)
 
-        self.progressBar.setVisible(True)
+        self.progressBar.show()
 
     def identifyProcessFinish(self):
         self.updateInterface()

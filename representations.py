@@ -23,18 +23,17 @@
 # to the Free Software Foundation, 51 Franklin Street, Suite 500 Boston,
 # MA 02110-1335 USA.
 #
-#******************************************************************************e
+#******************************************************************************
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtWidgets import QTabWidget
 
 from qgis.core import *
 from qgis.gui import *
 
-from qgis_plugin_base import Plugin
+from .qgis_plugin_base import Plugin
 
 
-class RepresentationsCache(object):
+class RepresentationsCache:
     def __init__(self):
         self.repr_variants = list()
         self.indexes = list()

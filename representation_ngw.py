@@ -24,23 +24,25 @@
 # MA 02110-1335 USA.
 #
 #******************************************************************************
+
 import base64
 import os
 import time
-from urlparse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs
 
-from PyQt4 import QtCore
-from PyQt4 import QtGui
-from PyQt4 import QtNetwork
+from qgis.PyQt import QtCore
+from qgis.PyQt import QtGui
+from qgis.PyQt import QtNetwork
 
-from ngw_external_api_python.core.ngw_feature import NGWFeature
-from ngw_external_api_python.core.ngw_attachment import NGWAttachment
-from PyQt4.Qt import QObject, QFileInfo
+from .ngw_external_api_python.core.ngw_feature import NGWFeature
+from .ngw_external_api_python.core.ngw_attachment import NGWAttachment
+from qgis.PyQt.Qt import QObject, QFileInfo
 
 from qgis.core import *
 from qgis.gui import *
 
-import resources_rc
+from . import resources_rc
+
 
 # class NGWImagesModel(QtCore.QAbstractListModel):
 #     initEnded = QtCore.pyqtSignal()    
@@ -126,11 +128,11 @@ import resources_rc
 #         res = img.loadFromData(img_info[2])
 #         self.finished.emit(img)
          
-# class ImageLabel(QtGui.QLabel):
+# class ImageLabel(QtWidgets.QLabel):
 #     imageLoaded = QtCore.pyqtSignal()
     
 #     def __init__(self, ngw_attachment, parent = None):        
-#         QtGui.QLabel.__init__(self, parent)
+#         QtWidgets.QLabel.__init__(self, parent)
 #         self.pm = None
 #         self.setText(self.tr("Loading..."))        
 #         self.__worker = ImageLoader(ngw_attachment)
@@ -166,13 +168,13 @@ import resources_rc
 #         else:
 #             return self.pm.size().height()
 
-# class Image(QtGui.QWidget):
-#     deleteImage = QtCore.pyqtSignal(QtGui.QWidget)
-#     downloadImage = QtCore.pyqtSignal(QtGui.QWidget)
+# class Image(QtWidgets.QWidget):
+#     deleteImage = QtCore.pyqtSignal(QtWidgets.QWidget)
+#     downloadImage = QtCore.pyqtSignal(QtWidgets.QWidget)
     
 #     def __init__(self, ngw_attachment, parent = None):
         
-#         QtGui.QWidget.__init__(self, parent)
+#         QtWidgets.QWidget.__init__(self, parent)
 
 #         self.__vbl_layout = QtGui.QVBoxLayout(self)
 #         self.__vbl_layout.setAlignment(QtCore.Qt.AlignHCenter)
@@ -183,7 +185,7 @@ import resources_rc
 #         self.__image_container.imageLoaded.connect(self.imageLoadedHandle)
 #         self.__vbl_layout.addWidget(self.__image_container)
         
-#         self.__w_buttons_widget = QtGui.QWidget()
+#         self.__w_buttons_widget = QtWidgets.QWidget()
 #         self.__hbl_buttons_layout = QtGui.QHBoxLayout(self.__w_buttons_widget)
 #         self.__hbl_buttons_layout.setAlignment(QtCore.Qt.AlignRight)
 #         self.__hbl_buttons_layout.setContentsMargins(0, 0, 0, 0)
@@ -218,10 +220,10 @@ import resources_rc
 #     def emitDeleteImage(self):
 #         self.deleteImage.emit(self)
 
-# class NGWImagesView(QtGui.QWidget):
+# class NGWImagesView(QtWidgets.QWidget):
 #     images_load_finish = QtCore.pyqtSignal()
 #     def __init__(self, parent=None):
-#         QtGui.QWidget.__init__(self, parent)
+#         QtWidgets.QWidget.__init__(self, parent)
         
 #         self.__model = None
 #         self.__images = []
@@ -275,7 +277,7 @@ import resources_rc
 #         s.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
 #         l.addWidget(s)
         
-#         self.__w_buttons_widget = QtGui.QWidget()
+#         self.__w_buttons_widget = QtWidgets.QWidget()
 #         self.__hbl_buttons_layout = QtGui.QHBoxLayout(self.__w_buttons_widget)
 #         self.__hbl_buttons_layout.setAlignment(QtCore.Qt.AlignLeft)
 #         self.__hbl_buttons_layout.setContentsMargins(0, 0, 0, 0)
@@ -298,13 +300,13 @@ import resources_rc
 #         self.__hbl_buttons_layout.addWidget(self.__pb_add_image)
         
         
-#         self.w=QtGui.QWidget(self)  
+#         self.w=QtWidgets.QWidget(self)  
         
 #         self.vbox=QtGui.QVBoxLayout(self.w)
 #         self.vbox.setSpacing(0)
 #         self.vbox.setContentsMargins(0, 0, 0, 0)
         
-#         self.__w_images_container= QtGui.QWidget(self)
+#         self.__w_images_container= QtWidgets.QWidget(self)
 #         self.__vbl_images_container= QtGui.QVBoxLayout(self.__w_images_container)
 #         self.__vbl_images_container.setSpacing(5)
 #         self.__vbl_images_container.setContentsMargins(0, 0, 0, 0)
@@ -315,7 +317,7 @@ import resources_rc
         
 #         s.setWidget(self.w)
         
-#         self.__message = QtGui.QLabel(self.tr("Loading..."))
+#         self.__message = QtWidgets.QLabel(self.tr("Loading..."))
 #         self.__message.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
 #         self.__message.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
 #         self.__vbl_images_container.addWidget(self.__message)
@@ -422,9 +424,9 @@ import resources_rc
 #         downloadDialog = ImageDownloadDialog(ngw_attachments, dirPath)
 #         downloadDialog.exec_()
             
-# class ImageDownloadDialog(QtGui.QDialog):
+# class ImageDownloadDialog(QtWidgets.QDialog):
 #     def __init__(self, ngw_attachments, save_dir, default_names = [],  parent = None):
-#         QtGui.QDialog.__init__(self, parent)
+#         QtWidgets.QDialog.__init__(self, parent)
 #         self.setWindowTitle(self.tr("Download images process"))
 #         self.setFixedSize(250, 75)
         

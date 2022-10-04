@@ -27,15 +27,22 @@
 
 import abc
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtCore import (
+    pyqtSignal, Qt, QSettings,
+    QThread, QObject
+)
+from qgis.PyQt.QtGui import (
+    QCursor, QPixmap
+)
+from qgis.PyQt.QtWidgets import QApplication
 
 from qgis.core import *
 from qgis.gui import *
 
-from qgis_plugin_base import Plugin
+from .qgis_plugin_base import Plugin
 
-import resources_rc
+from . import resources_rc
+
 
 class IdentifyPlusTool(QgsMapTool):
   used = pyqtSignal(QgsPoint)
@@ -53,10 +60,10 @@ class IdentifyPlusTool(QgsMapTool):
     QApplication.restoreOverrideCursor()
 
   def isAvalable(self):
-      return len(self.canvas.layers()) != 0
+    return len(self.canvas.layers()) != 0
 
 
-class QGISIdentResult(object):
+class QGISIdentResult:
     def __init__(self, qgsPoint):
         self.__qgsPoint = qgsPoint
 
@@ -90,19 +97,19 @@ class QGISIdentResultVector(QGISIdentResultOnLayer):
     @staticmethod
     def generateFromQgsMapLayer(qgsPoint, qgsMapLayer, qgsMapCanvas):
         settings = QSettings()
-        identifyValue = float(settings.value("/Map/searchRadiusMM", QGis.DEFAULT_IDENTIFY_RADIUS))
-    
+        identifyValue = float(settings.value("/Map/searchRadiusMM", Qgis.DEFAULT_SEARCH_RADIUS_MM))
+
         if identifyValue <= 0.0:
-            identifyValue = QGis.DEFAULT_IDENTIFY_RADIUS
+            identifyValue = Qgis.DEFAULT_SEARCH_RADIUS_MM
 
         pointFrom = qgsMapCanvas.getCoordinateTransform().toMapCoordinates(
-            qgsPoint.x() - identifyValue * qgsMapCanvas.PdmWidthMM, 
-            qgsPoint.y() + identifyValue * qgsMapCanvas.PdmHeightMM)
-            
+            int(qgsPoint.x() - identifyValue * qgsMapCanvas.PdmWidthMM),
+            int(qgsPoint.y() + identifyValue * qgsMapCanvas.PdmHeightMM)
+        )
         pointTo = qgsMapCanvas.getCoordinateTransform().toMapCoordinates(
-            qgsPoint.x() + identifyValue * qgsMapCanvas.PdmWidthMM, 
-            qgsPoint.y() - identifyValue * qgsMapCanvas.PdmHeightMM)
-        
+            int(qgsPoint.x() + identifyValue * qgsMapCanvas.PdmWidthMM),
+            int(qgsPoint.y() - identifyValue * qgsMapCanvas.PdmHeightMM)
+        )
         try:
             #searchRadius = qgsMapCanvas.extent().width() * (identifyValue / 100.0)
             r = QgsRectangle()
@@ -118,10 +125,10 @@ class QGISIdentResultVector(QGISIdentResultOnLayer):
             rq.setFlags(QgsFeatureRequest.ExactIntersect)
             for f in qgsMapLayer.getFeatures(rq):
                 yield QGISIdentResultVector(qgsPoint, f, qgsMapLayer)
-        
+
         except QgsCsException as cse:
             QgsMessageLog.logMessage(self.tr("Caught CRS exception") + ":\n" + cse.what(), u'IdentifyPlus', QgsMessageLog.CRITICAL)
-        
+
 
 def getQGISIdentResultClsForQgsLayer(qgsMapLayer):
     if qgsMapLayer.type() == QgsMapLayer.VectorLayer:
@@ -143,7 +150,7 @@ class Worker(QObject):
         self.targetIdentTools = targetIdentTools
         self.canvas = canvas
 
-        Plugin().plPrint(">>> self.targetLayers: %s" % self.targetLayers)
+        Plugin().plPrint(">>> targetLayers: %s" % str(type(self.targetLayers)))
 
         self.progressMax = len(self.targetLayers) + 1
         self.progress = -1
@@ -167,7 +174,7 @@ class Worker(QObject):
                 Plugin().plPrint(">>> check layer: %s" % qgsLayer.name())
 
                 availableTools = [tool for tool in self.targetIdentTools if tool.isAvailable(qgsLayer)]
-                Plugin().plPrint(">>> availableTools: %s" % availableTools)
+                Plugin().plPrint(">>> availableTools: %s" % ', '.join([tool.__name__ for tool in availableTools]))
 
                 if len(availableTools) == 0:
                     continue    

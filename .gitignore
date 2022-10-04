@@ -9,6 +9,6 @@
 *.qm
 ui_*.py
 *_rc.py
-
+.vscode
 # QGIS plugin
 # metadata.txt
