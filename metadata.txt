@@ -1,12 +1,13 @@
 [general]
-name=identifyplus
-description=Extended identify tool
+name=NextGIS IdentifyPlus
+description=Extended identify tool. Show photos and other attachments stored in your Web GIS right in QGIS. Developed by NextGIS.
 category=Identification
 version=4.0.5
 qgisMinimumVersion=3.0
 
 author=NextGIS
 email=info@nextgis.com
+about=Extended identify tool. Show photos and other attachments stored in your Web GIS right in QGIS. Developed by NextGIS.
 
 icon=icons/identifyplus.png
 
