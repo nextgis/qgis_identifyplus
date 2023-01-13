@@ -1,6 +1,7 @@
 [general]
 name=identifyplus
-description=Extended identify tool
+description=Extended identify tool, show photos from your Web GIS
+about=Extended identify tool. Show photos and other attachments stored in your Web GIS right in QGIS. Developed by NextGIS. Any feedback is welcome at https://nextgis.com/contact
 category=Identification
 version={VERSION}
 qgisMinimumVersion=2.6
