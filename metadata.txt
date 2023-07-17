@@ -3,7 +3,7 @@ name=NextGIS IdentifyPlus
 description=Extended identify tool, show photos from your Web GIS
 about=Extended identify tool. Show photos and other attachments stored in your Web GIS right in QGIS. Developed by NextGIS. Any feedback is welcome at https://nextgis.com/contact
 category=Identification
-version=4.0.5
+version=4.0.6
 qgisMinimumVersion=3.0
 
 author=NextGIS
@@ -21,6 +21,8 @@ experimental=False
 deprecated=False
 
 changelog=
+    4.0.6
+        * Bux fixes
     4.0.5
         * Ported to QGIS 3
     4.0.4

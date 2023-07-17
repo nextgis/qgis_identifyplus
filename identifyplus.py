@@ -110,7 +110,7 @@ class IdentifyPlus(Plugin):
             return
 
         self.translator = QTranslator()
-        self.translator.load(self.localePath)
+        self.translator.load(locale_path)
         QgsApplication.installTranslator(self.translator)
 
     def __init_menus(self):

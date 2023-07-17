@@ -1,12 +1,12 @@
-UI_PATH=ui
+UI_PATH=../ui
 UI_SOURCES=$(wildcard $(UI_PATH)/*.ui)
-UI_FILES=$(patsubst $(UI_PATH)/%.ui, ./ui_%.py, $(UI_SOURCES))
+UI_FILES=$(patsubst $(UI_PATH)/%.ui, $(UI_PATH)/../ui_%.py, $(UI_SOURCES))
 
-LANG_PATH=i18n
+LANG_PATH=../i18n
 LANG_SOURCES=$(wildcard $(LANG_PATH)/*.ts)
 LANG_FILES=$(patsubst $(LANG_PATH)/%.ts, $(LANG_PATH)/%.qm, $(LANG_SOURCES))
 
-RES_PATH=.
+RES_PATH=..
 RES_SOURCES=$(wildcard $(RES_PATH)/*.qrc)
 RES_FILES=$(patsubst $(RES_PATH)/%.qrc, $(RES_PATH)/%_rc.py, $(RES_SOURCES))
 
@@ -26,8 +26,8 @@ lang: $(LANG_FILES)
 
 res: $(RES_FILES)
 
-$(UI_FILES): ui_%.py: $(UI_PATH)/%.ui
-	pyuic5 -o $@ $<
+$(UI_FILES): $(UI_PATH)/../ui_%.py: $(UI_PATH)/%.ui
+	pyuic5 --from-imports -o $@ $<
 
 $(LANG_FILES): $(LANG_PATH)/%.qm: $(LANG_PATH)/%.ts
 	lrelease $<
@@ -41,8 +41,9 @@ clean:
 	rm -f *.zip
 
 package:
-	cd .. && rm -f *.zip && zip -r identifyplus.zip identifyplus -x \*.project \*.pydevproject \*.pyc \.* \doc \*.ts \*.ui \*.qrc \*.pro \*~ \*.git\* \*Makefile*
-	mv ../identifyplus.zip .
+	rm -f identifyplus.zip
+	cd ../.. && ln -s qgis_identifyplus identifyplus && rm -f identifyplus.zip && zip -r identifyplus.zip identifyplus -x "*__pycache__*" \*.project \*.pydevproject \*.pyc \.* \doc \*.ts \*.ui \*.qrc \*.pro \*~ \*.git\* \*Makefile* && rm identifyplus
+	mv ../../identifyplus.zip .
 
 upload:
 	plugin_uploader.py identifyplus.zip

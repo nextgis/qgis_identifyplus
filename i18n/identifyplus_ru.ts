@@ -2,19 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="ru" sourcelanguage="en">
 <context>
-    <name></name>
-    <message>
-        <location filename="aboutdialog.py" line="80"/>
-        <source>&lt;p&gt;Alternate identify tool with additional capabilities.&lt;/p&gt;
-&lt;p&gt;NOTE: Plugin needs access to special web-service in order to be able display
-photos associated with features. If you need more info please &lt;a href=&quot;mailto:info@nextgis.org&quot;&gt;contact us&lt;/a&gt;&lt;/p&gt;
-</source>
-        <translation type="obsolete">&lt;p&gt;Альтернативный инструмент определения объектов с дополнительными возможностями.&lt;/p&gt;
-&lt;p&gt;Модуль разработан &lt;a href=&quot;http://nextgis.org&quot;&gt;NextGIS&lt;/a&gt; в рамках проекта по созданию муниципальной ГИС г. Красногорска&lt;/p&gt;
-&lt;p&gt;ПРИМЕЧАНИЕ: Для отображения и работы с присоединенными изображениями, модулю необходим доступ к специальному веб-сервису. Получить более подробную информацию можно &lt;a href=&quot;mailto:info@nextgis.org&quot;&gt;связавшись с нами&lt;/a&gt;&lt;/p</translation>
-    </message>
-</context>
-<context>
     <name>AboutDialog</name>
     <message>
         <location filename="../aboutdialog.py" line="51"/>
@@ -150,24 +137,6 @@ p, li { white-space: pre-wrap; }
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="identifyplus.py" line="91"/>
-        <source>QGIS %s detected.
-</source>
-        <translation type="obsolete">Обнаружена Quantum GIS версии %s.</translation>
-    </message>
-    <message>
-        <location filename="identifyplus.py" line="92"/>
-        <source>This version of IdentifyPlus requires at least QGIS version 3.0.
-Plugin will not be enabled.</source>
-        <translation type="obsolete">Эта версия IdentifyPlus требует наличия QGIS версии 3.0
-Модуль не будет загружен.</translation>
-    </message>
-    <message>
-        <location filename="identifyplus.py" line="102"/>
-        <source>About IdentifyPlus...</source>
-        <translation type="obsolete">О IdentifyPlus...</translation>
-    </message>
-    <message>
         <location filename="../identifyplus.py" line="66"/>
         <source>QGIS {} detected.</source>
         <translation>Обнаружен QGIS {}.</translation>
@@ -221,9 +190,9 @@ Plugin will not be enabled.</source>
         <translation>Предыдущий объект</translation>
     </message>
     <message>
-        <location filename="ui/identifyplusresultsbase.ui" line="86"/>
+        <location filename="../ui/identifyplusresultsbase.ui" line="86"/>
         <source>Feature %s from %s</source>
-        <translation type="obsolete">Объект %s из %s</translation>
+        <translation>Объект %s из %s</translation>
     </message>
     <message>
         <location filename="../ui/identifyplusresultsbase.ui" line="96"/>
@@ -277,89 +246,89 @@ Plugin will not be enabled.</source>
 <context>
     <name>Image</name>
     <message>
-        <location filename="identifytool_ngw.py" line="252"/>
+        <location filename="../identifytool_ngw.py" line="252"/>
         <source>Download photo</source>
-        <translation type="obsolete">Загрузка фото</translation>
+        <translation>Загрузка фото</translation>
     </message>
     <message>
-        <location filename="identifytool_ngw.py" line="262"/>
+        <location filename="../identifytool_ngw.py" line="262"/>
         <source>Delete photo</source>
-        <translation type="obsolete">Удаление фото</translation>
+        <translation>Удаление фото</translation>
     </message>
 </context>
 <context>
     <name>ImageDownloadDialog</name>
     <message>
-        <location filename="identifytool_ngw.py" line="502"/>
+        <location filename="../identifytool_ngw.py" line="502"/>
         <source>Download images process</source>
-        <translation type="obsolete">Процесс загрузки изображений</translation>
+        <translation>Процесс загрузки изображений</translation>
     </message>
 </context>
 <context>
     <name>ImageLabel</name>
     <message>
-        <location filename="identifytool_ngw.py" line="191"/>
+        <location filename="../identifytool_ngw.py" line="191"/>
         <source>Loading...</source>
-        <translation type="obsolete">Загрузка...</translation>
+        <translation>Загрузка...</translation>
     </message>
 </context>
 <context>
     <name>ImageUploadDialog</name>
     <message>
-        <location filename="identifytool_ngw.py" line="490"/>
+        <location filename="../identifytool_ngw.py" line="490"/>
         <source>Upload images process</source>
-        <translation type="obsolete">Загрузка изображений на сервер</translation>
+        <translation>Загрузка изображений на сервер</translation>
     </message>
 </context>
 <context>
     <name>NGWImagesView</name>
     <message>
-        <location filename="identifytool_ngw.py" line="348"/>
+        <location filename="../identifytool_ngw.py" line="348"/>
         <source>Download photos</source>
-        <translation type="obsolete">Загрузка изображений</translation>
+        <translation>Загрузка изображений</translation>
     </message>
     <message>
-        <location filename="identifytool_ngw.py" line="356"/>
+        <location filename="../identifytool_ngw.py" line="356"/>
         <source>Add photo(s)</source>
-        <translation type="obsolete">Добавление фото</translation>
+        <translation>Добавление изображений</translation>
     </message>
     <message>
-        <location filename="identifytool_ngw.py" line="378"/>
+        <location filename="../identifytool_ngw.py" line="378"/>
         <source>Loading...</source>
-        <translation type="obsolete">Загрузка</translation>
+        <translation>Загрузка...</translation>
     </message>
     <message>
-        <location filename="identifytool_ngw.py" line="389"/>
+        <location filename="../identifytool_ngw.py" line="389"/>
         <source>No photos</source>
-        <translation type="obsolete">Нет фото</translation>
+        <translation>Нет фото</translation>
     </message>
     <message>
-        <location filename="identifytool_ngw.py" line="432"/>
+        <location filename="../identifytool_ngw.py" line="432"/>
         <source>Choose photo(s)</source>
-        <translation type="obsolete">Выбор фото</translation>
+        <translation>Выбор фото</translation>
     </message>
     <message>
-        <location filename="identifytool_ngw.py" line="432"/>
+        <location filename="../identifytool_ngw.py" line="432"/>
         <source>Image Files (*.png *.jpg *.bmp)</source>
-        <translation type="obsolete">Файлы (*.png *.jpg *.bmp)</translation>
+        <translation>Файлы изображений (*.png *.jpg *.bmp)</translation>
     </message>
     <message>
-        <location filename="identifytool_ngw.py" line="448"/>
+        <location filename="../identifytool_ngw.py" line="448"/>
         <source>Save photo</source>
-        <translation type="obsolete">Сохранение фото</translation>
+        <translation>Сохранение фото</translation>
     </message>
     <message>
-        <location filename="identifytool_ngw.py" line="468"/>
+        <location filename="../identifytool_ngw.py" line="468"/>
         <source>Select directory fo save photos</source>
-        <translation type="obsolete">Выбор директории для сохранения изображений</translation>
+        <translation>Выбор директории для сохранения изображений</translation>
     </message>
 </context>
 <context>
     <name>NGWTool</name>
     <message>
-        <location filename="identifytool_ngw.py" line="72"/>
+        <location filename="../identifytool_ngw.py" line="72"/>
         <source>Photos (ngw)</source>
-        <translation type="obsolete">Фото (ngw)</translation>
+        <translation>Фото (ngw)</translation>
     </message>
 </context>
 <context>
@@ -376,34 +345,26 @@ Plugin will not be enabled.</source>
     </message>
 </context>
 <context>
-    <name>QGISIdentResultVector</name>
-    <message>
-        <location filename="identifyplusmaptool.py" line="130"/>
-        <source>Caught CRS exception</source>
-        <translation type="obsolete">Ошибка проекции</translation>
-    </message>
-</context>
-<context>
     <name>QGISTool</name>
     <message>
-        <location filename="identifytool_sqlite.py" line="147"/>
+        <location filename="../identifytool_sqlite.py" line="147"/>
         <source>attribute</source>
-        <translation type="obsolete">атрибут</translation>
+        <translation>атрибут</translation>
     </message>
     <message>
-        <location filename="identifytool_sqlite.py" line="149"/>
+        <location filename="../identifytool_sqlite.py" line="149"/>
         <source>value</source>
-        <translation type="obsolete">значение</translation>
+        <translation>значение</translation>
     </message>
     <message>
-        <location filename="identifytool_qgis.py" line="59"/>
+        <location filename="../identifytool_qgis.py" line="59"/>
         <source>Base options</source>
-        <translation type="obsolete">Основные атрибуты</translation>
+        <translation>Основные атрибуты</translation>
     </message>
     <message>
-        <location filename="identifytool_sqlite.py" line="167"/>
+        <location filename="../identifytool_sqlite.py" line="167"/>
         <source>Reference tables</source>
-        <translation type="obsolete">Связаные таблицы</translation>
+        <translation>Связаные таблицы</translation>
     </message>
 </context>
 </TS>
