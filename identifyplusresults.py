@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#******************************************************************************
+# *****************************************************************************
 #
 # IdentifyPlus
 # ---------------------------------------------------------
@@ -23,12 +23,11 @@
 # to the Free Software Foundation, 51 Franklin Street, Suite 500 Boston,
 # MA 02110-1335 USA.
 #
-#******************************************************************************
+# *****************************************************************************
 
-from qgis.PyQt.QtWidgets import QWidget, QDockWidget
+from qgis.PyQt.QtWidgets import QWidget
 
-from qgis.core import *
-from qgis.gui import *
+from qgis.gui import QgsDockWidget
 
 from .qgis_plugin_base import Plugin
 from .ui_identifyplusresultsbase import Ui_IdentifyPlusResults
@@ -40,19 +39,19 @@ class IdentifyPlusResults(QWidget, Ui_IdentifyPlusResults):
     def __init__(self, parent):
         QWidget.__init__(self, parent)
         self.setupUi(self)
-        
+
         self._objects = list()
         self._identifyTools = list()
 
         self.currentObjectIndex = -1
-        
+
         self.btnFirstRecord.clicked.connect(self.firstRecord)
         self.btnLastRecord.clicked.connect(self.lastRecord)
         self.btnNextRecord.clicked.connect(self.nextRecord)
         self.btnPrevRecord.clicked.connect(self.prevRecord)
-        
+
         self.lblFeatures.setText(self.tr("No features"))
-        
+
         self.btnFirstRecord.setEnabled(False)
         self.btnLastRecord.setEnabled(False)
         self.btnNextRecord.setEnabled(False)
@@ -60,14 +59,14 @@ class IdentifyPlusResults(QWidget, Ui_IdentifyPlusResults):
 
         self.representations = RepresentationContainer(self)
         self.loObjectContainer.addWidget(self.representations)
-        
+
         self.progressBar.setVisible(False)
         self.progressBar.setFormat("%p%")
         self.progressBar.setTextVisible(True)
 
         self.pushButton.setVisible(False)
         self.lblIdentifyStatus.setVisible(False)
-    
+
     def progressShow(self, cur, max):
         self.progressBar.setMaximum(max)
         self.progressBar.setValue(cur)
@@ -106,7 +105,7 @@ class IdentifyPlusResults(QWidget, Ui_IdentifyPlusResults):
     def firstRecord(self):
         self.currentObjectIndex = 0
         self._loadFeatureAttributes()
-        
+
     def lastRecord(self):
         # self.currentObjectIndex = self.__model.objectsCount() - 1
         self.currentObjectIndex = len(self._objects) - 1
@@ -116,8 +115,8 @@ class IdentifyPlusResults(QWidget, Ui_IdentifyPlusResults):
         self.currentObjectIndex += 1
         # if self.currentObjectIndex >= self.__model.objectsCount():
         if self.currentObjectIndex >= len(self._objects):
-          self.currentObjectIndex = 0
-        
+            self.currentObjectIndex = 0
+
         self._loadFeatureAttributes()
 
     def prevRecord(self):
@@ -125,9 +124,9 @@ class IdentifyPlusResults(QWidget, Ui_IdentifyPlusResults):
         if self.currentObjectIndex < 0:
             self.currentObjectIndex = len(self._objects) - 1
             # self.currentObjectIndex = self.__model.objectsCount() - 1
-    
+
         self._loadFeatureAttributes()
-    
+
     def _loadFeatureAttributes(self):
         self.updateInterface()
         # obj = self.__model.data(self.currentObjectIndex)
@@ -140,17 +139,19 @@ class IdentifyPlusResults(QWidget, Ui_IdentifyPlusResults):
         if len(self._objects) > 0:
             self.lblFeatures.setText(
                 self.tr("Feature %s from %s (%s)") % (
-                    self.currentObjectIndex + 1, 
+                    self.currentObjectIndex + 1,
                     # self.__model.objectsCount(),
                     len(self._objects),
-                    # self.__model.data(self.currentObjectIndex).qgsMapLayer.name() 
+                    # self.__model.data(self.currentObjectIndex).qgsMapLayer.name()
                     self._objects[self.currentObjectIndex]._qgsMapLayer.name()
                 ))
         else:
             self.lblFeatures.setText(self.tr("No features"))
+            self.representations.clear()
 
 
-class IdentifyPlusResultsDock(QDockWidget):
-    def __init__(self, model):
-        QDockWidget.__init__(self, None)
+class IdentifyPlusResultsDock(QgsDockWidget):
+    def __init__(self):
+        super().__init__(None)
         self.setWindowTitle(self.tr("IdentifyPlus"))
+        self.setObjectName("IdentifyPlusResultsDock")

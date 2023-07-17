@@ -47,62 +47,64 @@ class IdentificationObject:
         self.__identificationTool = identificationTool
         self.__fid = fid
         self.providers = []
-    
+
     @property
     def qgsMapLayer(self):
         return self.__qgsMapLayer
-    
+
     @property
     def attributes(self):
         return self.__attributes
-    
+
     @property
     def identificationTool(self):
         return self.__identificationTool
-    
+
     @property
     def fid(self):
         return self.__fid
-        
+
+
 class IdentificationWorker(QObject):
     identificationProgress = pyqtSignal(int, int)
     identificationLayer = pyqtSignal(str)
     identificationResultsInLayer = pyqtSignal(list)
     finished = pyqtSignal()
+
     def __init__(self, qgsMapCanvas, qgsPoint, qgsLayers):
         QObject.__init__(self)
-        
+
         self.__qgsMapCanvas = qgsMapCanvas
         self.__qgsPoint = qgsPoint
         self.__qgsLayers = qgsLayers
-        
+
         self.__qgsLayersCounter = 0
         self.__qgsLayersNum = len(self.__qgsLayers)
-    
+
     @pyqtSlot()
     def identification(self):
         for qgsLayer in self.__qgsLayers:
-             
-            self.thread().wait(100)         
+
+            self.thread().wait(100)
             self.identificationProgress.emit(self.__qgsLayersCounter, self.__qgsLayersNum)
             self.identificationLayer.emit(qgsLayer.name())
             self.__qgsLayersCounter = self.__qgsLayersCounter + 1
-            
+
             results = []
             if qgsLayer.type() == QgsMapLayer.RasterLayer:
                 results = self.identificationInRaster(qgsLayer)
             elif qgsLayer.type() == QgsMapLayer.VectorLayer:
                 results = self.identificationInVector(qgsLayer)
-            
+
             if len(results) > 0:
-                
+
                 providers = provider_definition(qgsLayer)
-                
+
                 for i in range(0, len(results)):
                     results[i].providers = providers
-                
+
                 self.identificationResultsInLayer.emit(results)
-        
+
         self.identificationProgress.emit(self.__qgsLayersNum, self.__qgsLayersNum)
         self.finished.emit()
 
@@ -111,7 +113,7 @@ class IdentificationWorker(QObject):
         #    "Identification raster point %f %f"%(self.__qgsPoint.x(), self.__qgsPoint.y()),
         #    u'IdentifyPlus',
         #    QgsMessageLog.Info)
-        
+
         point = self.__qgsMapCanvas.getCoordinateTransform().toMapCoordinates(
             int(self.__qgsPoint.x()),
             int(self.__qgsPoint.y())
@@ -139,11 +141,11 @@ class IdentificationWorker(QObject):
                 proxyHost = settings.value("proxy/proxyHost", None, type=str)
                 if proxyHost is None:
                     QgsMessageLog.logMessage(
-                        self.tr("QGIS proxysettings error") + ": " + self.tr("Parameter 'proxyHost' is missing"), 
-                        u'IdentifyPlus', 
+                        self.tr("QGIS proxysettings error") + ": " + self.tr("Parameter 'proxyHost' is missing"),
+                        u'IdentifyPlus',
                         QgsMessageLog.CRITICAL)
-                    return []                
-                GDAL_HTTP_PROXY = GDAL_HTTP_PROXY + proxyHost             
+                    return []
+                GDAL_HTTP_PROXY = GDAL_HTTP_PROXY + proxyHost
                 proxyPort = settings.value("proxy/proxyPort", None, type=str)
                 if proxyPort is not None:
                     GDAL_HTTP_PROXY = GDAL_HTTP_PROXY  + ":%s"%proxyPort
@@ -187,7 +189,7 @@ class IdentificationWorker(QObject):
             else:
                 identificationObjects = []
                 for obj in res[1]:
-                    identificationObjects.append(IdentificationObject(obj, qgsLayer, "gdallocationinfo utility")) 
+                    identificationObjects.append(IdentificationObject(obj, qgsLayer, "gdallocationinfo utility"))
 
                 return identificationObjects
         return []
@@ -208,11 +210,11 @@ class IdentificationWorker(QObject):
             int(self.__qgsPoint.x() - identifyValue * self.__qgsMapCanvas.PdmWidthMM),
             int(self.__qgsPoint.y() + identifyValue * self.__qgsMapCanvas.PdmHeightMM)
         )
-            
+
         pointTo = self.__qgsMapCanvas.getCoordinateTransform().toMapCoordinates(
             int(self.__qgsPoint.x() + identifyValue * self.__qgsMapCanvas.PdmWidthMM),
             int(self.__qgsPoint.y() - identifyValue * self.__qgsMapCanvas.PdmHeightMM))
-        
+
         featureCount = 0
         featureList = []
         try:
@@ -222,9 +224,9 @@ class IdentificationWorker(QObject):
           r.setXMaximum(pointTo.x())
           r.setYMinimum(pointFrom.y())
           r.setYMaximum(pointTo.y())
-    
+
           r = self.__qgsMapCanvas.mapTool().toLayerCoordinates(qgsLayer, r)
-    
+
           rq = QgsFeatureRequest()
           rq.setFilterRect(r)
           rq.setFlags(QgsFeatureRequest.ExactIntersect)
@@ -232,14 +234,14 @@ class IdentificationWorker(QObject):
             featureList.append(QgsFeature(f))
         except QgsCsException as cse:
           QgsMessageLog.logMessage(self.tr("Caught CRS exception") + ":\n" + cse.what(), u'IdentifyPlus', QgsMessageLog.CRITICAL)
-        
+
         myFilter = False
-    
+
         #renderer = qgsLayer.rendererV2() # РЅРµРёР·РІРµСЃС‚РЅРѕСЃС‚СЊ
-    
+
         qgsVersion = int(str(Qgis.QGIS_VERSION_INT))
-        
-        
+
+
         #if renderer is not None and (renderer.capabilities() | QgsFeatureRendererV2.ScaleDependent):
         #  if qgsVersion < 20200 and qgsVersion > 10900:
         #    renderer.startRender( self.__qgsMapCanvas.mapRenderer().rendererContext(), qgsLayer)
@@ -247,18 +249,18 @@ class IdentificationWorker(QObject):
         #    renderer.startRender( self.__qgsMapCanvas.mapRenderer().rendererContext(), qgsLayer.pendingFields())
         #  else:
         #    renderer.startRender( self.__qgsMapCanvas.mapRenderer().rendererContext(), qgsLayer)
-            
+
         #  myFilter = renderer.capabilities() and QgsFeatureRendererV2.Filter
-    
+
         #for f in featureList:
         #    if myFilter and not renderer.willRenderFeature(f): # РєР°РєРёРµ-С‚Рѕ С„РёС‡Рё РѕС‚СЃРµРёРІР°СЋС‚
         #        continue
         #    featureCount += 1
         #    self.objects.append(ExtendedFeature(self.__qgsMapCanvas, qgsLayer, f))
-        
+
         #if renderer is not None and (renderer.capabilities() | QgsFeatureRendererV2.ScaleDependent):
         #  renderer.stopRender(self.__qgsMapCanvas.mapRenderer().rendererContext())
-        
+
         identificationObjects = []
         for qgsFeature in featureList:
             attrs = {}
@@ -266,21 +268,22 @@ class IdentificationWorker(QObject):
             fields = qgsFeature.fields().toList()
             for i in range(len(qgsAttrs)):
                 attrs.update( {fields[i].name(): qgsAttrs[i]} )
-                
-            identificationObjects.append(IdentificationObject(attrs, qgsLayer, "qgis", qgsFeature.id())) 
-        
+
+            identificationObjects.append(IdentificationObject(attrs, qgsLayer, "qgis", qgsFeature.id()))
+
         return identificationObjects
-    
+
+
 class IdentifyPlusModel(QObject):
     identificationProgress = pyqtSignal(int, int)
     identificationLayer = pyqtSignal(str)
     finished = pyqtSignal()
-    
+
     reseted = pyqtSignal()
     objectsAppended = pyqtSignal(int)
-    
+
     busy = pyqtSignal()
-    
+
     def __init__(self, qgsMapCanvas):
         QObject.__init__(self)
 
@@ -289,17 +292,17 @@ class IdentifyPlusModel(QObject):
 
         self._qgsMapCanvas = qgsMapCanvas
         self._qgsMapLayers = list()
-        #self._killed = False
+        # self._killed = False
         self._identificationObjects = []
-        
+
         self.__is_busy = False
 
     def data(self, index):
         return self._identificationObjects[index]
-    
+
     def objectsCount(self):
         return len(self._identificationObjects)
-    
+
     def _defineLayers(self, **args):
         del self._qgsMapLayers[:]
 
@@ -311,62 +314,62 @@ class IdentifyPlusModel(QObject):
         if self.__is_busy == True:
             self.busy.emit()
             return
-        
-        self.__is_busy = True     
+
+        self.__is_busy = True
         self.thread = QThread(self)
         self.thread.setTerminationEnabled(True)
-              
+
         self.reseted.emit()
-        
+
         self._defineLayers(all_qgis_layers=True)
         self._identificationObjects = []
-        
+
         self.worker = IdentificationWorker(self._qgsMapCanvas, qgsPoint, self._qgsMapLayers)
         self.worker.moveToThread(self.thread)
-        
+
         self.thread.started.connect(self.worker.identification)
         self.thread.started.connect(self.threadStarted)
         self.thread.finished.connect(self.threadFinished)
         self.thread.terminated.connect(self.threadTerminated)
-        
+
         self.worker.finished.connect(self.thread.quit)
         self.worker.finished.connect(self.identificationFinishedHandle)
         self.worker.identificationProgress.connect(self.identificationProgressHandle)
         self.worker.identificationLayer.connect(self.identificationLayerHandle)
         self.worker.identificationResultsInLayer.connect(self.identificationResultsInLayerHandle)
         self.thread.start(QThread.HighestPriority)
-        
+
     def threadTerminated(self):
         #QgsMessageLog.logMessage(
         #    "Identification thread terminated",
         #    u'IdentifyPlus',
         #    QgsMessageLog.Info)
         pass
-        
+
     def threadStarted(self):
         #QgsMessageLog.logMessage(
         #    "Identification thread start",
         #    u'IdentifyPlus',
         #    QgsMessageLog.Info)
         pass
-    
+
     def threadFinished(self):
         #QgsMessageLog.logMessage(
         #    "Identification thread finish",
         #    u'IdentifyPlus',
         #    QgsMessageLog.Info)
         pass
-    
+
     def identificationProgressHandle(self, i, c):
         self.identificationProgress.emit(i,c)
-        
+
     def identificationLayerHandle(self, layerName):
         self.identificationLayer.emit(layerName)
-    
+
     def identificationResultsInLayerHandle(self, res):
         self._identificationObjects.extend(res)
         self.objectsAppended.emit(len(res))
-    
+
     def identificationFinishedHandle(self):
         self.__is_busy = False
         self.finished.emit()

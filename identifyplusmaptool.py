@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#******************************************************************************
+# ******************************************************************************
 #
 # IdentifyPlus
 # ---------------------------------------------------------
@@ -23,7 +23,7 @@
 # to the Free Software Foundation, 51 Franklin Street, Suite 500 Boston,
 # MA 02110-1335 USA.
 #
-#******************************************************************************
+# ******************************************************************************
 
 import abc
 
@@ -36,31 +36,38 @@ from qgis.PyQt.QtGui import (
 )
 from qgis.PyQt.QtWidgets import QApplication
 
-from qgis.core import *
-from qgis.gui import *
+from qgis.core import (
+    Qgis, QgsPoint, QgsMapLayer, QgsRectangle, QgsFeatureRequest,
+    QgsCsException, QgsMessageLog
+)
+from qgis.gui import QgsMapTool
 
 from .qgis_plugin_base import Plugin
 
-from . import resources_rc
 
 
 class IdentifyPlusTool(QgsMapTool):
-  used = pyqtSignal(QgsPoint)
-  def __init__(self, canvas):
-    QgsMapTool.__init__(self, canvas)
-    self.canvas = canvas
-    self.cursor = QCursor(QPixmap(":/plugins/identifyplus/icons/cursor.png"), 1, 1)
-  
-  def activate(self):
-    self.canvas.setCursor(self.cursor)
+    used = pyqtSignal(QgsPoint)
 
-  def canvasReleaseEvent(self, event):
-    QApplication.setOverrideCursor(Qt.WaitCursor)
-    self.used.emit( QgsPoint(event.x(), event.y()) )
-    QApplication.restoreOverrideCursor()
+    def __init__(self, canvas):
+        QgsMapTool.__init__(self, canvas)
+        self.canvas = canvas
+        self.cursor = QCursor(
+            QPixmap(":/plugins/identifyplus/icons/cursor.png"),
+            1,
+            1
+        )
 
-  def isAvalable(self):
-    return len(self.canvas.layers()) != 0
+    def activate(self):
+        self.canvas.setCursor(self.cursor)
+
+    def canvasReleaseEvent(self, event):
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        self.used.emit(QgsPoint(event.x(), event.y()))
+        QApplication.restoreOverrideCursor()
+
+    def isAvalable(self):
+        return len(self.canvas.layers()) != 0
 
 
 class QGISIdentResult:
@@ -78,6 +85,7 @@ class QGISIdentResultOnLayer(QGISIdentResult):
     def generateFromQgsMapLayer(qgsPoint, qgsMapLayer, qgsMapCanvas):
         return
 
+
 class QGISIdentResultRaster(QGISIdentResultOnLayer):
     def __init__(self, qgsPoint, qgsMapLayer):
         QGISIdentResultOnLayer.__init__(self, qgsPoint, qgsMapLayer)
@@ -85,6 +93,7 @@ class QGISIdentResultRaster(QGISIdentResultOnLayer):
     @staticmethod
     def generateFromQgsMapLayer(qgsPoint, qgsMapLayer, qgsMapCanvas):
         yield QGISIdentResultRaster(qgsPoint, qgsMapLayer)
+
 
 class QGISIdentResultVector(QGISIdentResultOnLayer):
     def __init__(self, qgsPoint, qgsFeature, qgsMapLayer):
@@ -97,7 +106,9 @@ class QGISIdentResultVector(QGISIdentResultOnLayer):
     @staticmethod
     def generateFromQgsMapLayer(qgsPoint, qgsMapLayer, qgsMapCanvas):
         settings = QSettings()
-        identifyValue = float(settings.value("/Map/searchRadiusMM", Qgis.DEFAULT_SEARCH_RADIUS_MM))
+        identifyValue = settings.value(
+            "/Map/searchRadiusMM", Qgis.DEFAULT_SEARCH_RADIUS_MM, type=float
+        )
 
         if identifyValue <= 0.0:
             identifyValue = Qgis.DEFAULT_SEARCH_RADIUS_MM
@@ -111,7 +122,7 @@ class QGISIdentResultVector(QGISIdentResultOnLayer):
             int(qgsPoint.y() - identifyValue * qgsMapCanvas.PdmHeightMM)
         )
         try:
-            #searchRadius = qgsMapCanvas.extent().width() * (identifyValue / 100.0)
+            # searchRadius = qgsMapCanvas.extent().width() * (identifyValue / 100.0)
             r = QgsRectangle()
             r.setXMinimum(pointFrom.x())
             r.setXMaximum(pointTo.x())
@@ -127,7 +138,11 @@ class QGISIdentResultVector(QGISIdentResultOnLayer):
                 yield QGISIdentResultVector(qgsPoint, f, qgsMapLayer)
 
         except QgsCsException as cse:
-            QgsMessageLog.logMessage(self.tr("Caught CRS exception") + ":\n" + cse.what(), u'IdentifyPlus', QgsMessageLog.CRITICAL)
+            QgsMessageLog.logMessage(
+                "Caught CRS exception" + ":\n" + cse.what(),
+                'IdentifyPlus',
+                QgsMessageLog.CRITICAL
+            )
 
 
 def getQGISIdentResultClsForQgsLayer(qgsMapLayer):
@@ -157,9 +172,9 @@ class Worker(QObject):
 
     def run(self):
         self.identifyStarted.emit()
-        
+
         self.__progressUp()
-        
+
         if len(self.targetLayers) == 0:
             resType = QGISIdentResult
             availableTools = [tool for tool in self.targetIdentTools if tool.isAvailable(resType)]
@@ -177,7 +192,7 @@ class Worker(QObject):
                 Plugin().plPrint(">>> availableTools: %s" % ', '.join([tool.__name__ for tool in availableTools]))
 
                 if len(availableTools) == 0:
-                    continue    
+                    continue
 
                 resType = getQGISIdentResultClsForQgsLayer(qgsLayer)
                 for res in resType.generateFromQgsMapLayer(self.qgsPoint, qgsLayer, self.canvas):
@@ -202,7 +217,9 @@ class IdentifyPlusMapTool(QgsMapTool):
 
     def __init__(self, canvas):
         QgsMapTool.__init__(self, canvas)
-        self.cursor = QCursor(QPixmap(":/plugins/identifyplus/icons/cursor.png"), 1, 1)
+        self.cursor = QCursor(
+            QPixmap(":/plugins/identifyplus/icons/cursor.png"), 1, 1
+        )
 
         self.canvas().layersChanged.connect(self.checkAvalable)
         self.canvas().currentLayerChanged.connect(self.checkAvalable)
@@ -211,15 +228,17 @@ class IdentifyPlusMapTool(QgsMapTool):
         Plugin().plPrint(">>> IdentifyPlusMapTool activateed!")
         self.canvas().setCursor(self.cursor)
 
-    def canvasReleaseEvent(self, event):   
+    def canvasReleaseEvent(self, event):
 
         QApplication.setOverrideCursor(Qt.WaitCursor)
-        
+
         qgsPoint = QgsPoint(event.x(), event.y())
         targetIdentTools = Plugin().getTargetIdentTools()
         targetLayers = self.getTargetLayers()
 
-        worker = Worker(qgsPoint, targetLayers, targetIdentTools, self.canvas())
+        worker = Worker(
+            qgsPoint, targetLayers, targetIdentTools, self.canvas()
+        )
         thread = QThread(self)
         worker.moveToThread(thread)
 
@@ -254,7 +273,7 @@ class IdentifyPlusMapTool(QgsMapTool):
         #     for qgsLayer in targetLayers:
         #         availableTools = [tool for tool in targetIdentTools if tool.isAvailable(qgsLayer)]
         #         if len(availableTools) != 0:
-        #             return True                
+        #             return True
 
         # return False
 
@@ -267,7 +286,7 @@ class IdentifyPlusMapTool(QgsMapTool):
         return self.canvas().layers()
 
     def getResultsTypes(self, targetLayers):
-        resTypes =  []
+        resTypes = []
 
         for qgsMapLayer in targetLayers:
             resType = getQGISIdentResultClsForQgsLayer(qgsMapLayer)
@@ -275,4 +294,3 @@ class IdentifyPlusMapTool(QgsMapTool):
 
         if len(resTypes) == 0:
             resTypes.append(QGISIdentResult)
-

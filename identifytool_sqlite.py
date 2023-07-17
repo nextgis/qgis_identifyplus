@@ -88,7 +88,7 @@ class Worker(QtCore.QObject):
             for row in cur.fetchall():
                 rowData = []
                 for idx, col in enumerate(cur.description):
-                    rowData.append( 
+                    rowData.append(
                         (
                             aliases.get(table[0]).get(col[0], col[0]),
                             row[idx]
@@ -112,8 +112,8 @@ class Worker(QtCore.QObject):
                 if alias[0] not in res:
                     res[alias[0]] = {}
 
-                res[alias[0]][alias[1]] = alias[2]                
-                    
+                res[alias[0]][alias[1]] = alias[2]
+
         except Exception as err:
             Plugin().plPrint("Find aliases in BD error: " + str(err), QgsMessageLog.WARNING)
 
