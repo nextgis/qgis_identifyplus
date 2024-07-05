@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#******************************************************************************
+# ******************************************************************************
 #
 # IdentifyPlus
 # ---------------------------------------------------------
@@ -23,7 +23,7 @@
 # to the Free Software Foundation, 51 Franklin Street, Suite 500 Boston,
 # MA 02110-1335 USA.
 #
-#******************************************************************************
+# ******************************************************************************
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
@@ -41,30 +41,40 @@ class QGISTool(IdentifyTool):
     def identify(self, qgisIdentResultVector, resultContainer):
         qgsFeature = qgisIdentResultVector.getFeature()
         aliases = qgisIdentResultVector._qgsMapLayer.attributeAliases()
-        
+
         model = QStandardItemModel()
-        model.setHorizontalHeaderLabels([
-            QCoreApplication.translate("QGISTool", "attribute"),
-            QCoreApplication.translate("QGISTool", "value")
-        ])
+        model.setHorizontalHeaderLabels(
+            [
+                QCoreApplication.translate("QGISTool", "attribute"),
+                QCoreApplication.translate("QGISTool", "value"),
+            ]
+        )
 
         view = QTableView()
         view.setModel(model)
-        view.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        view.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeToContents
+        )
         view.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
         view.setWordWrap(True)
         view.horizontalHeader().setStretchLastSection(True)
-        view.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        view.verticalHeader().setSectionResizeMode(
+            QHeaderView.ResizeToContents
+        )
 
-        resultContainer.addResult(view, QCoreApplication.translate("QGISTool", "Base options"))
+        resultContainer.addResult(
+            view, QCoreApplication.translate("QGISTool", "Base options")
+        )
 
         qgsAttrs = qgsFeature.attributes()
         fields = qgsFeature.fields().toList()
         for i in range(len(qgsAttrs)):
             model.appendRow(
                 [
-                    QStandardItem(aliases.get(fields[i].name(), fields[i].name())),
-                    QStandardItem(str(qgsAttrs[i]))
+                    QStandardItem(
+                        aliases.get(fields[i].name(), fields[i].name())
+                    ),
+                    QStandardItem(str(qgsAttrs[i])),
                 ]
             )
 

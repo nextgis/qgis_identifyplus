@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#******************************************************************************
+# ******************************************************************************
 #
 # IdentifyPlus
 # ---------------------------------------------------------
@@ -23,7 +23,7 @@
 # to the Free Software Foundation, 51 Franklin Street, Suite 500 Boston,
 # MA 02110-1335 USA.
 #
-#******************************************************************************
+# ******************************************************************************
 
 import xml.etree.ElementTree as ET
 import json, requests
@@ -37,64 +37,71 @@ def gdallocationinfoXMLOutputProcessing(outputXMLString):
     return: [ErrCode, Data]
     """
     rootNode = None
-    
+
     try:
         rootNode = ET.fromstring(outputXMLString)
     except ET.ParseError as err:
-        return [1,"Input data error: " + str(err.msg)]
-        
-    alert_node = rootNode.find('Alert')
-    if (alert_node != None):
+        return [1, "Input data error: " + str(err.msg)]
+
+    alert_node = rootNode.find("Alert")
+    if alert_node != None:
         return [2, alert_node.text]
-    
-    location_info_node = rootNode.find('BandReport').find('LocationInfo')
-    if (location_info_node == None):
+
+    location_info_node = rootNode.find("BandReport").find("LocationInfo")
+    if location_info_node == None:
         return [3, "Not found LocationInfo tag"]
-    
+
     try:
-        jsonLocationInfo = json.JSONDecoder().decode(location_info_node.text.encode("utf-8"))
-        
+        jsonLocationInfo = json.JSONDecoder().decode(
+            location_info_node.text.encode("utf-8")
+        )
+
         if "error" in jsonLocationInfo:
-            err_msg = "Error code: " + str(jsonLocationInfo["error"]["code"]) + " message: \n" + jsonLocationInfo["error"]["message"]
+            err_msg = (
+                "Error code: "
+                + str(jsonLocationInfo["error"]["code"])
+                + " message: \n"
+                + jsonLocationInfo["error"]["message"]
+            )
             return [4, err_msg]
         else:
             results = []
             for r in jsonLocationInfo["results"]:
-                attrs = r['attributes']
-                attrs.update({'layerId': str(r['layerId'])})
-                attrs.update({'layerName': r['layerName']})
-                
+                attrs = r["attributes"]
+                attrs.update({"layerId": str(r["layerId"])})
+                attrs.update({"layerName": r["layerName"]})
+
                 results.append(attrs)
-            
+
             return [None, results]
     except ValueError as err:
         pass
-    
+
     try:
         data = location_info_node.text.encode("utf-8")
         xmlLocationInfo = ET.fromstring(data)
-        
+
         features = []
         for child in xmlLocationInfo:
             attrs = {}
             for k in list(child.attrib.keys()):
                 attrs.update({k: child.attrib[k]})
-            
+
             features.append(attrs)
-        
+
         return [None, features]
     except ValueError as err:
         pass
     except ET.ParseError as err:
         pass
-    
+
     return [10, "Cann't parse input data"]
 
+
 def getImageByURL(url, proxy):
-    
     response = requests.get(url, proxies=proxy)
-    
+
     img = QPixmap()
     img.loadFromData(QByteArray(response.content))
-    
+
     return img

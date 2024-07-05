@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#******************************************************************************
+# ******************************************************************************
 #
 # IdentifyPlus
 # ---------------------------------------------------------
@@ -23,7 +23,7 @@
 # to the Free Software Foundation, 51 Franklin Street, Suite 500 Boston,
 # MA 02110-1335 USA.
 #
-#******************************************************************************
+# ******************************************************************************
 
 import sqlite3
 
@@ -38,16 +38,18 @@ from .qgis_plugin_base import Plugin
 
 
 class Worker(QObject):
-
     refTableProcessed = pyqtSignal(dict)
 
-    def __init__(self, fid, sqliteFilename, tableName, parent = None):
+    def __init__(self, fid, sqliteFilename, tableName, parent=None):
         QObject.__init__(self, parent)
         self.sqliteFilename = sqliteFilename
         self.tableName = tableName
         self.fid = fid
 
-        Plugin().plPrint("Init sqlite worker: %s (%s) %s" % (self.sqliteFilename, self.tableName, self.fid))
+        Plugin().plPrint(
+            "Init sqlite worker: %s (%s) %s"
+            % (self.sqliteFilename, self.tableName, self.fid)
+        )
 
     def run(self):
         Plugin().plPrint("Run sqlite worker")
@@ -77,25 +79,25 @@ class Worker(QObject):
 
         for table in refTables:
             data = []
-            cur.execute("select * from %s where %s==%s" % (
-                table[0],
-                table[1],
-                self.fid
-            ))
+            cur.execute(
+                "select * from %s where %s==%s"
+                % (table[0], table[1], self.fid)
+            )
 
             rowIndex = 1
             for row in cur.fetchall():
                 rowData = []
                 for idx, col in enumerate(cur.description):
-                    rowData.append( (col[0], row[idx]) )
+                    rowData.append((col[0], row[idx]))
 
-                data.append( (str(rowIndex), rowData) )
+                data.append((str(rowIndex), rowData))
                 rowIndex += 1
 
             self.refTableProcessed.emit({table[0]: data})
 
+
 class SQLiteAttributesModel(QStandardItemModel):
-    def __init__(self, fid, sqlite_filename, table_name, parent = None):
+    def __init__(self, fid, sqlite_filename, table_name, parent=None):
         QStandardItemModel.__init__(self, parent)
 
         # self.__header = [self.tr("key"), self.tr("value")]
@@ -103,7 +105,7 @@ class SQLiteAttributesModel(QStandardItemModel):
 
         # self.__data = [["a",1],["b",2],["c",3]]
         # self.__data.extend(identificationObject.attributes.items())
-        
+
         # self.addItems(self, self.__data)
 
         thread = QThread(self)
@@ -116,7 +118,7 @@ class SQLiteAttributesModel(QStandardItemModel):
 
         self.worker = worker
         self.thread = thread
-    
+
     def addReferencedInfo(self, data):
         for key, value in list(data.items()):
             item = QStandardItem(key)
@@ -135,38 +137,38 @@ class SQLiteAttributesModel(QStandardItemModel):
                 parent.appendRow([item, QStandardItem(str(children))])
 
     # def index(self, row, column, parent=QtCore.QModelIndex()):
-    #     return self.createIndex(row, column) 
+    #     return self.createIndex(row, column)
 
     # def rowCount(self, parent=QtCore.QModelIndex()):
     #     return len(self.__data)
-    
+
     # def columnCount(self, parent=QtCore.QModelIndex()):
     #     return 2
-        
+
     # def data(self, index, role=QtCore.Qt.DisplayRole):
-    #     if not index.isValid(): 
+    #     if not index.isValid():
     #         return None
-    #     elif role != QtCore.Qt.DisplayRole: 
+    #     elif role != QtCore.Qt.DisplayRole:
     #         return None
-        
+
     #     return self.__data[index.row()][index.column()]
 
-    # def headerData(self, section, orientation, role):             
+    # def headerData(self, section, orientation, role):
     #     if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
     #         return self.__header[section]
     #     elif orientation == QtCore.Qt.Vertical and role == QtCore.Qt.DisplayRole:
     #         return section+1
-        
+
     #     return None
 
 
 class SQLiteAttributesView(QTreeView):
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         QTreeView.__init__(self, parent)
         self.setWordWrap(True)
         # self.horizontalHeader().setStretchLastSection(True)
         # self.verticalHeader().setResizeMode(QtGui.QHeaderView.ResizeToContents)
-        
+
     # def setModel(self, model):
     #     QtGui.QTableView.setModel(self, model)
     #     #self.horizontalHeader().setDefaultSectionSize(10)
@@ -174,4 +176,3 @@ class SQLiteAttributesView(QTreeView):
     #     #self.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
     #     self.horizontalHeader().setResizeMode(0, QtGui.QHeaderView.ResizeToContents)
     #     self.horizontalHeader().setResizeMode(1, QtGui.QHeaderView.Stretch)
-    

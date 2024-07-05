@@ -132,19 +132,21 @@ class IdentifyPlusResults(QWidget, Ui_IdentifyPlusResults):
         # obj = self.__model.data(self.currentObjectIndex)
         self.representations.takeControl(
             self._objects[self.currentObjectIndex],
-            self._identifyTools[self.currentObjectIndex]
+            self._identifyTools[self.currentObjectIndex],
         )
 
     def updateInterface(self):
         if len(self._objects) > 0:
             self.lblFeatures.setText(
-                self.tr("Feature %s from %s (%s)") % (
+                self.tr("Feature %s from %s (%s)")
+                % (
                     self.currentObjectIndex + 1,
                     # self.__model.objectsCount(),
                     len(self._objects),
                     # self.__model.data(self.currentObjectIndex).qgsMapLayer.name()
-                    self._objects[self.currentObjectIndex]._qgsMapLayer.name()
-                ))
+                    self._objects[self.currentObjectIndex]._qgsMapLayer.name(),
+                )
+            )
         else:
             self.lblFeatures.setText(self.tr("No features"))
             self.representations.clear()

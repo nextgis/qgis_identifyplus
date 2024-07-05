@@ -46,7 +46,6 @@ from .aboutdialog import AboutDialog
 
 
 class IdentifyPlus(Plugin):
-
     iface: QgisInterface
     __activate_tool_action: QAction
     __open_about_dialog_action: QAction
@@ -62,13 +61,17 @@ class IdentifyPlus(Plugin):
 
     def initGui(self) -> None:
         if Qgis.QGIS_VERSION_INT < 30000:
-            version = Qgis.QGIS_VERSION[:Qgis.version().find('-')]
+            version = Qgis.QGIS_VERSION[: Qgis.version().find("-")]
             QMessageBox.warning(
                 parent=self.iface.mainWindow(),
                 title=self.tr("Error"),
-                text=self.tr("QGIS {} detected.").format(version) + "\n"
-                + self.tr("This version of IdentifyPlus requires at least QGIS version 3.0.")  # noqa: E501
-                + "\n" + self.tr("Plugin will not be enabled.")
+                text=self.tr("QGIS {} detected.").format(version)
+                + "\n"
+                + self.tr(
+                    "This version of IdentifyPlus requires at least QGIS version 3.0."
+                )  # noqa: E501
+                + "\n"
+                + self.tr("Plugin will not be enabled."),
             )
             return
 
@@ -82,7 +85,7 @@ class IdentifyPlus(Plugin):
         self.__unload_menus()
 
     def tr(self, source_text: str) -> str:
-        return QgsApplication.translate('IdentifyPlus', source_text)
+        return QgsApplication.translate("IdentifyPlus", source_text)
 
     def getTargetIdentTools(self) -> List[IdentifyTool]:
         return allTools()
@@ -103,7 +106,7 @@ class IdentifyPlus(Plugin):
         plugin_dir = os.path.dirname(__file__)
         locale = QgsApplication.instance().locale()
         locale_path = os.path.join(
-            plugin_dir, 'i18n', f'identifyplus_{locale}.qm'
+            plugin_dir, "i18n", f"identifyplus_{locale}.qm"
         )
 
         if not os.path.exists(locale_path):
@@ -120,7 +123,9 @@ class IdentifyPlus(Plugin):
         self.__activate_tool_action.setIcon(
             QIcon(":/plugins/identifyplus/icons/identifyplus.svg")
         )
-        self.__activate_tool_action.setWhatsThis(self.tr("Extended identify tool"))
+        self.__activate_tool_action.setWhatsThis(
+            self.tr("Extended identify tool")
+        )
         self.__activate_tool_action.setCheckable(True)
         self.__activate_tool_action.triggered.connect(self.activateTool)
         self.iface.addPluginToMenu(
@@ -134,7 +139,9 @@ class IdentifyPlus(Plugin):
         self.__open_about_dialog_action.setIcon(
             QIcon(":/plugins/identifyplus/icons/about.png")
         )
-        self.__open_about_dialog_action.setWhatsThis(self.tr("About IdentifyPlus"))
+        self.__open_about_dialog_action.setWhatsThis(
+            self.tr("About IdentifyPlus")
+        )
         self.__open_about_dialog_action.triggered.connect(self.about)
         self.iface.addPluginToMenu(
             self.tr("IdentifyPlus"), self.__open_about_dialog_action

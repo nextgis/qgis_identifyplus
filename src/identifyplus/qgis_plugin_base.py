@@ -29,9 +29,7 @@
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 
-from qgis.core import (
-    QgsMessageLog, Qgis
-)
+from qgis.core import QgsMessageLog, Qgis
 
 
 class Singleton(type):
@@ -53,11 +51,7 @@ class Plugin(metaclass=Singleton):
         self.__actions = []
 
     def plPrint(self, msg, level=Qgis.Info):
-        QgsMessageLog.logMessage(
-            msg,
-            self._name,
-            level
-        )
+        QgsMessageLog.logMessage(msg, self._name, level)
 
     def addAction(self, name, iconSrc):
         action = QAction(name, self._iface.mainWindow())

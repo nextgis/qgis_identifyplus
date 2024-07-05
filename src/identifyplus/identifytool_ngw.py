@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#******************************************************************************
+# ******************************************************************************
 #
 # IdentifyPlus
 # ---------------------------------------------------------
@@ -23,23 +23,34 @@
 # to the Free Software Foundation, 51 Franklin Street, Suite 500 Boston,
 # MA 02110-1335 USA.
 #
-#******************************************************************************
+# ******************************************************************************
 
 import os
 
 from qgis.PyQt.QtCore import (
-    pyqtSignal, QObject, QThread,
-    Qt, QAbstractListModel,
-    QModelIndex, QSettings, QFileInfo
+    pyqtSignal,
+    QObject,
+    QThread,
+    Qt,
+    QAbstractListModel,
+    QModelIndex,
+    QSettings,
+    QFileInfo,
 )
-from qgis.PyQt.QtGui import (
-    QImage, QPixmap, QIcon
-)
+from qgis.PyQt.QtGui import QImage, QPixmap, QIcon
 from qgis.PyQt.QtWidgets import (
-    QLabel, QWidget, QDialog,
-    QSizePolicy, QVBoxLayout, QHBoxLayout,
-    QPushButton, QScrollArea, QSpacerItem,
-    QFileDialog, QProgressDialog, QProgressBar
+    QLabel,
+    QWidget,
+    QDialog,
+    QSizePolicy,
+    QVBoxLayout,
+    QHBoxLayout,
+    QPushButton,
+    QScrollArea,
+    QSpacerItem,
+    QFileDialog,
+    QProgressDialog,
+    QProgressBar,
 )
 
 from qgis.core import *
@@ -47,7 +58,9 @@ from qgis.core import *
 from .identifytool import *
 from .qgis_plugin_base import Plugin
 
-from .ngw_external_api_python.core.ngw_utils import ngw_resource_from_qgs_map_layer
+from .ngw_external_api_python.core.ngw_utils import (
+    ngw_resource_from_qgs_map_layer,
+)
 from .ngw_external_api_python.core.ngw_error import NGWError
 from .ngw_external_api_python.core.ngw_feature import NGWFeature
 from .ngw_external_api_python.core.ngw_attachment import NGWAttachment
@@ -61,7 +74,9 @@ class NGWTool(IdentifyTool, QObject):
         QObject.__init__(self)
 
     def identify(self, qgisIdentResultVector, resultsContainer):
-        ngw_resource = ngw_resource_from_qgs_map_layer(qgisIdentResultVector._qgsMapLayer)
+        ngw_resource = ngw_resource_from_qgs_map_layer(
+            qgisIdentResultVector._qgsMapLayer
+        )
 
         if ngw_resource is not None:
             Plugin().plPrint(f">>> ngw_resource: {ngw_resource}")
@@ -93,7 +108,8 @@ class NGWTool(IdentifyTool, QObject):
 
 class NGWImagesModel(QAbstractListModel):
     initEnded = pyqtSignal()
-    def __init__(self, obj, ngw_resource, parent = None):
+
+    def __init__(self, obj, ngw_resource, parent=None):
         super(NGWImagesModel, self).__init__(parent)
 
         self.__obj = obj
@@ -112,44 +128,51 @@ class NGWImagesModel(QAbstractListModel):
         Plugin().plPrint(">>> --- fid: %s" % fid)
 
         dataProvider = self.__obj._qgsMapLayer.dataProvider()
-        if dataProvider.name() == 'WFS':
-            if hasattr(dataProvider, 'idFromFid') and callable(getattr(dataProvider, 'idFromFid')):
+        if dataProvider.name() == "WFS":
+            if hasattr(dataProvider, "idFromFid") and callable(
+                getattr(dataProvider, "idFromFid")
+            ):
                 fid = dataProvider.idFromFid(fid)
-                if type(fid) != 'long':
+                if type(fid) != "long":
                     fid = int(fid)
 
         elif (
             self.__obj._qgsMapLayer.storageType() == "GPKG"
-            and "ngw_connection_id" in self.__obj._qgsMapLayer.customPropertyKeys()
+            and "ngw_connection_id"
+            in self.__obj._qgsMapLayer.customPropertyKeys()
         ):
             context = QgsExpressionContext()
             context.appendScopes(
-                QgsExpressionContextUtils.globalProjectLayerScopes(self.__obj._qgsMapLayer)
+                QgsExpressionContextUtils.globalProjectLayerScopes(
+                    self.__obj._qgsMapLayer
+                )
             )
             context.setFeature(self.__obj.getFeature())
 
             expression = QgsExpression("ngw_feature_id()")
             fid = expression.evaluate()
 
-        self.__ngw_feature = NGWFeature({'id':fid}, self.__ngw_resource)
+        self.__ngw_feature = NGWFeature({"id": fid}, self.__ngw_resource)
         self.__images_urls = []
 
         attachments = self.__ngw_feature.get_attachments()
         for attachment in attachments:
-            if attachment['is_image'] == True:
-                self.insertRow(NGWAttachment(attachment['id'], self.__ngw_feature))
+            if attachment["is_image"] == True:
+                self.insertRow(
+                    NGWAttachment(attachment["id"], self.__ngw_feature)
+                )
 
         self.initEnded.emit()
 
     def rowCount(self, parent=QModelIndex()):
-        return len( self.__images )
+        return len(self.__images)
 
     def removeRows(self, row, count, parent=QModelIndex()):
         self.beginRemoveRows(parent, row, row + count)
 
         for i in range(0, count):
-            #self.__ngw_feature.unlink_attachment( self.__images_urls[row][1] )
-            #self.__images_urls.remove(self.__images_urls[row])
+            # self.__ngw_feature.unlink_attachment( self.__images_urls[row][1] )
+            # self.__images_urls.remove(self.__images_urls[row])
             self.__images[row].unlink()
             self.__images.remove(self.__images[row])
 
@@ -182,10 +205,11 @@ class NGWImagesModel(QAbstractListModel):
         else:
             return None
 
+
 class ImageLoader(QObject):
     finished = pyqtSignal(QImage)
 
-    def __init__(self, ngw_attachment, parent = None):
+    def __init__(self, ngw_attachment, parent=None):
         QObject.__init__(self, parent)
         self.__ngw_attachment = ngw_attachment
 
@@ -195,10 +219,11 @@ class ImageLoader(QObject):
         res = img.loadFromData(img_info[2])
         self.finished.emit(img)
 
+
 class ImageLabel(QLabel):
     imageLoaded = pyqtSignal()
 
-    def __init__(self, ngw_attachment, parent = None):
+    def __init__(self, ngw_attachment, parent=None):
         QLabel.__init__(self, parent)
         self.pm = None
         self.setText(self.tr("Loading..."))
@@ -235,12 +260,12 @@ class ImageLabel(QLabel):
         else:
             return self.pm.size().height()
 
+
 class Image(QWidget):
     deleteImage = pyqtSignal(QWidget)
     downloadImage = pyqtSignal(QWidget)
 
-    def __init__(self, ngw_attachment, parent = None):
-
+    def __init__(self, ngw_attachment, parent=None):
         QWidget.__init__(self, parent)
 
         self.__vbl_layout = QVBoxLayout(self)
@@ -260,9 +285,11 @@ class Image(QWidget):
         self.__vbl_layout.addWidget(self.__w_buttons_widget)
 
         self.__pb_download_image = QPushButton()
-        self.__pb_download_image.setIcon(QIcon(":/plugins/identifyplus/icons/downloadImageBtn.png"))
-        self.__pb_download_image.setToolTip( self.tr("Download photo") )
-        self.__pb_download_image.setStatusTip( self.tr("Download photo") )
+        self.__pb_download_image.setIcon(
+            QIcon(":/plugins/identifyplus/icons/downloadImageBtn.png")
+        )
+        self.__pb_download_image.setToolTip(self.tr("Download photo"))
+        self.__pb_download_image.setStatusTip(self.tr("Download photo"))
         # self.__pb_download_image.setVisible(False)
         self.__pb_download_image.hide()
 
@@ -270,9 +297,11 @@ class Image(QWidget):
         self.__hbl_buttons_layout.addWidget(self.__pb_download_image)
 
         self.__pb_delete_image = QPushButton()
-        self.__pb_delete_image.setIcon(QIcon(":/plugins/identifyplus/icons/deleteImageBtn.png"))
-        self.__pb_delete_image.setToolTip( self.tr("Delete photo") )
-        self.__pb_delete_image.setStatusTip( self.tr("Delete photo") )
+        self.__pb_delete_image.setIcon(
+            QIcon(":/plugins/identifyplus/icons/deleteImageBtn.png")
+        )
+        self.__pb_delete_image.setToolTip(self.tr("Delete photo"))
+        self.__pb_delete_image.setStatusTip(self.tr("Delete photo"))
         # self.__pb_delete_image.setVisible(False)
         self.__pb_delete_image.hide()
 
@@ -291,23 +320,25 @@ class Image(QWidget):
     def emitDeleteImage(self):
         self.deleteImage.emit(self)
 
+
 class NGWImagesView(QWidget):
     images_load_finish = pyqtSignal()
+
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
 
         self.__model = None
         self.__images = []
 
-        l=QVBoxLayout(self)
-        l.setContentsMargins(0,0,0,0)
+        l = QVBoxLayout(self)
+        l.setContentsMargins(0, 0, 0, 0)
         l.setSpacing(5)
 
-        s=QScrollArea()
-        s.setWidgetResizable(True);
-        #s.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        s = QScrollArea()
+        s.setWidgetResizable(True)
+        # s.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         sb = s.verticalScrollBar()
-        stylesheet = '''
+        stylesheet = """
             QScrollBar:vertical {
                   border: 2px solid transparent;
                   background: transparent;
@@ -342,7 +373,7 @@ class NGWImagesView(QWidget):
                   background: none;
               }
 
-            '''
+            """
         sb.setStyleSheet(stylesheet)
 
         s.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -356,41 +387,48 @@ class NGWImagesView(QWidget):
         l.addWidget(self.__w_buttons_widget)
 
         self.__pb_download_images = QPushButton()
-        self.__pb_download_images.setIcon(QIcon(":/plugins/identifyplus/icons/downloadImageBtn.png"))
-        self.__pb_download_images.setToolTip( self.tr("Download photos") )
-        self.__pb_download_images.setStatusTip( self.tr("Download photos") )
+        self.__pb_download_images.setIcon(
+            QIcon(":/plugins/identifyplus/icons/downloadImageBtn.png")
+        )
+        self.__pb_download_images.setToolTip(self.tr("Download photos"))
+        self.__pb_download_images.setStatusTip(self.tr("Download photos"))
         self.__pb_download_images.setEnabled(False)
         self.__pb_download_images.clicked.connect(self.downloadImages)
         self.__hbl_buttons_layout.addWidget(self.__pb_download_images)
 
         self.__pb_add_image = QPushButton()
-        self.__pb_add_image.setIcon(QIcon(":/plugins/identifyplus/icons/addImageBtn.png"))
-        self.__pb_add_image.setToolTip( self.tr("Add photo(s)") )
-        self.__pb_add_image.setStatusTip( self.tr("Add photo(s)") )
+        self.__pb_add_image.setIcon(
+            QIcon(":/plugins/identifyplus/icons/addImageBtn.png")
+        )
+        self.__pb_add_image.setToolTip(self.tr("Add photo(s)"))
+        self.__pb_add_image.setStatusTip(self.tr("Add photo(s)"))
         self.__pb_add_image.clicked.connect(self.addImage)
         self.__hbl_buttons_layout.addWidget(self.__pb_add_image)
 
+        self.w = QWidget(self)
 
-        self.w=QWidget(self)
-
-        self.vbox=QVBoxLayout(self.w)
+        self.vbox = QVBoxLayout(self.w)
         self.vbox.setSpacing(0)
         self.vbox.setContentsMargins(0, 0, 0, 0)
 
-        self.__w_images_container= QWidget(self)
-        self.__vbl_images_container= QVBoxLayout(self.__w_images_container)
+        self.__w_images_container = QWidget(self)
+        self.__vbl_images_container = QVBoxLayout(self.__w_images_container)
         self.__vbl_images_container.setSpacing(5)
         self.__vbl_images_container.setContentsMargins(0, 0, 0, 0)
 
         self.vbox.addWidget(self.__w_images_container)
 
-        self.vbox.addSpacerItem(QSpacerItem(1,1,QSizePolicy.Minimum, QSizePolicy.Expanding))
+        self.vbox.addSpacerItem(
+            QSpacerItem(1, 1, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        )
 
         s.setWidget(self.w)
 
         self.__message = QLabel(self.tr("Loading..."))
         self.__message.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
-        self.__message.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.__message.setSizePolicy(
+            QSizePolicy.Expanding, QSizePolicy.Expanding
+        )
         self.__vbl_images_container.addWidget(self.__message)
 
     def __updateMessage(self):
@@ -421,9 +459,8 @@ class NGWImagesView(QWidget):
         self.__updateMessage()
 
     def rowsInsertedProcess(self, parent, start, end):
-
-        for i in range(start, end+1):
-            index = self.__model.index(i,0)
+        for i in range(start, end + 1):
+            index = self.__model.index(i, 0)
             data = self.__model.data(index)
 
             img = Image(data, self.w)
@@ -440,56 +477,70 @@ class NGWImagesView(QWidget):
 
     def addImage(self):
         settings = QSettings()
-        lastLoadPhotoDir = settings.value("identifyplus/lastLoadPhotoDir", "", type=str)
+        lastLoadPhotoDir = settings.value(
+            "identifyplus/lastLoadPhotoDir", "", type=str
+        )
 
-        file_names, _ = QFileDialog.getOpenFileNames(self, self.tr("Choose photo(s)"), lastLoadPhotoDir, self.tr("Image Files (*.png *.jpg *.bmp)"))
+        file_names, _ = QFileDialog.getOpenFileNames(
+            self,
+            self.tr("Choose photo(s)"),
+            lastLoadPhotoDir,
+            self.tr("Image Files (*.png *.jpg *.bmp)"),
+        )
 
         for file_name in file_names:
-            settings.setValue("identifyplus/lastLoadPhotoDir", QFileInfo(file_name).absolutePath())
+            settings.setValue(
+                "identifyplus/lastLoadPhotoDir",
+                QFileInfo(file_name).absolutePath(),
+            )
             self.__model.addImage(file_name)
 
     def downloadImage(self, image):
         i = self.__images.index(image)
-        index = self.__model.index(i,0)
+        index = self.__model.index(i, 0)
 
         ngw_attachment = self.__model.data(index, Qt.UserRole + 1)
 
         settings = QSettings()
-        lastDir = settings.value( "identifyplus/lastSavePhotoDir", "" )
+        lastDir = settings.value("identifyplus/lastSavePhotoDir", "")
 
-        fName, _ = QFileDialog.getSaveFileName(self,
-                                            self.tr("Save photo"),
-                                            lastDir
-                                           )
+        fName, _ = QFileDialog.getSaveFileName(
+            self, self.tr("Save photo"), lastDir
+        )
         if fName == "":
-          return
+            return
 
         file_info = QFileInfo(fName)
-        settings.setValue("identifyplus/lastSavePhotoDir", file_info.absolutePath())
+        settings.setValue(
+            "identifyplus/lastSavePhotoDir", file_info.absolutePath()
+        )
 
         ngw_attachments = [ngw_attachment]
         default_names = [file_info.fileName()]
-        downloadDialog = ImageDownloadDialog(ngw_attachments, file_info.absolutePath(), default_names)
+        downloadDialog = ImageDownloadDialog(
+            ngw_attachments, file_info.absolutePath(), default_names
+        )
         downloadDialog.exec_()
 
     def downloadImages(self):
         settings = QSettings()
-        lastSavePhotosDir = settings.value("identifyplus/lastSavePhotosDir", "", type=str)
+        lastSavePhotosDir = settings.value(
+            "identifyplus/lastSavePhotosDir", "", type=str
+        )
 
         dirPath = QFileDialog.getExistingDirectory(
-                    self,
-                    self.tr("Select directory fo save photos"),
-                    lastSavePhotosDir)
+            self, self.tr("Select directory fo save photos"), lastSavePhotosDir
+        )
 
         dirPath
         if dirPath == "":
-          return
+            return
 
         settings.setValue("identifyplus/lastSavePhotoDir", dirPath)
 
         ngw_attachments = []
         for i in range(0, self.__model.rowCount()):
-            index = self.__model.index(i,0)
+            index = self.__model.index(i, 0)
             ngw_attachments.append(self.__model.data(index, Qt.UserRole + 1))
 
         downloadDialog = ImageDownloadDialog(ngw_attachments, dirPath)
@@ -497,7 +548,7 @@ class NGWImagesView(QWidget):
 
 
 class ImageUploadDialog(QProgressDialog):
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         QProgressDialog.__init__(self, parent)
         self.setWindowModality(Qt.WindowModal)
         self.setWindowTitle(self.tr("Upload images process"))
@@ -509,8 +560,11 @@ class ImageUploadDialog(QProgressDialog):
         progress = int((float(readed) / float(total)) * 100)
         self.setValue(progress)
 
+
 class ImageDownloadDialog(QDialog):
-    def __init__(self, ngw_attachments, save_dir, default_names = [],  parent = None):
+    def __init__(
+        self, ngw_attachments, save_dir, default_names=[], parent=None
+    ):
         QDialog.__init__(self, parent)
         self.setWindowTitle(self.tr("Download images process"))
         self.setFixedSize(250, 75)
@@ -524,14 +578,16 @@ class ImageDownloadDialog(QDialog):
         self.__ngw_attachments = ngw_attachments
         self.__default_names = default_names
 
-        difference_len = len(self.__ngw_attachments) - len(self.__default_names)
-        if difference_len  > 0:
-            self.__default_names.extend( [None]*difference_len)
+        difference_len = len(self.__ngw_attachments) - len(
+            self.__default_names
+        )
+        if difference_len > 0:
+            self.__default_names.extend([None] * difference_len)
 
         self.__save_dir = save_dir
         self.__current_index = 0
 
-        if len(self.__ngw_attachments) > 0 :
+        if len(self.__ngw_attachments) > 0:
             self.downloadNext()
 
     def downloadNext(self):
@@ -544,7 +600,8 @@ class ImageDownloadDialog(QDialog):
         self.worker = ImageDownloader(
             self.__ngw_attachments[self.__current_index],
             self.__save_dir,
-            self.__default_names[self.__current_index])
+            self.__default_names[self.__current_index],
+        )
 
         self.__current_index = self.__current_index + 1
 
@@ -556,9 +613,11 @@ class ImageDownloadDialog(QDialog):
         self.worker.finished.connect(self.downloadNext)
         self.thread.start()
 
+
 class ImageDownloader(QObject):
     finished = pyqtSignal()
-    def __init__(self, ngw_attachment, save_dir, filename = None, parent = None):
+
+    def __init__(self, ngw_attachment, save_dir, filename=None, parent=None):
         QObject.__init__(self, parent)
         self.__ngw_attachment = ngw_attachment
         self.__filename = filename
@@ -579,14 +638,16 @@ class ImageDownloader(QObject):
             img.save(
                 os.path.join(
                     self.__save_dir,
-                    attachment_info[0] + ".%s"%attachment_info[1]
+                    attachment_info[0] + ".%s" % attachment_info[1],
                 ),
-                attachment_info[1])
+                attachment_info[1],
+            )
         else:
             img.save(
                 os.path.join(
                     self.__save_dir,
-                    self.__filename + ".%s"%attachment_info[1]
+                    self.__filename + ".%s" % attachment_info[1],
                 ),
-                attachment_info[1])
+                attachment_info[1],
+            )
         self.finished.emit()

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#******************************************************************************
+# ******************************************************************************
 #
 # IdentifyPlus
 # ---------------------------------------------------------
@@ -23,7 +23,7 @@
 # to the Free Software Foundation, 51 Franklin Street, Suite 500 Boston,
 # MA 02110-1335 USA.
 #
-#******************************************************************************
+# ******************************************************************************
 
 import sqlite3
 
@@ -37,10 +37,9 @@ from .qgis_plugin_base import Plugin
 
 
 class Worker(QtCore.QObject):
-
     refTableProcessed = QtCore.pyqtSignal(dict)
 
-    def __init__(self, fid, sqliteFilename, tableName, parent = None):
+    def __init__(self, fid, sqliteFilename, tableName, parent=None):
         QtCore.QObject.__init__(self, parent)
         self.sqliteFilename = sqliteFilename
         self.tableName = tableName
@@ -78,29 +77,25 @@ class Worker(QtCore.QObject):
 
         for table in refTables:
             data = []
-            cur.execute("select * from %s where %s==%s" % (
-                table[0],
-                table[1],
-                self.fid
-            ))
+            cur.execute(
+                "select * from %s where %s==%s"
+                % (table[0], table[1], self.fid)
+            )
 
             rowIndex = 1
             for row in cur.fetchall():
                 rowData = []
                 for idx, col in enumerate(cur.description):
                     rowData.append(
-                        (
-                            aliases.get(table[0]).get(col[0], col[0]),
-                            row[idx]
-                        )
+                        (aliases.get(table[0]).get(col[0], col[0]), row[idx])
                     )
 
-                data.append( (str(rowIndex), rowData) )
+                data.append((str(rowIndex), rowData))
                 rowIndex += 1
 
-            self.refTableProcessed.emit({
-                aliases.get(table[0]).get(None, table[0]): data
-            })
+            self.refTableProcessed.emit(
+                {aliases.get(table[0]).get(None, table[0]): data}
+            )
 
     def __getAliases(self, cur):
         res = {}
@@ -115,27 +110,31 @@ class Worker(QtCore.QObject):
                 res[alias[0]][alias[1]] = alias[2]
 
         except Exception as err:
-            Plugin().plPrint("Find aliases in BD error: " + str(err), QgsMessageLog.WARNING)
+            Plugin().plPrint(
+                "Find aliases in BD error: " + str(err), QgsMessageLog.WARNING
+            )
 
         return res
+
 
 class SQLiteTool(IdentifyTool):
     def __init__(self):
         IdentifyTool.__init__(self, "sqlite", "sqlite identification")
 
         self.__aliases = {}
+
     def identify(self, qgisIdentResultVector, resultsContainer):
         if not self.isAvailable(qgisIdentResultVector._qgsMapLayer):
             return
 
         self.__resultsContainer = resultsContainer
 
-        parts = qgisIdentResultVector._qgsMapLayer.source().split('|')
+        parts = qgisIdentResultVector._qgsMapLayer.source().split("|")
         sqlite_filename = parts[0]
 
         for part in parts[1:]:
             if part.startswith("layername"):
-                table_name = part.split('=')[1]
+                table_name = part.split("=")[1]
 
         # model = SQLiteAttributesModel(obj.fid, sqlite_filename, table_name)
         # view = SQLiteAttributesView()
@@ -143,16 +142,22 @@ class SQLiteTool(IdentifyTool):
         # self.__resultsContainer.addResult(view, key)
 
         self.model = QtGui.QStandardItemModel()
-        self.model.setHorizontalHeaderLabels([
-            QCoreApplication.translate("QGISTool", "attribute"),
-            QCoreApplication.translate("QGISTool", "value")
-        ])
+        self.model.setHorizontalHeaderLabels(
+            [
+                QCoreApplication.translate("QGISTool", "attribute"),
+                QCoreApplication.translate("QGISTool", "value"),
+            ]
+        )
         self.view = QtGui.QTreeView()
         self.view.setModel(self.model)
         self.__is_added_to_container = False
 
         thread = QtCore.QThread(self.__resultsContainer)
-        worker = Worker(qgisIdentResultVector.getFeature().id(), sqlite_filename, table_name)
+        worker = Worker(
+            qgisIdentResultVector.getFeature().id(),
+            sqlite_filename,
+            table_name,
+        )
         worker.moveToThread(thread)
         worker.refTableProcessed.connect(self.__addRefTableInfo)
 
@@ -164,7 +169,10 @@ class SQLiteTool(IdentifyTool):
 
     def __addRefTableInfo(self, data):
         if self.__is_added_to_container is False:
-            self.__resultsContainer.addResult(self.view, QCoreApplication.translate("QGISTool", "Reference tables"))
+            self.__resultsContainer.addResult(
+                self.view,
+                QCoreApplication.translate("QGISTool", "Reference tables"),
+            )
             self.__is_added_to_container = True
 
         for key, value in list(data.items()):
@@ -198,7 +206,7 @@ class SQLiteTool(IdentifyTool):
             if qgsMapLayer.storageType() != "SQLite":
                 return False
 
-            parts = qgsMapLayer.source().split('|')
+            parts = qgsMapLayer.source().split("|")
             for part in parts[1:]:
                 if part.startswith("layername"):
                     return True

@@ -27,23 +27,22 @@
 
 import abc
 
-from qgis.PyQt.QtCore import (
-    pyqtSignal, Qt, QSettings,
-    QThread, QObject
-)
-from qgis.PyQt.QtGui import (
-    QCursor, QPixmap
-)
+from qgis.PyQt.QtCore import pyqtSignal, Qt, QSettings, QThread, QObject
+from qgis.PyQt.QtGui import QCursor, QPixmap
 from qgis.PyQt.QtWidgets import QApplication
 
 from qgis.core import (
-    Qgis, QgsPoint, QgsMapLayer, QgsRectangle, QgsFeatureRequest,
-    QgsCsException, QgsMessageLog
+    Qgis,
+    QgsPoint,
+    QgsMapLayer,
+    QgsRectangle,
+    QgsFeatureRequest,
+    QgsCsException,
+    QgsMessageLog,
 )
 from qgis.gui import QgsMapTool
 
 from .qgis_plugin_base import Plugin
-
 
 
 class IdentifyPlusTool(QgsMapTool):
@@ -53,9 +52,7 @@ class IdentifyPlusTool(QgsMapTool):
         QgsMapTool.__init__(self, canvas)
         self.canvas = canvas
         self.cursor = QCursor(
-            QPixmap(":/plugins/identifyplus/icons/cursor.png"),
-            1,
-            1
+            QPixmap(":/plugins/identifyplus/icons/cursor.png"), 1, 1
         )
 
     def activate(self):
@@ -115,11 +112,11 @@ class QGISIdentResultVector(QGISIdentResultOnLayer):
 
         pointFrom = qgsMapCanvas.getCoordinateTransform().toMapCoordinates(
             int(qgsPoint.x() - identifyValue * qgsMapCanvas.PdmWidthMM),
-            int(qgsPoint.y() + identifyValue * qgsMapCanvas.PdmHeightMM)
+            int(qgsPoint.y() + identifyValue * qgsMapCanvas.PdmHeightMM),
         )
         pointTo = qgsMapCanvas.getCoordinateTransform().toMapCoordinates(
             int(qgsPoint.x() + identifyValue * qgsMapCanvas.PdmWidthMM),
-            int(qgsPoint.y() - identifyValue * qgsMapCanvas.PdmHeightMM)
+            int(qgsPoint.y() - identifyValue * qgsMapCanvas.PdmHeightMM),
         )
         try:
             # searchRadius = qgsMapCanvas.extent().width() * (identifyValue / 100.0)
@@ -140,8 +137,8 @@ class QGISIdentResultVector(QGISIdentResultOnLayer):
         except QgsCsException as cse:
             QgsMessageLog.logMessage(
                 "Caught CRS exception" + ":\n" + cse.what(),
-                'IdentifyPlus',
-                QgsMessageLog.CRITICAL
+                "IdentifyPlus",
+                QgsMessageLog.CRITICAL,
             )
 
 
@@ -177,7 +174,11 @@ class Worker(QObject):
 
         if len(self.targetLayers) == 0:
             resType = QGISIdentResult
-            availableTools = [tool for tool in self.targetIdentTools if tool.isAvailable(resType)]
+            availableTools = [
+                tool
+                for tool in self.targetIdentTools
+                if tool.isAvailable(resType)
+            ]
 
             if len(availableTools) != 0:
                 self.identified.emit(resType(self.qgsPoint), availableTools)
@@ -185,17 +186,25 @@ class Worker(QObject):
 
         if len(self.targetLayers) > 0:
             for qgsLayer in self.targetLayers:
-
                 Plugin().plPrint(">>> check layer: %s" % qgsLayer.name())
 
-                availableTools = [tool for tool in self.targetIdentTools if tool.isAvailable(qgsLayer)]
-                Plugin().plPrint(">>> availableTools: %s" % ', '.join([tool.__name__ for tool in availableTools]))
+                availableTools = [
+                    tool
+                    for tool in self.targetIdentTools
+                    if tool.isAvailable(qgsLayer)
+                ]
+                Plugin().plPrint(
+                    ">>> availableTools: %s"
+                    % ", ".join([tool.__name__ for tool in availableTools])
+                )
 
                 if len(availableTools) == 0:
                     continue
 
                 resType = getQGISIdentResultClsForQgsLayer(qgsLayer)
-                for res in resType.generateFromQgsMapLayer(self.qgsPoint, qgsLayer, self.canvas):
+                for res in resType.generateFromQgsMapLayer(
+                    self.qgsPoint, qgsLayer, self.canvas
+                ):
                     self.identified.emit(res, availableTools)
 
                 self.__progressUp()
@@ -229,7 +238,6 @@ class IdentifyPlusMapTool(QgsMapTool):
         self.canvas().setCursor(self.cursor)
 
     def canvasReleaseEvent(self, event):
-
         QApplication.setOverrideCursor(Qt.WaitCursor)
 
         qgsPoint = QgsPoint(event.x(), event.y())

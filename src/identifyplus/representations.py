@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#******************************************************************************
+# ******************************************************************************
 #
 # IdentifyPlus
 # ---------------------------------------------------------
@@ -23,7 +23,7 @@
 # to the Free Software Foundation, 51 Franklin Street, Suite 500 Boston,
 # MA 02110-1335 USA.
 #
-#******************************************************************************
+# ******************************************************************************
 
 from qgis.PyQt.QtWidgets import QTabWidget
 
@@ -38,41 +38,43 @@ class RepresentationsCache:
         self.repr_variants = list()
         self.indexes = list()
         self.correspondences = dict()
-        
+
     def save(self, representations, index):
         if representations not in self.repr_variants:
             self.repr_variants.append(representations)
-        
+
         reprs_index = self.repr_variants.index(representations)
-        self.correspondences.update({reprs_index:index})
-    
+        self.correspondences.update({reprs_index: index})
+
     def getIndex(self, representations):
         if representations in self.repr_variants:
-            return self.correspondences[self.repr_variants.index(representations)]
+            return self.correspondences[
+                self.repr_variants.index(representations)
+            ]
         else:
             return 0
 
 
 class RepresentationContainer(QTabWidget):
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         QTabWidget.__init__(self, parent)
         self.threades = list()
-        
+
         self.reprs_cashe = RepresentationsCache()
-    
+
         self.currentChanged.connect(self.tabChangedHandle)
-        
+
         self.__tools = list()
 
     def allReprs(self):
         reprs = []
-        for i in range( 0, self.count() ):
+        for i in range(0, self.count()):
             reprs.append(type(self.widget(i)))
         return reprs
-    
+
     def tabChangedHandle(self, index):
-        self.reprs_cashe.save(self.allReprs(), index) 
-    
+        self.reprs_cashe.save(self.allReprs(), index)
+
     def takeControl(self, obj, identifyTools):
         self.clear()
         for toolCls in identifyTools:
@@ -87,7 +89,7 @@ class RepresentationContainer(QTabWidget):
 
     def clear(self):
         self.__tools = list()
-        for i in range( 0, self.count() ):
+        for i in range(0, self.count()):
             self.widget(0).hide()
             self.widget(0).close()
             self.removeTab(0)

@@ -29,13 +29,12 @@ import os
 import configparser
 
 from qgis.PyQt.QtGui import QPixmap, QTextDocument
-from qgis.PyQt.QtWidgets import  QDialog, QDialogButtonBox
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 
 from .ui_aboutdialogbase import Ui_Dialog
 
 
 class AboutDialog(QDialog, Ui_Dialog):
-
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -47,7 +46,9 @@ class AboutDialog(QDialog, Ui_Dialog):
         cfg.read(os.path.join(os.path.dirname(__file__), "metadata.txt"))
         version = cfg.get("general", "version")
 
-        self.lblLogo.setPixmap(QPixmap(":/plugins/identifyplus/icons/identifyplus.png"))
+        self.lblLogo.setPixmap(
+            QPixmap(":/plugins/identifyplus/icons/identifyplus.png")
+        )
         self.lblVersion.setText(self.tr("Version: %s") % (version))
         doc = QTextDocument()
         doc.setHtml(self.getAboutText())
@@ -75,5 +76,4 @@ class AboutDialog(QDialog, Ui_Dialog):
         return self.tr("""<p>Alternate identify tool with additional capabilities.</p>
 <p>NOTE: Plugin needs access to special web-service in order to be able display
 photos associated with features. If you need more info please <a href="mailto:info@nextgis.org">contact us</a></p>
-"""
-        )
+""")
