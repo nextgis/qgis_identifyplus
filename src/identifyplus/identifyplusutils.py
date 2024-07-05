@@ -60,9 +60,9 @@ def gdallocationinfoXMLOutputProcessing(outputXMLString):
         else:
             results = []
             for r in jsonLocationInfo["results"]:
-                attrs = r[u'attributes']
-                attrs.update({u'layerId': str(r[u'layerId'])})
-                attrs.update({'layerName': r[u'layerName']})
+                attrs = r['attributes']
+                attrs.update({'layerId': str(r['layerId'])})
+                attrs.update({'layerName': r['layerName']})
                 
                 results.append(attrs)
             

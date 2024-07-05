@@ -134,7 +134,7 @@ class SQLiteTool(IdentifyTool):
         sqlite_filename = parts[0]
 
         for part in parts[1:]:
-            if part.startswith(u"layername"):
+            if part.startswith("layername"):
                 table_name = part.split('=')[1]
 
         # model = SQLiteAttributesModel(obj.fid, sqlite_filename, table_name)
@@ -192,15 +192,15 @@ class SQLiteTool(IdentifyTool):
             if qgsMapLayer.type() != QgsMapLayer.VectorLayer:
                 return False
 
-            if qgsMapLayer.dataProvider().name() != u"ogr":
+            if qgsMapLayer.dataProvider().name() != "ogr":
                 return False
 
-            if qgsMapLayer.storageType() != u"SQLite":
+            if qgsMapLayer.storageType() != "SQLite":
                 return False
 
             parts = qgsMapLayer.source().split('|')
             for part in parts[1:]:
-                if part.startswith(u"layername"):
+                if part.startswith("layername"):
                     return True
 
             return False

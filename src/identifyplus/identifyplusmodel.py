@@ -142,7 +142,7 @@ class IdentificationWorker(QObject):
                 if proxyHost is None:
                     QgsMessageLog.logMessage(
                         self.tr("QGIS proxysettings error") + ": " + self.tr("Parameter 'proxyHost' is missing"),
-                        u'IdentifyPlus',
+                        'IdentifyPlus',
                         QgsMessageLog.CRITICAL)
                     return []
                 GDAL_HTTP_PROXY = GDAL_HTTP_PROXY + proxyHost
@@ -179,13 +179,13 @@ class IdentificationWorker(QObject):
             if err_msg == '':
                 err_msg = str(process.readAllStandardOutput())
 
-            QgsMessageLog.logMessage(self.tr("gdallocationinfo return error status<br/>") + ":\n" + err_msg, u'IdentifyPlus', QgsMessageLog.CRITICAL)
+            QgsMessageLog.logMessage(self.tr("gdallocationinfo return error status<br/>") + ":\n" + err_msg, 'IdentifyPlus', QgsMessageLog.CRITICAL)
         else:
             data = str(process.readAllStandardOutput());
             res = gdallocationinfoXMLOutputProcessing(data)
 
             if res[0] != None:
-               QgsMessageLog.logMessage(self.tr("Parsing gdallocationinfo request error<br/>") + ":\n" + res[1] + "\n" + data, u'IdentifyPlus', QgsMessageLog.CRITICAL)
+               QgsMessageLog.logMessage(self.tr("Parsing gdallocationinfo request error<br/>") + ":\n" + res[1] + "\n" + data, 'IdentifyPlus', QgsMessageLog.CRITICAL)
             else:
                 identificationObjects = []
                 for obj in res[1]:
@@ -233,7 +233,7 @@ class IdentificationWorker(QObject):
           for f in qgsLayer.getFeatures(rq):
             featureList.append(QgsFeature(f))
         except QgsCsException as cse:
-          QgsMessageLog.logMessage(self.tr("Caught CRS exception") + ":\n" + cse.what(), u'IdentifyPlus', QgsMessageLog.CRITICAL)
+          QgsMessageLog.logMessage(self.tr("Caught CRS exception") + ":\n" + cse.what(), 'IdentifyPlus', QgsMessageLog.CRITICAL)
 
         myFilter = False
 
@@ -306,8 +306,8 @@ class IdentifyPlusModel(QObject):
     def _defineLayers(self, **args):
         del self._qgsMapLayers[:]
 
-        if (u"all_qgis_layers" in args):
-            if args[u"all_qgis_layers"] == True:
+        if ("all_qgis_layers" in args):
+            if args["all_qgis_layers"] == True:
                 self._qgsMapLayers.extend(self._qgsMapCanvas.layers())
 
     def identify(self, qgsPoint):

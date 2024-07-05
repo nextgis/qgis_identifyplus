@@ -136,8 +136,8 @@ class NGWImagesModel(QAbstractListModel):
 
         attachments = self.__ngw_feature.get_attachments()
         for attachment in attachments:
-            if attachment[u'is_image'] == True:
-                self.insertRow(NGWAttachment(attachment[u'id'], self.__ngw_feature))
+            if attachment['is_image'] == True:
+                self.insertRow(NGWAttachment(attachment['id'], self.__ngw_feature))
 
         self.initEnded.emit()
 
