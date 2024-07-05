@@ -94,8 +94,8 @@ class IdentifyPlus(Plugin):
             self.__activate_tool_action.setChecked(False)
 
     def about(self):
-        dlg = AboutDialog()
-        dlg.exec_()
+        dlg = AboutDialog("identifyplus")
+        dlg.exec()
 
     def __init_translator(self):
         plugin_dir = os.path.dirname(__file__)
