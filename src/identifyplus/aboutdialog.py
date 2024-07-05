@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # *****************************************************************************
 #
 # IdentifyPlus
@@ -25,8 +23,8 @@
 #
 # *****************************************************************************
 
-import os
 import configparser
+import os
 
 from qgis.PyQt.QtGui import QPixmap, QTextDocument
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox

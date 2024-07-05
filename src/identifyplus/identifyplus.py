@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # *****************************************************************************
 #
 # IdentifyPlus
@@ -28,21 +26,18 @@
 import os
 from typing import List
 
+from qgis.core import Qgis, QgsApplication
+from qgis.gui import QgisInterface
 from qgis.PyQt.QtCore import Qt, QTranslator
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QMessageBox
 
-from qgis.core import Qgis, QgsApplication
-from qgis.gui import QgisInterface
-
-from .qgis_plugin_base import Plugin
-from .identifytools import allTools
-from .identifytool import IdentifyTool
-
-from .identifyplusmaptool import IdentifyPlusMapTool
-from .identifyplusresults import IdentifyPlusResultsDock, IdentifyPlusResults
-
 from .aboutdialog import AboutDialog
+from .identifyplusmaptool import IdentifyPlusMapTool
+from .identifyplusresults import IdentifyPlusResults, IdentifyPlusResultsDock
+from .identifytool import IdentifyTool
+from .identifytools import allTools
+from .qgis_plugin_base import Plugin
 
 
 class IdentifyPlus(Plugin):
@@ -69,7 +64,7 @@ class IdentifyPlus(Plugin):
                 + "\n"
                 + self.tr(
                     "This version of IdentifyPlus requires at least QGIS version 3.0."
-                )  # noqa: E501
+                )
                 + "\n"
                 + self.tr("Plugin will not be enabled."),
             )

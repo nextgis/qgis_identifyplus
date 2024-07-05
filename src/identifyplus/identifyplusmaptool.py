@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # ******************************************************************************
 #
 # IdentifyPlus
@@ -27,20 +25,19 @@
 
 import abc
 
-from qgis.PyQt.QtCore import pyqtSignal, Qt, QSettings, QThread, QObject
-from qgis.PyQt.QtGui import QCursor, QPixmap
-from qgis.PyQt.QtWidgets import QApplication
-
 from qgis.core import (
     Qgis,
-    QgsPoint,
-    QgsMapLayer,
-    QgsRectangle,
-    QgsFeatureRequest,
     QgsCsException,
+    QgsFeatureRequest,
+    QgsMapLayer,
     QgsMessageLog,
+    QgsPoint,
+    QgsRectangle,
 )
 from qgis.gui import QgsMapTool
+from qgis.PyQt.QtCore import QObject, QSettings, Qt, QThread, pyqtSignal
+from qgis.PyQt.QtGui import QCursor, QPixmap
+from qgis.PyQt.QtWidgets import QApplication
 
 from .qgis_plugin_base import Plugin
 
@@ -162,7 +159,7 @@ class Worker(QObject):
         self.targetIdentTools = targetIdentTools
         self.canvas = canvas
 
-        Plugin().plPrint(">>> targetLayers: %s" % str(type(self.targetLayers)))
+        Plugin().plPrint(f">>> targetLayers: {type(self.targetLayers)!s}")
 
         self.progressMax = len(self.targetLayers) + 1
         self.progress = -1
@@ -186,7 +183,7 @@ class Worker(QObject):
 
         if len(self.targetLayers) > 0:
             for qgsLayer in self.targetLayers:
-                Plugin().plPrint(">>> check layer: %s" % qgsLayer.name())
+                Plugin().plPrint(f">>> check layer: {qgsLayer.name()}")
 
                 availableTools = [
                     tool
@@ -194,8 +191,9 @@ class Worker(QObject):
                     if tool.isAvailable(qgsLayer)
                 ]
                 Plugin().plPrint(
-                    ">>> availableTools: %s"
-                    % ", ".join([tool.__name__ for tool in availableTools])
+                    ">>> availableTools: {}".format(
+                        ", ".join([tool.__name__ for tool in availableTools])
+                    )
                 )
 
                 if len(availableTools) == 0:

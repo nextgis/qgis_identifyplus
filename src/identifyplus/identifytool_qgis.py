@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # ******************************************************************************
 #
 # IdentifyPlus
@@ -25,13 +23,12 @@
 #
 # ******************************************************************************
 
+from qgis.core import QgsMapLayer
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
-from qgis.PyQt.QtWidgets import QTableView, QHeaderView
+from qgis.PyQt.QtGui import QStandardItem, QStandardItemModel
+from qgis.PyQt.QtWidgets import QHeaderView, QTableView
 
-from qgis.core import *
-
-from .identifytool import *
+from .identifytool import IdentifyTool
 
 
 class QGISTool(IdentifyTool):

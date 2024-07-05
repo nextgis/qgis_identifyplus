@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # *****************************************************************************
 #
 # IdentifyPlus
@@ -25,14 +23,12 @@
 #
 # *****************************************************************************
 
+from qgis.gui import QgsDockWidget
 from qgis.PyQt.QtWidgets import QWidget
 
-from qgis.gui import QgsDockWidget
-
 from .qgis_plugin_base import Plugin
-from .ui_identifyplusresultsbase import Ui_IdentifyPlusResults
-
 from .representations import RepresentationContainer
+from .ui_identifyplusresultsbase import Ui_IdentifyPlusResults
 
 
 class IdentifyPlusResults(QWidget, Ui_IdentifyPlusResults):

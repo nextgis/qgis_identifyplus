@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # ******************************************************************************
 #
 # IdentifyPlus
@@ -26,10 +24,7 @@
 # ******************************************************************************
 
 from qgis.PyQt.QtCore import QAbstractTableModel, QModelIndex, Qt
-from qgis.PyQt.QtWidgets import QTableView, QHeaderView
-
-from qgis.core import *
-from qgis.gui import *
+from qgis.PyQt.QtWidgets import QHeaderView, QTableView
 
 
 class QGISAttributesModel(QAbstractTableModel):
@@ -56,10 +51,10 @@ class QGISAttributesModel(QAbstractTableModel):
         #    for i in xrange(len(qgsAttrs)):
         #        self.__data.extend( [(fields[i].name(), qgsAttrs[i])] )
 
-    def rowCount(self, parent=QModelIndex()):
+    def rowCount(self, parent=QModelIndex()):  # noqa: B008
         return len(self.__data)
 
-    def columnCount(self, parent=QModelIndex()):
+    def columnCount(self, parent=QModelIndex()):  # noqa: B008
         return 2
 
     def data(self, index, role=Qt.DisplayRole):

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # ******************************************************************************
 #
 # IdentifyPlus
@@ -26,11 +24,6 @@
 # ******************************************************************************
 
 from qgis.PyQt.QtWidgets import QTabWidget
-
-from qgis.core import *
-from qgis.gui import *
-
-from .qgis_plugin_base import Plugin
 
 
 class RepresentationsCache:
@@ -68,7 +61,7 @@ class RepresentationContainer(QTabWidget):
 
     def allReprs(self):
         reprs = []
-        for i in range(0, self.count()):
+        for i in range(self.count()):
             reprs.append(type(self.widget(i)))
         return reprs
 
@@ -89,7 +82,7 @@ class RepresentationContainer(QTabWidget):
 
     def clear(self):
         self.__tools = list()
-        for i in range(0, self.count()):
+        for _ in range(self.count()):
             self.widget(0).hide()
             self.widget(0).close()
             self.removeTab(0)

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # ******************************************************************************
 #
 # IdentifyPlus
@@ -24,24 +22,6 @@
 # MA 02110-1335 USA.
 #
 # ******************************************************************************
-
-import base64
-import os
-import time
-from urllib.parse import urlparse, parse_qs
-
-from qgis.PyQt import QtCore
-from qgis.PyQt import QtGui
-from qgis.PyQt import QtNetwork
-
-from .ngw_external_api_python.core.ngw_feature import NGWFeature
-from .ngw_external_api_python.core.ngw_attachment import NGWAttachment
-from qgis.PyQt.Qt import QObject, QFileInfo
-
-from qgis.core import *
-from qgis.gui import *
-
-from . import resources_rc
 
 
 # class NGWImagesModel(QtCore.QAbstractListModel):

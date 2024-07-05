@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # *****************************************************************************
 #
 # qgis_plugin_base
@@ -26,20 +25,17 @@
 #
 # ****************************************************************************
 
+from qgis.core import Qgis, QgsMessageLog
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
 
-from qgis.core import QgsMessageLog, Qgis
-
 
 class Singleton(type):
-    _instances = {}
+    _instances = {}  # noqa: RUF012
 
     def __call__(cls, *args, **kwargs):
         if Singleton not in cls._instances:
-            cls._instances[Singleton] = super(Singleton, cls).__call__(
-                *args, **kwargs
-            )
+            cls._instances[Singleton] = super().__call__(*args, **kwargs)
         return cls._instances[Singleton]
 
 

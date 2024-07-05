@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # ******************************************************************************
 #
 # IdentifyPlus
@@ -27,12 +25,11 @@
 
 import sqlite3
 
+from qgis.core import QgsMapLayer, QgsMessageLog
+from qgis.PyQt import QtCore, QtGui
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt import QtGui, QtCore
 
-from qgis.core import *
-
-from .identifytool import *
+from .identifytool import IdentifyTool
 from .qgis_plugin_base import Plugin
 
 
@@ -61,7 +58,7 @@ class Worker(QtCore.QObject):
         # Plugin().plPrint("tables: " + str(tables))
 
         pkFieldName = None
-        cur.execute("PRAGMA table_info(%s)" % self.tableName)
+        cur.execute(f"PRAGMA table_info({self.tableName})")
         for field in cur.fetchall():
             if field[5] == 1:
                 pkFieldName = field[1]
@@ -69,7 +66,7 @@ class Worker(QtCore.QObject):
 
         refTables = []
         for table in tables:
-            cur.execute("PRAGMA foreign_key_list(%s)" % table)
+            cur.execute(f"PRAGMA foreign_key_list({table})")
             for field in cur.fetchall():
                 if field[2] == self.tableName and field[4] == pkFieldName:
                     refTables.append([table, field[3]])
@@ -78,8 +75,7 @@ class Worker(QtCore.QObject):
         for table in refTables:
             data = []
             cur.execute(
-                "select * from %s where %s==%s"
-                % (table[0], table[1], self.fid)
+                f"select * from {table[0]} where {table[1]}=={self.fid}"
             )
 
             rowIndex = 1

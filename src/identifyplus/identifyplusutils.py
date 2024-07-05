@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # ******************************************************************************
 #
 # IdentifyPlus
@@ -25,9 +23,10 @@
 #
 # ******************************************************************************
 
+import json
 import xml.etree.ElementTree as ET
-import json, requests
 
+import requests
 from qgis.PyQt.QtCore import QByteArray
 from qgis.PyQt.QtGui import QPixmap
 
@@ -44,11 +43,11 @@ def gdallocationinfoXMLOutputProcessing(outputXMLString):
         return [1, "Input data error: " + str(err.msg)]
 
     alert_node = rootNode.find("Alert")
-    if alert_node != None:
+    if alert_node is not None:
         return [2, alert_node.text]
 
     location_info_node = rootNode.find("BandReport").find("LocationInfo")
-    if location_info_node == None:
+    if location_info_node is None:
         return [3, "Not found LocationInfo tag"]
 
     try:
@@ -74,7 +73,7 @@ def gdallocationinfoXMLOutputProcessing(outputXMLString):
                 results.append(attrs)
 
             return [None, results]
-    except ValueError as err:
+    except ValueError:
         pass
 
     try:
@@ -90,9 +89,9 @@ def gdallocationinfoXMLOutputProcessing(outputXMLString):
             features.append(attrs)
 
         return [None, features]
-    except ValueError as err:
+    except ValueError:
         pass
-    except ET.ParseError as err:
+    except ET.ParseError:
         pass
 
     return [10, "Cann't parse input data"]
