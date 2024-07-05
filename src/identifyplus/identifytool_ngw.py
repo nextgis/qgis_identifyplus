@@ -142,6 +142,7 @@ class NGWTool(IdentifyTool, QObject):
                 return None
 
             instance_url = connection.url
+            auth_config_id = connection.auth_config_id
 
             if qgs_map_layer.providerType() == "WFS":
                 datasource_uri = QgsDataSourceUri(layer_source)
