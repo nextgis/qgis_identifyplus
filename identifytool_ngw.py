@@ -57,7 +57,7 @@ from . import resources_rc
 
 class NGWTool(IdentifyTool, QObject):
     def __init__(self):
-        IdentifyTool.__init__(self, "ngw", "ngw identification")
+        super().__init__(self, "ngw", "ngw identification")
         QObject.__init__(self)
 
     def identify(self, qgisIdentResultVector, resultsContainer):
@@ -112,11 +112,24 @@ class NGWImagesModel(QAbstractListModel):
         Plugin().plPrint(">>> --- fid: %s" % fid)
 
         dataProvider = self.__obj._qgsMapLayer.dataProvider()
-        if dataProvider.name() == u'WFS':
+        if dataProvider.name() == 'WFS':
             if hasattr(dataProvider, 'idFromFid') and callable(getattr(dataProvider, 'idFromFid')):
                 fid = dataProvider.idFromFid(fid)
                 if type(fid) != 'long':
                     fid = int(fid)
+
+        elif (
+            self.__obj._qgsMapLayer.storageType() == "GPKG"
+            and "ngw_connection_id" in self.__obj._qgsMapLayer.customPropertyKeys()
+        ):
+            context = QgsExpressionContext()
+            context.appendScopes(
+                QgsExpressionContextUtils.globalProjectLayerScopes(self.__obj._qgsMapLayer)
+            )
+            context.setFeature(self.__obj.getFeature())
+
+            expression = QgsExpression("ngw_feature_id()")
+            fid = expression.evaluate()
 
         self.__ngw_feature = NGWFeature({'id':fid}, self.__ngw_resource)
         self.__images_urls = []
