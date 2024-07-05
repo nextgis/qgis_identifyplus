@@ -50,6 +50,9 @@ select = [
     # "FIX",  # flake8-fixme
 ]
 ignore = ["ANN101", "ANN102", "TD003", "FBT003", "ISC001", "COM812", "E501"]
+exclude = [
+    "src/identifyplus/ngw_external_api_python/*"
+]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]

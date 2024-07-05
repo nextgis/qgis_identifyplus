@@ -24,8 +24,13 @@
 # ******************************************************************************
 
 import os
+import re
+from urllib.parse import parse_qs, unquote, urlparse
 
 from qgis.core import (
+    QgsApplication,
+    QgsAuthMethodConfig,
+    QgsDataSourceUri,
     QgsExpression,
     QgsExpressionContext,
     QgsExpressionContextUtils,
@@ -59,21 +64,32 @@ from qgis.PyQt.QtWidgets import (
 
 from .identifytool import IdentifyTool
 from .ngw_external_api_python.core.ngw_attachment import NGWAttachment
+from .ngw_external_api_python.core.ngw_connection import NGWConnection
+from .ngw_external_api_python.core.ngw_connection_settings import (
+    NGWConnectionSettings,
+)
 from .ngw_external_api_python.core.ngw_error import NGWError
 from .ngw_external_api_python.core.ngw_feature import NGWFeature
-from .ngw_external_api_python.core.ngw_utils import (
-    ngw_resource_from_qgs_map_layer,
+from .ngw_external_api_python.core.ngw_resource_factory import (
+    NGWResourceFactory,
 )
 from .qgis_plugin_base import Plugin
+
+HAS_CONNECT_2 = True
+try:
+    from nextgis_connect.ngw_connection import NgwConnectionsManager
+
+except ImportError:
+    HAS_CONNECT_2 = False
 
 
 class NGWTool(IdentifyTool, QObject):
     def __init__(self):
-        super().__init__(self, "ngw", "ngw identification")
+        super().__init__("ngw", "ngw identification")
         QObject.__init__(self)
 
     def identify(self, qgisIdentResultVector, resultsContainer):
-        ngw_resource = ngw_resource_from_qgs_map_layer(
+        ngw_resource = self.ngw_resource_from_qgs_map_layer(
             qgisIdentResultVector._qgsMapLayer
         )
 
@@ -96,13 +112,130 @@ class NGWTool(IdentifyTool, QObject):
             return False
 
         try:
-            ngw_resource = ngw_resource_from_qgs_map_layer(qgsMapLayer)
+            ngw_resource = NGWTool.ngw_resource_from_qgs_map_layer(qgsMapLayer)
             if ngw_resource is not None:
                 return True
         except NGWError as err:
             Plugin().plPrint("NGWError: " + str(err))
 
         return False
+
+    @staticmethod
+    def ngw_resource_from_qgs_map_layer(qgs_map_layer):
+        layer_source = qgs_map_layer.source()
+        layer_name = None
+
+        connection_id = qgs_map_layer.customProperty("ngw_connection_id")
+        resource_id = qgs_map_layer.customProperty("ngw_resource_id")
+        auth_config_id = None
+        username = None
+        password = None
+
+        if (
+            HAS_CONNECT_2
+            and connection_id is not None
+            and resource_id is not None
+        ):
+            connections_manager = NgwConnectionsManager()  # type: ignore
+            connection = connections_manager.connection(connection_id)
+            if connection is None:
+                return None
+
+            instance_url = connection.url
+
+            if qgs_map_layer.providerType() == "WFS":
+                datasource_uri = QgsDataSourceUri(layer_source)
+                layer_name = datasource_uri.param("typename")
+
+        else:
+            if qgs_map_layer.providerType().lower() not in ("wfs", "ogr"):
+                return None
+
+            if qgs_map_layer.providerType() == "WFS":
+                if "url=" in layer_source:
+                    datasource_uri = QgsDataSourceUri(layer_source)
+                    url = datasource_uri.param("url")
+                    auth_config_id = datasource_uri.authConfigId()
+                    if auth_config_id == "":
+                        auth_config_id = None
+                    layer_name = datasource_uri.param("typename")
+                else:
+                    url = layer_source
+
+                url_components = urlparse(url)
+
+                request_attributes = parse_qs(url_components.query)
+
+                if auth_config_id is None:
+                    username = request_attributes.get("username", [None])[0]
+                    password = request_attributes.get("password", [None])[0]
+                if layer_name is None:
+                    layer_name = request_attributes.get(
+                        "TYPENAME", request_attributes.get("typename", [None])
+                    )[0]
+
+            else:
+                url = layer_source.lstrip("/vsicurl/")  # noqa: B005
+                url_components = urlparse(url)
+
+                if url_components.username and url_components.password:
+                    username = unquote(url_components.username)
+                    password = unquote(url_components.password)
+
+            match = re.search(r"^.*/api/resource/(\d+)", url_components.path)
+            if match is None:
+                return None
+
+            instance_url = "{scheme}://{domain}/".format(
+                scheme=url_components.scheme,
+                domain=url_components.netloc.split("@")[-1],
+            )
+            resource_id = int(match.group(1))
+
+        if auth_config_id is not None:
+            method = QgsApplication.authManager().configAuthMethodKey(
+                auth_config_id
+            )
+            if method != "Basic":
+                return None
+
+            config = QgsAuthMethodConfig()
+
+            is_loaded = QgsApplication.authManager().loadAuthenticationConfig(
+                auth_config_id, config, full=True
+            )[0]
+            if not is_loaded:
+                return None
+
+            username = config.config("username")
+            password = config.config("password")
+
+        connection_settings = NGWConnectionSettings(
+            "ngw", instance_url, username, password
+        )
+        ngwConnection = NGWConnection(connection_settings)
+
+        resource_factory = NGWResourceFactory(ngwConnection)
+        try:
+            ngw_resource = resource_factory.get_resource(resource_id)
+            if ngw_resource is None:
+                return None
+
+            if ngw_resource.type_id == "wfsserver_service":
+                if layer_name is None:
+                    return None
+
+                layers = ngw_resource.get_layers()
+                for layer in layers:
+                    if layer["keyname"] == layer_name:
+                        resource_id = layer["resource_id"]
+                        break
+                return resource_factory.get_resource(resource_id)
+
+            return ngw_resource
+
+        except NGWError:
+            return None
 
 
 class NGWImagesModel(QAbstractListModel):
@@ -149,7 +282,7 @@ class NGWImagesModel(QAbstractListModel):
             context.setFeature(self.__obj.getFeature())
 
             expression = QgsExpression("ngw_feature_id()")
-            fid = expression.evaluate()
+            fid = expression.evaluate(context)
 
         self.__ngw_feature = NGWFeature({"id": fid}, self.__ngw_resource)
         self.__images_urls = []
@@ -169,7 +302,7 @@ class NGWImagesModel(QAbstractListModel):
     def removeRows(self, row, count, parent=QModelIndex()):  # noqa: B008
         self.beginRemoveRows(parent, row, row + count)
 
-        for i in range(count):
+        for _ in range(count):
             # self.__ngw_feature.unlink_attachment( self.__images_urls[row][1] )
             # self.__images_urls.remove(self.__images_urls[row])
             self.__images[row].unlink()

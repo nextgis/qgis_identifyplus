@@ -159,8 +159,6 @@ class Worker(QObject):
         self.targetIdentTools = targetIdentTools
         self.canvas = canvas
 
-        Plugin().plPrint(f">>> targetLayers: {type(self.targetLayers)!s}")
-
         self.progressMax = len(self.targetLayers) + 1
         self.progress = -1
 
