@@ -379,7 +379,7 @@
 #         ngw_attachments = [ngw_attachment]
 #         default_names = [file_info.fileName()]
 #         downloadDialog = ImageDownloadDialog(ngw_attachments, file_info.absolutePath(), default_names)
-#         downloadDialog.exec_()
+#         downloadDialog.exec()
 
 #     def downloadImages(self):
 #         settings = QtCore.QSettings()
@@ -402,7 +402,7 @@
 #             ngw_attachments.append(self.__model.data(index, QtCore.Qt.UserRole + 1))
 
 #         downloadDialog = ImageDownloadDialog(ngw_attachments, dirPath)
-#         downloadDialog.exec_()
+#         downloadDialog.exec()
 
 # class ImageDownloadDialog(QtWidgets.QDialog):
 #     def __init__(self, ngw_attachments, save_dir, default_names = [],  parent = None):

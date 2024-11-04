@@ -653,7 +653,7 @@ class NGWImagesView(QWidget):
         downloadDialog = ImageDownloadDialog(
             ngw_attachments, file_info.absolutePath(), default_names
         )
-        downloadDialog.exec_()
+        downloadDialog.exec()
 
     def downloadImages(self):
         settings = QSettings()
@@ -676,7 +676,7 @@ class NGWImagesView(QWidget):
             ngw_attachments.append(self.__model.data(index, Qt.UserRole + 1))
 
         downloadDialog = ImageDownloadDialog(ngw_attachments, dirPath)
-        downloadDialog.exec_()
+        downloadDialog.exec()
 
 
 class ImageUploadDialog(QProgressDialog):
