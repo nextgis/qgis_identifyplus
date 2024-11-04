@@ -1,7 +1,9 @@
 [general]
 name=NextGIS IdentifyPlus
 description=Extended identify tool, show photos from your Web GIS
+description[ru]=Расширенный инструмент идентификации, позволяющий отображать фотографии из вашей Веб ГИС
 about=Extended identify tool. Show photos and other attachments stored in your Web GIS right in QGIS. Developed by NextGIS. Any feedback is welcome at https://nextgis.com/contact
+about[ru]=Расширенный инструмент идентификации. Отображайте фотографии и другие вложения, хранящиеся в вашей Веб ГИС, прямо в QGIS. Разработан компанией NextGIS. Любые отзывы приветствуются на https://nextgis.com/contact
 category=Identification
 version=4.1.0
 qgisMinimumVersion=3.22
@@ -16,6 +18,8 @@ tags=feature,maptool,identification
 homepage=https://nextgis.com
 tracker=https://github.com/nextgis/IdentifyPlus/issues
 repository=https://github.com/nextgis/IdentifyPlus
+video=https://www.youtube.com/watch?v=iLzpa0jv_9Q
+video[ru]=https://www.youtube.com/watch?v=JWMey76B_S0
 
 experimental=False
 deprecated=False
