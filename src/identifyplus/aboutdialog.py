@@ -7,12 +7,12 @@ from qgis.PyQt.QtCore import QLocale
 from qgis.PyQt.QtWidgets import QDialog, QWidget
 from qgis.utils import pluginMetadata
 
-FORM_CLASS, _ = uic.loadUiType(
-    str(Path(__file__).parent / "ui" / "aboutdialogbase.ui")
+from .ui.aboutdialogbase import (
+    Ui_AboutDialogBase,
 )
 
 
-class AboutDialog(QDialog, FORM_CLASS):
+class AboutDialog(QDialog, Ui_AboutDialogBase):
     def __init__(self, package_name: str, parent: Optional[QWidget] = None):
         super().__init__(parent)
         self.setupUi(self)

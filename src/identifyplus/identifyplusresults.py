@@ -28,7 +28,7 @@ from qgis.PyQt.QtWidgets import QWidget
 
 from .qgis_plugin_base import Plugin
 from .representations import RepresentationContainer
-from .ui_identifyplusresultsbase import Ui_IdentifyPlusResults
+from .ui.identifyplusresultsbase import Ui_IdentifyPlusResults
 
 
 class IdentifyPlusResults(QWidget, Ui_IdentifyPlusResults):
