@@ -26,6 +26,7 @@
 import os
 import re
 from urllib.parse import parse_qs, unquote, urlparse
+from . import resources  # noqa: F401
 
 from qgis.core import (
     QgsApplication,

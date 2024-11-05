@@ -25,6 +25,7 @@
 
 import os
 from typing import List
+from . import resources  # noqa: F401
 
 from qgis.core import Qgis, QgsApplication
 from qgis.gui import QgisInterface

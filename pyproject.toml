@@ -6,7 +6,7 @@ license = { file = "LICENSE" }
 
 
 [tool.qgspb.package-data]
-"identifyplus.icons" = ["identifyplus.png", "identifyplus.svg", "about.png"]
+"identifyplus.icons" = ["identifyplus.png"]
 
 [tool.qgspb.forms]
 ui-files = ["src/identifyplus/ui/*.ui"]
