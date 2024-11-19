@@ -143,6 +143,15 @@ class IdentifyPlus(Plugin):
             self.tr("IdentifyPlus"), self.__open_about_dialog_action
         )
 
+        self.__show_help_action = QAction(
+            QIcon(":/plugins/identifyplus/icons/identifyplus.svg"),
+            "NextGIS IdentifyPlus",
+        )
+        self.__show_help_action.triggered.connect(self.about)
+        plugin_help_menu = self.iface.pluginHelpMenu()
+        assert plugin_help_menu is not None
+        plugin_help_menu.addAction(self.__show_help_action)
+
     def __unload_menus(self):
         self.iface.attributesToolBar().removeAction(
             self.__activate_tool_action
